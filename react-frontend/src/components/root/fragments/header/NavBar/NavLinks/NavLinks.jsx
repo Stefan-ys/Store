@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../../../../../../css/Navbar.module.css"
-import AuthenticationService from "../../../../../../api/authentication/AuthenticationService";
+import AuthenticationService from "../../../../../../services/authentication/AuthenticationService";
 import {NavLink} from "react-router-dom";
 
 const NavLinks = () => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import HomeService from "../../../api/HomeService";
+import HomeService from "../../../services/HomeService";
 
 
 function Home() {
@@ -9,7 +9,7 @@ function Home() {
     useEffect(() => {
         HomeService()
             .then((response) => {
-                setWelcomeMessage(response.data);
+                setWelcomeMessage(response);
             })
             .catch((error) => {
                 console.log(error);
