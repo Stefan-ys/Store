@@ -1,12 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
-import {faCheck, faTimes, faInfoCircle} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {FaCheck, FaTimes, FaInfoCircle, FaEye, FaMinus} from "react-icons/fa";
 import SignUpService from "../../../../services/login/LoginService";
-import {usePasswordToggler} from "../../../../hooks/usePasswordToggler";
+
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,20}$/;
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
+const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/;
+const PASSWORD_REGEX = /^(.){5,20}$/;
 
 const SignUp = () => {
     const userRef = useRef();
@@ -24,24 +23,57 @@ const SignUp = () => {
     const [validMatch, setValidMatch] = useState(false);
     const [matchFocus, setMatchFocus] = useState(false);
 
+    const [hidePassword, setHidePassword] = useState(true);
+    const [passwordStrength, setPasswordStrength] = useState("");
+    const [activeColor, setActiveColor] = useState("lightgray");
+
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(false);
 
-    const {type, handlePasswordVisibility, passwordVisibility} = usePasswordToggler();
+
+    const handlePasswordStrength = (password) => {
+        const strengthChecks = {
+            length: 0,
+            hasUpperCase: false,
+            hasLowerCase: false,
+            hasDigit: false,
+            hasSpecialChar: false,
+        };
+
+        strengthChecks.length = password.length >= 8;
+        strengthChecks.hasUpperCase = /[A_Z]+/.test(password);
+        strengthChecks.hasLowerCase = /[a-z]+/.test(password);
+        strengthChecks.hasDigit = /[0-9]+/.test(password);
+        strengthChecks.hasSpecialChar = /[^A-Za-z0-9]+/.test(password);
+
+        let verifiedList = Object.values(strengthChecks).filter((value) => value);
+
+        let strength =
+            verifiedList.length >= 4 ? "Strong"
+                : verifiedList.length >= 2 ? "Medium"
+                : "Weak";
+        setPasswordStrength(strength);
+        setActiveColor(getActiveColor(strength))
+    };
+
+    const getActiveColor = (type) => {
+        return type === "Strong" ? "#8BC926"
+            : type === "Medium" ? "#FEBD01" : "#FF0054";
+    }
+
 
     useEffect(() => {
         userRef.current.focus();
-    }, [])
+    }, []);
 
     useEffect(() => {
         setValidName(USER_REGEX.test(user));
-    }, [user])
-
+    }, [user]);
 
     useEffect(() => {
         setValidPassword(PASSWORD_REGEX.test(password));
-        setValidMatch(password === matchPassword);
-    }, [password])
+        setValidMatch(password === matchPassword && PASSWORD_REGEX.test(password));
+    }, [password, matchPassword]);
 
 
     const handleSubmit = async (e) => {
@@ -91,8 +123,8 @@ const SignUp = () => {
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="username">
                             Username:
-                            <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"}/>
-                            <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"}/>
+                            <FaCheck className={validName ? "valid" : "hide"}/>
+                            <FaTimes className={validName || !user ? "hide" : "invalid"}/>
                         </label>
                         <input
                             type="text"
@@ -108,23 +140,27 @@ const SignUp = () => {
                             onBlur={() => setUserFocus(false)}
                         />
                         <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
-                            <FontAwesomeIcon icon={faInfoCircle}/>
-                            4 to 24 characters.<br/>
-                            Must begin with a letter.<br/>
-                            Letters, numbers, underscores, hyphens allowed.
+                            <FaInfoCircle/>
+                            Username must be:<br/>
+                            between 4 to 24 characters,<br/>
+                            begin with a letter,<br/>
+                            consist of letters, numbers, underscores or hyphens.
                         </p>
 
 
                         <label htmlFor="password">
                             Password:
-                            <FontAwesomeIcon icon={faCheck} className={validPassword ? "valid" : "hide"}/>
-                            <FontAwesomeIcon icon={faTimes}
-                                             className={validPassword || !password ? "hide" : "invalid"}/>
+                            <FaCheck className={validPassword ? "valid" : "hide"}/>
+                            <FaTimes className={validPassword || !password ? "hide" : "invalid"}/>
                         </label>
                         <input
-                            type={type}
+                            type={hidePassword ? "password" : "text"}
                             id="password"
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                handlePasswordStrength(e.target.value);
+
+                            }}
                             value={password}
                             required
                             aria-invalid={validPassword ? "false" : "true"}
@@ -132,25 +168,55 @@ const SignUp = () => {
                             onFocus={() => setPasswordFocus(true)}
                             onBlur={() => setPasswordFocus(false)}
                         />
+                        {password && (
+                            <div style={{display: "flex", justifyContent: "space-between", marginBottom: "8px"}}>
+                                <hr style={{
+                                    flex: 1,
+                                    border: "none",
+                                    borderTop: "8px solid",
+                                    borderRadius: "2px",
+                                    margin: "0 5px",
+                                    marginTop: "8px",
+                                    color: activeColor
+                                }}/>
+                                <hr style={{
+                                    flex: 1,
+                                    border: "none",
+                                    borderTop: "8px solid",
+                                    borderRadius: "2px",
+                                    margin: "0 5px",
+                                    marginTop: "8px",
+                                    color: passwordStrength === "Medium" || passwordStrength === "Strong" ? activeColor : "lightgray"
+                                }}/>
+                                <hr style={{
+                                    flex: 1,
+                                    border: "none",
+                                    borderTop: "8px solid",
+                                    borderRadius: "2px",
+                                    margin: "0 5px",
+                                    marginTop: "8px",
+                                    color: passwordStrength === "Strong" ? activeColor : "lightgrey"
+                                }}/>
+                            </div>)}
+                        {password && (
+                            <p style={{color: activeColor, fontSize: "smaller", }}>Your password is {passwordStrength.toLowerCase()}</p>
+                        )}
 
                         <p id="pwdnote" className={passwordFocus && !validPassword ? "instructions" : "offscreen"}>
-                            <FontAwesomeIcon icon={faInfoCircle}/>
+                            <FaInfoCircle/>
                             8 to 24 characters.<br/>
-                            Must include uppercase and lowercase letters, a number and a special character.<br/>
-                            Allowed special characters: <span aria-label="exclamation mark">!</span> <span
-                            aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span
-                            aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
+                            Include uppercase and lowercase letters, numbers and special characters<br/>
+                            to make a strong password.
                         </p>
 
 
                         <label htmlFor="confirm_pwd">
                             Confirm Password:
-                            <FontAwesomeIcon icon={faCheck} className={validMatch && matchPassword ? "valid" : "hide"}/>
-                            <FontAwesomeIcon icon={faTimes}
-                                             className={validMatch || !matchPassword ? "hide" : "invalid"}/>
+                            <FaCheck className={validMatch && matchPassword ? "valid" : "hide"}/>
+                            <FaTimes className={validMatch || !matchPassword ? "hide" : "invalid"}/>
                         </label>
                         <input
-                            type={type}
+                            type={hidePassword ? "password" : "text"}
                             id="confirm_pwd"
                             onChange={(e) => setMatchPassword(e.target.value)}
                             value={matchPassword}
@@ -160,12 +226,16 @@ const SignUp = () => {
                             onFocus={() => setMatchFocus(true)}
                             onBlur={() => setMatchFocus(false)}
                         />
+                        <a href="#" className="toggle-btn" onClick={() => {
+                            setHidePassword(!hidePassword);
+                        }}>
+                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>show password
+                        </a>
                         <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
-                            <FontAwesomeIcon icon={faInfoCircle}/>
+                            <FaInfoCircle/>
                             Must match the first password input field.
                         </p>
-                        <button onClick={handlePasswordVisibility}>{passwordVisibility ? 'Show' : 'Hide'} Password
-                        </button>
+
                         <button disabled={!validName || !validPassword || !validMatch}>Sign Up</button>
                     </form>
                     <p>
@@ -173,7 +243,7 @@ const SignUp = () => {
                         <span className="line">
                             {/*put router link here*/}
                             <a href="#">Sign In</a>
-                        </span>
+                                </span>
                     </p>
                 </section>
             )}
