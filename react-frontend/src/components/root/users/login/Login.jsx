@@ -1,14 +1,18 @@
 import React, {useRef, useState, useEffect} from "react";
+import LoginService from "../../../../services/login/LoginService";
+import {FaEye} from "react-icons/fa";
 
-const LoginForm = () => {
+const Login = () => {
+
     const userRef = useRef();
     const errRef = useRef();
-
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    const [hidePassword, setHidePassword] = useState(true);
 
     useEffect(() => {
         userRef.current.focus();
@@ -20,9 +24,23 @@ const LoginForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSuccess(true);
-    }
 
+        try {
+            const userData = await LoginService(username, password);
+            console.log("User data: ", userData);
+        } catch (error) {
+            if (!error?.response) {
+                setError("No Server Response");
+            } else if (error.response?.status === 400) {
+                setError("Missing Username or Password");
+            } else if (error.response?.status === 401) {
+                setError("Unauthorized");
+            } else {
+                setError("Login Failed");
+            }
+            errRef.current.focus();
+        }
+    }
 
     return (
         <>{success ? (
@@ -35,33 +53,45 @@ const LoginForm = () => {
             </section>
         ) : (
             <section>
-                <h1>Login</h1>
+                <p ref={errRef} className={setError ? "error" : "offscreen"} aria-live="assertive">{error}</p>
+                <h1>Sign In</h1>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="username">Username: </label>
+                    <label htmlFor="username">Username:</label>
                     <input
-                        id="username"
                         type="text"
+                        id="username"
                         ref={userRef}
                         autoComplete="off"
+                        onChange={(e) => setUsername(e.target.value)}
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
-                    <br/>
-                    <label htmlFor="password">Password: </label>
+
+                    <label htmlFor="password">Password:</label>
                     <input
+                        type= {hidePassword ? "password" : "text"}
                         id="password"
-                        type="password"
+                        onChange={(e) => setPassword(e.target.value)}
                         value={password}
-                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
-                    <br/>
-                    <button type="submit">Login</button>
+                    <a href="#" className="toggle-btn" onClick={() => {
+                        setHidePassword(!hidePassword);
+                    }}>
+                        <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>{hidePassword ? "show" : "hide" } password
+                    </a>
+                    <button>Sign In</button>
                 </form>
+                <p>
+                    Need an Account?<br />
+                    <span className="line">
+                            {/*put router link here*/}
+                        <a href="#">Sign Up</a>
+                        </span>
+                </p>
             </section>
         )}</>
     );
 }
 
-export default LoginForm;
+export default Login;

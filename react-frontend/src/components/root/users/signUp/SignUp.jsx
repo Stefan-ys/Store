@@ -1,11 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 import {FaCheck, FaTimes, FaInfoCircle, FaEye, FaMinus} from "react-icons/fa";
-import SignUpService from "../../../../services/login/LoginService";
+import SignUpService from "../../../../services/signup/SignUpService";
 
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,20}$/;
 const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/;
-const PASSWORD_REGEX = /^(.){5,20}$/;
+const PASSWORD_REGEX = /^(.){5,30}$/;
 
 const SignUp = () => {
     const userRef = useRef();
@@ -14,6 +14,10 @@ const SignUp = () => {
     const [user, setUser] = useState("");
     const [validName, setValidName] = useState(false);
     const [userFocus, setUserFocus] = useState(false);
+
+    const [email, setEmail] = useState("");
+    const [validEmail, setValidEmail] = useState(false);
+    const [emilFocus, setEmailFocus] = useState(false);
 
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(false);
@@ -69,6 +73,10 @@ const SignUp = () => {
     useEffect(() => {
         setValidName(USER_REGEX.test(user));
     }, [user]);
+
+    useEffect(() => {
+        setValidEmail(EMAIL_REGEX.test(email));
+    }, [email]);
 
     useEffect(() => {
         setValidPassword(PASSWORD_REGEX.test(password));
@@ -147,6 +155,29 @@ const SignUp = () => {
                             consist of letters, numbers, underscores or hyphens.
                         </p>
 
+                        <label htmlFor="email">
+                            Email address:
+                            <FaCheck className={validEmail ? "valid" : "hide"}/>
+                            <FaTimes className={validEmail || !email ? "hide" : "invalid"}/>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            ref={userRef}
+                            autoComplete="off"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            required
+                            aria-invalid={validEmail ? "false" : "true"}
+                            aria-describedby="maiinote"
+                            onFocus={() => setEmailFocus(true)}
+                            onBlur={() => setEmailFocus(false)}
+                        />
+                        <p id="mailnote" className={emilFocus && email && !validEmail ? "instructions" : "offscreen"}>
+                            <FaInfoCircle/>
+                            Must be valid email address.
+                        </p>
+
 
                         <label htmlFor="password">
                             Password:
@@ -199,12 +230,13 @@ const SignUp = () => {
                                 }}/>
                             </div>)}
                         {password && (
-                            <p style={{color: activeColor, fontSize: "smaller", }}>Your password is {passwordStrength.toLowerCase()}</p>
+                            <p style={{color: activeColor, fontSize: "smaller",}}>Your password
+                                is {passwordStrength.toLowerCase()}</p>
                         )}
 
                         <p id="pwdnote" className={passwordFocus && !validPassword ? "instructions" : "offscreen"}>
                             <FaInfoCircle/>
-                            8 to 24 characters.<br/>
+                            Password must between 5 to 30 characters.<br/>
                             Include uppercase and lowercase letters, numbers and special characters<br/>
                             to make a strong password.
                         </p>
@@ -229,7 +261,7 @@ const SignUp = () => {
                         <a href="#" className="toggle-btn" onClick={() => {
                             setHidePassword(!hidePassword);
                         }}>
-                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>show password
+                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>{hidePassword ? "show" : "hide" } password
                         </a>
                         <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
                             <FaInfoCircle/>

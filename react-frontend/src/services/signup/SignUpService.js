@@ -1,14 +1,14 @@
 import axios from "../axiosConfig/axiosConfig"
 
-const SignUpService = (user) => {
+const SIGNUP_URL = "/users/signup";
+
+const SignUpService = async (user) => {
     try {
-        return axios.post('/signup', user);
-    } catch (err) {
-        let error = "";
-        if (err.response) {
-            error += err.response;
-        }
-        return error;
+        const response = await axios.post(SIGNUP_URL, user);
+        return response.data;
+    } catch (error) {
+        console.log("Sign up failed: ", error);
+        throw error;
     }
 };
 

@@ -1,18 +1,15 @@
 import axios from "../axiosConfig/axiosConfig";
 
-const LoginService = (username) => {
+const LOGIN_URL = "/users/login"
+
+
+const LoginService = async (username, password) => {
     try {
-        return axios.post('/login', null, {
-            params: {
-                username,
-            },
-        });
-    } catch (err) {
-        let error = "";
-        if (err.response) {
-            error += err.response;
-        }
-        return error;
+        const response = await axios.post(LOGIN_URL, JSON.stringify({username, password}));
+        return response.data;
+    } catch (error) {
+        console.log("Login failed", error);
+        throw error;
     }
 };
 
