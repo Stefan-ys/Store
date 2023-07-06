@@ -1,44 +1,48 @@
 package com.example.project.model.entity;
 
+import com.example.project.model.enums.RoleEnum;
 import com.mongodb.lang.NonNull;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.lang.annotation.Documented;
+import java.util.Set;
 
 @Document(collection = "users")
 public class UserEntity {
     @Id
-    private Long id;
+    private @MongoId ObjectId id;
     @Indexed(unique = true)
     @NonNull
-    private String userName;
+    private String username;
     @Indexed(unique = true)
     @NonNull
     private String Email;
     @NonNull
     private String password;
+    private Set<RoleEnum> authorities;
 
     public UserEntity() {
     }
 
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public UserEntity setId(Long id) {
+    public UserEntity setId(ObjectId id) {
         this.id = id;
         return this;
     }
 
     @NonNull
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public UserEntity setUserName(@NonNull String userName) {
-        this.userName = userName;
+    public UserEntity setUsername(@NonNull String username) {
+        this.username = username;
         return this;
     }
 
@@ -59,6 +63,15 @@ public class UserEntity {
 
     public UserEntity setPassword(@NonNull String password) {
         this.password = password;
+        return this;
+    }
+
+    public Set<RoleEnum> getAuthorities() {
+        return authorities;
+    }
+
+    public UserEntity setAuthorities(Set<RoleEnum> authorities) {
+        this.authorities = authorities;
         return this;
     }
 }

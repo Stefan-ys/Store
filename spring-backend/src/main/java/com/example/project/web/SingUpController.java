@@ -1,7 +1,6 @@
 package com.example.project.web;
 
 import com.example.project.model.dto.binding.SignUpBindingModel;
-import com.example.project.model.entity.UserEntity;
 
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
@@ -17,7 +16,7 @@ public class SingUpController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody SignUpBindingModel signUpBindingModel) {
-
+        System.out.println("Sign Up");
         return ResponseEntity.ok("Sign Up Successful");
     }
 

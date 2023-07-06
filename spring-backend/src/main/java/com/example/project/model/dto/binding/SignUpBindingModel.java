@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 public class SignUpBindingModel {
 
     @NotEmpty(message = "Username is required")
+    @Size(min = 6, max = 20, message = "Username must be between 6 and 20 characters long")
     private String username;
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email format")
