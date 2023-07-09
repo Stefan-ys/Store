@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/users")
 public class SingUpController {
     @Autowired
@@ -17,7 +18,12 @@ public class SingUpController {
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody SignUpBindingModel signUpBindingModel) {
         System.out.println("Sign Up");
-        return ResponseEntity.ok("Sign Up Successful");
+        try {
+            userService.signUp(signUpBindingModel);
+            return ResponseEntity.ok("Sign Up Successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Invalid Request");
+        }
     }
 
 }
