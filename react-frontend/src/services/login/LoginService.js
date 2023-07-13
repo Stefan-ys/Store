@@ -1,6 +1,6 @@
 import axios from "../axiosConfig/axiosConfig";
 
-const LOGIN_URL = "/users/login"
+const LOGIN_URL = "http://localhost:8080/users/login"
 
 
 const LoginService = async (username, password) => {

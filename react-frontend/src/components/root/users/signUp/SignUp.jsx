@@ -1,9 +1,12 @@
 import React, {useState, useRef, useEffect} from "react";
-import {FaCheck, FaTimes, FaInfoCircle, FaEye, FaMinus} from "react-icons/fa";
+import {Link} from "react-router-dom";
+import {FaCheck, FaTimes, FaInfoCircle, FaEye} from "react-icons/fa";
 import SignUpService from "../../../../services/signup/SignUpService";
+import {PasswordStrengthIndicator} from "../../../../utils/PasswordStrenght";
+import styles from "../../../../css/SignUpSignIn.module.css"
 
 
-const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,20}$/;
+const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/;
 const PASSWORD_REGEX = /^(.){5,30}$/;
 
@@ -11,59 +14,38 @@ const SignUp = () => {
     const userRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
     const [validName, setValidName] = useState(false);
     const [userFocus, setUserFocus] = useState(false);
 
-    const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
     const [emilFocus, setEmailFocus] = useState(false);
 
-    const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(false);
     const [passwordFocus, setPasswordFocus] = useState(false);
 
-    const [matchPassword, setMatchPassword] = useState("");
     const [validMatch, setValidMatch] = useState(false);
     const [matchFocus, setMatchFocus] = useState(false);
 
     const [hidePassword, setHidePassword] = useState(true);
-    const [passwordStrength, setPasswordStrength] = useState("");
-    const [activeColor, setActiveColor] = useState("lightgray");
+
 
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(false);
 
-
-    const handlePasswordStrength = (password) => {
-        const strengthChecks = {
-            length: 0,
-            hasUpperCase: false,
-            hasLowerCase: false,
-            hasDigit: false,
-            hasSpecialChar: false,
-        };
-
-        strengthChecks.length = password.length >= 8;
-        strengthChecks.hasUpperCase = /[A_Z]+/.test(password);
-        strengthChecks.hasLowerCase = /[a-z]+/.test(password);
-        strengthChecks.hasDigit = /[0-9]+/.test(password);
-        strengthChecks.hasSpecialChar = /[^A-Za-z0-9]+/.test(password);
-
-        let verifiedList = Object.values(strengthChecks).filter((value) => value);
-
-        let strength =
-            verifiedList.length >= 4 ? "Strong"
-                : verifiedList.length >= 2 ? "Medium"
-                : "Weak";
-        setPasswordStrength(strength);
-        setActiveColor(getActiveColor(strength))
+    const resetUser = () => {
+        Object.keys(user).forEach((key) => {
+            setUser(prevState => ({
+                ...prevState, [key]: ""
+            }));
+        });
     };
-
-    const getActiveColor = (type) => {
-        return type === "Strong" ? "#8BC926"
-            : type === "Medium" ? "#FEBD01" : "#FF0054";
-    }
 
 
     useEffect(() => {
@@ -71,17 +53,17 @@ const SignUp = () => {
     }, []);
 
     useEffect(() => {
-        setValidName(USER_REGEX.test(user));
-    }, [user]);
+        setValidName(USER_REGEX.test(user.username));
+    }, [user.username]);
 
     useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email));
-    }, [email]);
+        setValidEmail(EMAIL_REGEX.test(user.email));
+    }, [user.email]);
 
     useEffect(() => {
-        setValidPassword(PASSWORD_REGEX.test(password));
-        setValidMatch(password === matchPassword && PASSWORD_REGEX.test(password));
-    }, [password, matchPassword]);
+        setValidPassword(PASSWORD_REGEX.test(user.password));
+        setValidMatch(user.password === user.confirmPassword && PASSWORD_REGEX.test(user.password));
+    }, [user.password, user.confirmPassword]);
 
 
     const handleSubmit = async (e) => {
@@ -92,16 +74,15 @@ const SignUp = () => {
             return;
         }
 
-        SignUpService()
+        console.log(user)
+        SignUpService(user)
             .then((response) => {
                 console.log(response?.data);
                 console.log(response?.accessToken);
                 console.log(JSON.stringify(response))
                 setSuccess(true);
 
-                setUser("");
-                setPassword("");
-                setMatchPassword("");
+                resetUser();
             })
             .catch((error) => {
                 if (!error?.response) {
@@ -121,165 +102,215 @@ const SignUp = () => {
                 <section>
                     <h1>Success!</h1>
                     <p>
-                        <a href="#">Sign In</a>
+                        <Link to="/login">Sign In</Link>
                     </p>
                 </section>
             ) : (
-                <section>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+                <section className={styles.container}>
+                    <p
+                        ref={errRef}
+                        className={errMsg ? styles.errmsg : styles.offscreen}
+                        aria-live="assertive"
+                    >
+                        {errMsg}
+                    </p>
                     <h1>Register</h1>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">
+                        {/* Username */}
+                        <label htmlFor="username" className={styles.label}>
                             Username:
-                            <FaCheck className={validName ? "valid" : "hide"}/>
-                            <FaTimes className={validName || !user ? "hide" : "invalid"}/>
+                            <FaCheck
+                                className={validName ? styles.valid : styles.hide}
+                            />
+                            <FaTimes
+                                className={validName || !user.username ? styles.hide : styles.invalid}
+                            />
                         </label>
                         <input
                             type="text"
                             id="username"
                             ref={userRef}
                             autoComplete="off"
-                            onChange={(e) => setUser(e.target.value)}
-                            value={user}
+                            className={styles.input}
+                            onChange={(e) => setUser({ ...user, username: e.target.value })}
+                            value={user.username}
                             required
                             aria-invalid={validName ? "false" : "true"}
                             aria-describedby="uidnote"
                             onFocus={() => setUserFocus(true)}
                             onBlur={() => setUserFocus(false)}
                         />
-                        <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
-                            <FaInfoCircle/>
-                            Username must be:<br/>
-                            between 4 to 24 characters,<br/>
-                            begin with a letter,<br/>
-                            consist of letters, numbers, underscores or hyphens.
+                        <p
+                            id="uidnote"
+                            className={
+                                userFocus && user.username && !validName
+                                    ? styles.instructions
+                                    : styles.offscreen
+                            }
+                        >
+                            <FaInfoCircle />
+                            Username must be:<br />
+                            between 4 to 24 characters,<br />
+                            begin with a letter,<br />
+                            consist of letters, numbers, underscores, or hyphens.
                         </p>
 
-                        <label htmlFor="email">
+                        {/* Email */}
+                        <label htmlFor="email" className={styles.label}>
                             Email address:
-                            <FaCheck className={validEmail ? "valid" : "hide"}/>
-                            <FaTimes className={validEmail || !email ? "hide" : "invalid"}/>
+                            <FaCheck
+                                className={validEmail ? styles.valid : styles.hide}
+                            />
+                            <FaTimes
+                                className={validEmail || !user.email ? styles.hide : styles.invalid}
+                            />
                         </label>
                         <input
                             type="email"
                             id="email"
                             ref={userRef}
                             autoComplete="off"
-                            onChange={(e) => setEmail(e.target.value)}
-                            value={email}
+                            className={styles.input}
+                            onChange={(e) => setUser({ ...user, email: e.target.value })}
+                            value={user.email}
                             required
                             aria-invalid={validEmail ? "false" : "true"}
-                            aria-describedby="maiinote"
+                            aria-describedby="mailnote"
                             onFocus={() => setEmailFocus(true)}
                             onBlur={() => setEmailFocus(false)}
                         />
-                        <p id="mailnote" className={emilFocus && email && !validEmail ? "instructions" : "offscreen"}>
-                            <FaInfoCircle/>
-                            Must be valid email address.
+                        <p
+                            id="mailnote"
+                            className={
+                                emilFocus && user.email && !validEmail
+                                    ? styles.instructions
+                                    : styles.offscreen
+                            }
+                        >
+                            <FaInfoCircle />
+                            Must be a valid email address.
                         </p>
 
-
-                        <label htmlFor="password">
+                        {/* Password */}
+                        <label htmlFor="password" className={styles.label}>
                             Password:
-                            <FaCheck className={validPassword ? "valid" : "hide"}/>
-                            <FaTimes className={validPassword || !password ? "hide" : "invalid"}/>
+                            <FaCheck
+                                className={validPassword ? styles.valid : styles.hide}
+                            />
+                            <FaTimes
+                                className={
+                                    validPassword || !user.password
+                                        ? styles.hide
+                                        : styles.invalid
+                                }
+                            />
                         </label>
                         <input
                             type={hidePassword ? "password" : "text"}
                             id="password"
+                            className={styles.input}
                             onChange={(e) => {
-                                setPassword(e.target.value);
-                                handlePasswordStrength(e.target.value);
-
+                                setUser({ ...user, password: e.target.value });
                             }}
-                            value={password}
+                            value={user.password}
                             required
                             aria-invalid={validPassword ? "false" : "true"}
                             aria-describedby="pwdnote"
                             onFocus={() => setPasswordFocus(true)}
                             onBlur={() => setPasswordFocus(false)}
                         />
-                        {password && (
-                            <div style={{display: "flex", justifyContent: "space-between", marginBottom: "8px"}}>
-                                <hr style={{
-                                    flex: 1,
-                                    border: "none",
-                                    borderTop: "8px solid",
-                                    borderRadius: "2px",
-                                    margin: "0 5px",
-                                    marginTop: "8px",
-                                    color: activeColor
-                                }}/>
-                                <hr style={{
-                                    flex: 1,
-                                    border: "none",
-                                    borderTop: "8px solid",
-                                    borderRadius: "2px",
-                                    margin: "0 5px",
-                                    marginTop: "8px",
-                                    color: passwordStrength === "Medium" || passwordStrength === "Strong" ? activeColor : "lightgray"
-                                }}/>
-                                <hr style={{
-                                    flex: 1,
-                                    border: "none",
-                                    borderTop: "8px solid",
-                                    borderRadius: "2px",
-                                    margin: "0 5px",
-                                    marginTop: "8px",
-                                    color: passwordStrength === "Strong" ? activeColor : "lightgrey"
-                                }}/>
-                            </div>)}
-                        {password && (
-                            <p style={{color: activeColor, fontSize: "smaller",}}>Your password
-                                is {passwordStrength.toLowerCase()}</p>
-                        )}
 
-                        <p id="pwdnote" className={passwordFocus && !validPassword ? "instructions" : "offscreen"}>
-                            <FaInfoCircle/>
-                            Password must between 5 to 30 characters.<br/>
-                            Include uppercase and lowercase letters, numbers and special characters<br/>
-                            to make a strong password.
+                        <PasswordStrengthIndicator password={user.password} />
+
+                        <p
+                            id="pwdnote"
+                            className={
+                                passwordFocus && user.password && !validPassword
+                                    ? styles.instructions
+                                    : styles.offscreen
+                            }
+                        >
+                            <FaInfoCircle />
+                            Password must be between 5 to 30 characters.<br />
+                            Include uppercase and lowercase letters, numbers, and special characters<br />
+                            to create a strong password.
                         </p>
 
-
-                        <label htmlFor="confirm_pwd">
+                        {/* Confirm Password */}
+                        <label htmlFor="confirm_pwd" className={styles.label}>
                             Confirm Password:
-                            <FaCheck className={validMatch && matchPassword ? "valid" : "hide"}/>
-                            <FaTimes className={validMatch || !matchPassword ? "hide" : "invalid"}/>
+                            <FaCheck
+                                className={
+                                    validMatch && user.confirmPassword
+                                        ? styles.valid
+                                        : styles.hide
+                                }
+                            />
+                            <FaTimes
+                                className={
+                                    validMatch || !user.confirmPassword
+                                        ? styles.hide
+                                        : styles.invalid
+                                }
+                            />
                         </label>
                         <input
                             type={hidePassword ? "password" : "text"}
                             id="confirm_pwd"
-                            onChange={(e) => setMatchPassword(e.target.value)}
-                            value={matchPassword}
+                            className={styles.input}
+                            onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
+                            value={user.confirmPassword}
                             required
                             aria-invalid={validMatch ? "false" : "true"}
                             aria-describedby="confirmnote"
                             onFocus={() => setMatchFocus(true)}
                             onBlur={() => setMatchFocus(false)}
                         />
-                        <a href="#" className="toggle-btn" onClick={() => {
-                            setHidePassword(!hidePassword);
-                        }}>
-                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>{hidePassword ? "show" : "hide" } password
+                        <a
+                            href="#"
+                            className={styles.toggleBtn}
+                            onClick={() => {
+                                setHidePassword(!hidePassword);
+                            }}
+                        >
+                            <FaEye
+                                style={{
+                                    color: !hidePassword ? "#FF0054" : "#c3c3c3",
+                                }}
+                            />
+                            {hidePassword ? "show" : "hide"} password
                         </a>
-                        <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
-                            <FaInfoCircle/>
+                        <p
+                            id="confirmnote"
+                            className={
+                                matchFocus && user.confirmPassword && !validMatch
+                                    ? styles.instructions
+                                    : styles.offscreen
+                            }
+                        >
+                            <FaInfoCircle />
                             Must match the first password input field.
                         </p>
 
-                        <button disabled={!validName || !validPassword || !validMatch}>Sign Up</button>
+                        <button
+                            disabled={!validName || !validPassword || !validMatch}
+                            className={styles.button}
+                        >
+                            Sign Up
+                        </button>
                     </form>
                     <p>
-                        Already registered?<br/>
-                        <span className="line">
-                            {/*put router link here*/}
-                            <a href="#">Sign In</a>
-                                </span>
+                        Already registered?
+                        <br />
+                        <span className={styles.line}>
+          <Link to="/login">Sign In</Link>
+        </span>
                     </p>
                 </section>
             )}
         </>
-    )
-}
+
+    );
+};
+
 export default SignUp;

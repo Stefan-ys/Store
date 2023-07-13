@@ -1,6 +1,8 @@
 import React, {useRef, useState, useEffect} from "react";
+import {Link} from "react-router-dom";
 import LoginService from "../../../../services/login/LoginService";
 import {FaEye} from "react-icons/fa";
+import styles from "../../../../css/SignUpSignIn.module.css"
 
 const Login = () => {
 
@@ -43,54 +45,73 @@ const Login = () => {
     }
 
     return (
-        <>{success ? (
-            <section>
-                <h1>You are logged in!</h1>
-                <br/>
-                <p>
-                    <a href="#">Go to Home</a>
-                </p>
-            </section>
-        ) : (
-            <section>
-                <p ref={errRef} className={setError ? "error" : "offscreen"} aria-live="assertive">{error}</p>
-                <h1>Sign In</h1>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="username">Username:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        ref={userRef}
-                        autoComplete="off"
-                        onChange={(e) => setUsername(e.target.value)}
-                        value={username}
-                        required
-                    />
+        <>
+            {success ? (
+                <section  className={styles.container}>
+                    <h1 className={styles.heading}>You are logged in!</h1>
+                    <br/>
+                    <p>
+                        <a href="#">Go to Home</a>
+                    </p>
+                </section>
+            ) : (
+                <section  className={styles.container}>
+                    <p
+                        ref={errRef}
+                        className={setError ? styles.error : styles.offscreen}
+                        aria-live="assertive"
+                    >
+                        {error}
+                    </p>
+                    <h1 className={styles.heading}>Sign In</h1>
+                    <form onSubmit={handleSubmit}>
+                        <label htmlFor="username" className={styles.label}>
+                            Username:
+                        </label>
+                        <input
+                            type="text"
+                            id="username"
+                            ref={userRef}
+                            autoComplete="off"
+                            onChange={(e) => setUsername(e.target.value)}
+                            value={username}
+                            required
+                            className={styles.input}
+                        />
 
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type= {hidePassword ? "password" : "text"}
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                        required
-                    />
-                    <a href="#" className="toggle-btn" onClick={() => {
-                        setHidePassword(!hidePassword);
-                    }}>
-                        <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>{hidePassword ? "show" : "hide" } password
-                    </a>
-                    <button>Sign In</button>
-                </form>
-                <p>
-                    Need an Account?<br />
-                    <span className="line">
-                            {/*put router link here*/}
-                        <a href="#">Sign Up</a>
-                        </span>
-                </p>
-            </section>
-        )}</>
+                        <label htmlFor="password" className={styles.label}>
+                            Password:
+                        </label>
+                        <input
+                            type={hidePassword ? "password" : "text"}
+                            id="password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            value={password}
+                            required
+                            className={styles.input}
+                        />
+                        <a
+                            href="#"
+                            className={hidePassword ? styles.toggleBtn : styles.active}
+                            onClick={() => {
+                                setHidePassword(!hidePassword);
+                            }}
+                        >
+                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>
+                            {hidePassword ? "show" : "hide"} password
+                        </a>
+                        <button className={styles.button}>Sign In</button>
+                    </form>
+                    <p className={styles.paragraph}>
+                        Need an Account?
+                        <br/>
+                        <span className={styles.line}>
+          <Link to="/signup">Sign Up</Link>
+        </span>
+                    </p>
+                </section>
+            )}
+        </>
     );
 }
 

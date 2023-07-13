@@ -18,11 +18,10 @@ function Home() {
 
     return (
         <div>
-            <h1>Welcome to the Home Page</h1>
-            <p>content content content content</p>
-            <p>{welcomeMessage}</p>
+            <h1>Welcome</h1>
+            <h2>{welcomeMessage}</h2>
         </div>
-    );
+    )
 }
 
 export default Home;

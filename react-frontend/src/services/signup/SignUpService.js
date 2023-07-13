@@ -1,15 +1,14 @@
 import axios from "../axiosConfig/axiosConfig"
 
-const SIGNUP_URL = "/users/signup";
+const SIGNUP_URL = "http://localhost:8080/users/signup";
 
-const SignUpService = async (user) => {
-    try {
-        const response = await axios.post(SIGNUP_URL, user);
-        return response.data;
-    } catch (error) {
-        console.log("Sign up failed: ", error);
-        throw error;
-    }
+const SignUpService = (user) => {
+    return axios.post(SIGNUP_URL, user)
+        .then(response => response.data)
+        .catch(error => {
+            console.log("Sign up failed:", error);
+            throw error;
+        });
 };
 
 export default SignUpService;
