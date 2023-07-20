@@ -1,18 +1,20 @@
-import React, {useRef, useState, useEffect} from "react";
+import React, {useRef, useState, useEffect, useContext} from "react";
 import {Link} from "react-router-dom";
 import LoginService from "../../../../services/login/LoginService";
 import {FaEye} from "react-icons/fa";
 import styles from "../../../../css/SignUpSignIn.module.css"
+import AuthContext from "../../../../context/AuthProvider";
 
 const Login = () => {
 
+    const {setAuth} = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const [success, setSuccess] = useState(false);
 
     const [hidePassword, setHidePassword] = useState(true);
 
@@ -24,12 +26,18 @@ const Login = () => {
         setError("");
     }, [username, password]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
         try {
-            const userData = await LoginService(username, password);
-            console.log("User data: ", userData);
+            const response = await LoginService(username, password);
+            console.log(JSON.stringify(response?.data));
+            const accessToken = response?.data?.accessToken;
+            const roles = response?.data?.roles;
+                setAuth({username, password, roles, accessToken});
+            setUsername("");
+            setPassword("");
+            setSuccess(true);
         } catch (error) {
             if (!error?.response) {
                 setError("No Server Response");
@@ -47,7 +55,7 @@ const Login = () => {
     return (
         <>
             {success ? (
-                <section  className={styles.container}>
+                <section className={styles.container}>
                     <h1 className={styles.heading}>You are logged in!</h1>
                     <br/>
                     <p>
@@ -55,7 +63,7 @@ const Login = () => {
                     </p>
                 </section>
             ) : (
-                <section  className={styles.container}>
+                <section className={styles.container}>
                     <p
                         ref={errRef}
                         className={setError ? styles.error : styles.offscreen}
