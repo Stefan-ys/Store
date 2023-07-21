@@ -4,7 +4,6 @@ import com.example.project.model.dto.binding.SignUpBindingModel;
 
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/users")
 public class SingUpController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public SingUpController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody SignUpBindingModel signUpBindingModel) {

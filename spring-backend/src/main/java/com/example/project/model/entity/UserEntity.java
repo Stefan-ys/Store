@@ -2,20 +2,22 @@ package com.example.project.model.entity;
 
 import com.mongodb.lang.NonNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "users")
 @Data
-public class UserEntity {
-    @Id
-    private @MongoId ObjectId id;
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserEntity extends BaseEntity {
     @Indexed(unique = true)
     @NonNull
     private String username;
@@ -24,6 +26,7 @@ public class UserEntity {
     private String Email;
     @NonNull
     private String password;
-    private Set<UserRole> roles;
+    private Set<RoleEntity> roles = new HashSet<>();
 
 }
+

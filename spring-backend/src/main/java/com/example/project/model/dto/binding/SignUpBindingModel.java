@@ -8,13 +8,13 @@ import lombok.Data;
 @Data
 public class SignUpBindingModel {
     @NotEmpty(message = "Username is required")
-    @Size(min = 6, max = 20, message = "Username must be between 6 and 20 characters long")
+    @Size(min = 4, max = 24, message = "Username must be between 6 and 20 characters long")
     private String username;
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
     @NotEmpty(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 5, max = 30, message = "Password must be at least 6 characters long")
     private String password;
     @NotEmpty(message = "Confirm Password is required")
     private String confirmPassword;
