@@ -2,8 +2,6 @@ package com.example.project.configuration.security.services;
 
 import com.example.project.model.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
-
     private ObjectId id;
     private String username;
     private String email;

@@ -2,10 +2,7 @@ package com.example.project.model.entity;
 
 import com.mongodb.lang.NonNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +12,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "users")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity extends BaseEntity {
@@ -23,7 +21,7 @@ public class UserEntity extends BaseEntity {
     private String username;
     @Indexed(unique = true)
     @NonNull
-    private String Email;
+    private String email;
     @NonNull
     private String password;
     private Set<RoleEntity> roles = new HashSet<>();

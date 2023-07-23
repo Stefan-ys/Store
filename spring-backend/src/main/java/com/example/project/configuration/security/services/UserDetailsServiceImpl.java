@@ -2,6 +2,7 @@ package com.example.project.configuration.security.services;
 
 import com.example.project.model.entity.UserEntity;
 import com.example.project.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     @Transactional

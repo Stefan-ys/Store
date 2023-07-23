@@ -9,4 +9,8 @@ public interface UserService {
     void signUp(SignUpBindingModel signUpBindingModel);
 
     List<UserViewModel> getAllUsers();
+
+    String getRole(List<String> roles);
+
+    Object getUser(String username);
 }

@@ -5,6 +5,7 @@ import com.example.project.model.dto.view.UserViewModel;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.entity.RoleEntity;
 import com.example.project.model.enums.RoleEnum;
+import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -20,25 +22,43 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     @Override
     public void signUp(SignUpBindingModel signUpBindingModel) {
-        UserEntity userEntity = modelMapper.map(signUpBindingModel, UserEntity.class);
-        userEntity.setPassword(passwordEncoder.encode(signUpBindingModel.getPassword()));
+        UserEntity userEntity = UserEntity.builder()
+                .username(signUpBindingModel.getUsername())
+                .email(signUpBindingModel.getEmail())
+                .password(passwordEncoder.encode(signUpBindingModel.getPassword()))
+                .build();
 
-        RoleEntity userRole = new RoleEntity();
-        userRole.setRole(RoleEnum.USER);
+        userEntity.getRoles().add(roleRepository.findByRole(RoleEnum.USER));
 
-        userEntity.getRoles().add(userRole);
-
-        userRepository.save(userEntity);
     }
 
     @Override
     public List<UserViewModel> getAllUsers() {
         return userRepository.findAll().stream().map(this::convertToViewModel).toList();
+    }
+
+    @Override
+    public String getRole(List<String> roles) {
+        if (roles.contains("ADMIN")) {
+            return "ADMIN";
+        }
+        if (roles.contains("MODERATOR")) {
+            return "MODERATOR";
+        }
+        return "USER";
+    }
+
+    @Override
+    public UserViewModel getUser(String username) {
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow();
+        return convertToViewModel(userEntity);
     }
 
     private UserViewModel convertToViewModel(UserEntity userEntity) {
@@ -55,8 +75,20 @@ public class UserServiceImpl implements UserService {
         return viewModel;
     }
 
+
     @PostConstruct
     public void initializationData() {
+        if (roleRepository.count() == 0) {
+            Arrays.stream(RoleEnum.values()).forEach((role) -> {
+                        RoleEntity roleEntity = RoleEntity.builder()
+                                .role(role)
+                                .build();
+                        roleRepository.save(roleEntity);
+                    }
+            );
+            System.out.println("User roles initialized");
+        }
+
         if (userRepository.count() == 0) {
             UserEntity adminUser = new UserEntity();
             adminUser.setUsername("admin");

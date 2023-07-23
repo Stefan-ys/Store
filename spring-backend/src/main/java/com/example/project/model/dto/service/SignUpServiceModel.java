@@ -1,5 +1,8 @@
 package com.example.project.model.dto.service;
 
+import lombok.Data;
+
+@Data
 public class SignUpServiceModel {
     private String username;
     private String email;
