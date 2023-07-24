@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+
     final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
@@ -34,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticationUser(@Valid @RequestBody LoginBindingModel loginBindingModel) {
-
+        System.out.println("LOGIN");
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginBindingModel.getUsername(), loginBindingModel.getPassword()));
 
@@ -56,12 +57,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpBindingModel signUpBindingModel) {
-        if (userRepository.existsByUsername(signUpBindingModel.getUsername())) {
+
+        if (userService.containsUsername(signUpBindingModel.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse(String.format("Error: Username - %s is already taken!", signUpBindingModel.getUsername())));
         }
-        if (userRepository.existsByEmail(signUpBindingModel.getEmail())) {
+        if (userService.containsEmail(signUpBindingModel.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse(String.format("Error: Email - %s is already taken!", signUpBindingModel.getEmail())));

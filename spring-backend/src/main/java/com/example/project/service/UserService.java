@@ -13,4 +13,8 @@ public interface UserService {
     String getRole(List<String> roles);
 
     Object getUser(String username);
+
+    boolean containsUsername(String username);
+
+    boolean containsEmail(String email);
 }

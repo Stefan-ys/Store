@@ -1,11 +1,14 @@
 package com.example.project.model.dto.binding;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class SignUpBindingModel {
     @NotEmpty(message = "Username is required")
     @Size(min = 4, max = 24, message = "Username must be between 6 and 20 characters long")
@@ -18,5 +21,15 @@ public class SignUpBindingModel {
     private String password;
     @NotEmpty(message = "Confirm Password is required")
     private String confirmPassword;
+
+    public SignUpBindingModel(@JsonProperty("username") String username,
+                              @JsonProperty("email") String email,
+                              @JsonProperty("password") String password,
+                              @JsonProperty("confirmPassword") String confirmPassword) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
+    }
 
 }

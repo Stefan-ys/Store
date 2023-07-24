@@ -17,7 +17,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<UserViewModel> getAllUsers() {
         return userService.getAllUsers();
     }

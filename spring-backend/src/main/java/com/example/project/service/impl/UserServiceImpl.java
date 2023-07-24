@@ -8,13 +8,11 @@ import com.example.project.model.enums.RoleEnum;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -28,14 +26,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signUp(SignUpBindingModel signUpBindingModel) {
-        UserEntity userEntity = UserEntity.builder()
-                .username(signUpBindingModel.getUsername())
-                .email(signUpBindingModel.getEmail())
-                .password(passwordEncoder.encode(signUpBindingModel.getPassword()))
-                .build();
+        UserEntity userEntity = new UserEntity();
 
+        userEntity.setUsername(signUpBindingModel.getUsername());
+        userEntity.setEmail(signUpBindingModel.getEmail());
+        userEntity.setPassword(passwordEncoder.encode(signUpBindingModel.getPassword()));
         userEntity.getRoles().add(roleRepository.findByRole(RoleEnum.USER));
 
+        userRepository.save(userEntity);
     }
 
     @Override
@@ -61,6 +59,16 @@ public class UserServiceImpl implements UserService {
         return convertToViewModel(userEntity);
     }
 
+    @Override
+    public boolean containsUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    @Override
+    public boolean containsEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     private UserViewModel convertToViewModel(UserEntity userEntity) {
         UserViewModel viewModel = modelMapper.map(userEntity, UserViewModel.class);
         viewModel.setRole("USER");
@@ -73,50 +81,6 @@ public class UserServiceImpl implements UserService {
             }
         }
         return viewModel;
-    }
-
-
-    @PostConstruct
-    public void initializationData() {
-        if (roleRepository.count() == 0) {
-            Arrays.stream(RoleEnum.values()).forEach((role) -> {
-                        RoleEntity roleEntity = RoleEntity.builder()
-                                .role(role)
-                                .build();
-                        roleRepository.save(roleEntity);
-                    }
-            );
-            System.out.println("User roles initialized");
-        }
-
-        if (userRepository.count() == 0) {
-            UserEntity adminUser = new UserEntity();
-            adminUser.setUsername("admin");
-            adminUser.setEmail("admin@mail.com");
-            adminUser.setPassword(passwordEncoder.encode("adminadmin"));
-            RoleEntity adminRole = new RoleEntity();
-            adminRole.setRole(RoleEnum.ADMIN);
-            adminUser.getRoles().add(adminRole);
-
-            userRepository.save(adminUser);
-
-            System.out.println("Data initialized: Admin user created");
-
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername("user1111");
-            userEntity.setEmail("user@mail.com");
-            userEntity.setPassword(passwordEncoder.encode("user1111"));
-            RoleEntity userRole = new RoleEntity();
-            userRole.setRole(RoleEnum.USER);
-            userEntity.getRoles().add(userRole);
-
-            userRepository.save(userEntity);
-
-            System.out.println("Data initialized: User created");
-
-        } else {
-            System.out.println("Data already present in the database");
-        }
     }
 
 }
