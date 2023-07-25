@@ -37,6 +37,7 @@ public class InitializeData {
             adminUser.setUsername("admin");
             adminUser.setEmail("admin@mail.com");
             adminUser.setPassword(passwordEncoder.encode("adminadmin"));
+
             RoleEntity adminRole = new RoleEntity();
             adminRole.setRole(RoleEnum.ADMIN);
             adminUser.getRoles().add(adminRole);

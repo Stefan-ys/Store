@@ -10,11 +10,11 @@ public interface UserService {
 
     List<UserViewModel> getAllUsers();
 
-    String getRole(List<String> roles);
-
-    Object getUser(String username);
+    UserViewModel getUser(String username);
 
     boolean containsUsername(String username);
 
     boolean containsEmail(String email);
+
+    void updateUserActivity(String username);
 }

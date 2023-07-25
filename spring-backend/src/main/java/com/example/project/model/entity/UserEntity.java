@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class UserEntity extends BaseEntity {
     @NonNull
     private String password;
     private Set<RoleEntity> roles = new HashSet<>();
+    private LocalDate lastActiveDate = LocalDate.now();
 
 }
 
