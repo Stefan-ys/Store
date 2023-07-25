@@ -1,14 +1,13 @@
 import axios from "../axiosConfig/axiosConfig"
 
-const SIGNUP_URL = "http://localhost:8080/users/signup";
+const SIGNUP_URL = "http://localhost:8080/api/auth/signup";
 
-const SignUpService = async (user) => {
+const SignUpService = async (username, email, password, confirmPassword) => {
     try {
         return await axios.post(SIGNUP_URL,
-            JSON.stringify({user}),
+            JSON.stringify({username, email, password, confirmPassword}),
             {
                 headers: {"Content-Type": "application/json"},
-                withCredentials: true
             }
         );
     } catch (error) {

@@ -1,6 +1,6 @@
 import axios from "../axiosConfig/axiosConfig";
 
-const LOGIN_URL = "http://localhost:8080/users/login"
+const LOGIN_URL = "http://localhost:8080/api/auth/signin"
 
 
 const LoginService = async (username, password) => {
@@ -8,8 +8,9 @@ const LoginService = async (username, password) => {
         return await axios.post(LOGIN_URL,
             JSON.stringify({username, password}),
             {
-                headers: {"Content-Type": "application/json"},
-                withCredentials: true
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }
         );
     } catch (error) {

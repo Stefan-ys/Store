@@ -1,9 +1,12 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { FaShoppingCart, FaBell } from "react-icons/fa";
+import React, {useContext} from "react";
+import {NavLink} from "react-router-dom";
+import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../../../../css/Header.module.css";
+import AuthContext from "../../../../context/AuthProvider";
 
 const Header = () => {
+    const {isAuthenticated} = useContext(AuthContext);
+
     return (
         <header className={styles.header}>
             <nav>
@@ -23,30 +26,37 @@ const Header = () => {
                             Store
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/login" activeClassName={styles.active} className={styles.navLink}>
-                            Login
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/signup" activeClassName={styles.active} className={styles.navLink}>
-                            Signup
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/logout" activeClassName={styles.active} className={styles.navLink}>
-                            Logout
-                        </NavLink>
-                    </li>
-                </ul>
+                    {isAuthenticated ? (
+                        <>
+                            <li>
+                                <NavLink to="/login" activeClassName={styles.active} className={styles.navLink}>
+                                    Login
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/signup" activeClassName={styles.active} className={styles.navLink}>
+                                    Signup
+                                </NavLink>
+                            </li>
+                        </>
+                    ) : (
+                        <>
+                            <li>
+                                <NavLink to="/logout" activeClassName={styles.active} className={styles.navLink}>
+                                    Logout
+                                </NavLink>
+                            </li>
+                        </>
+                    )}
+                < /ul>
             </nav>
             <div className={styles.icons}>
                 <div className={styles.iconContainer}>
-                    <FaShoppingCart  />
+                    <FaShoppingCart/>
                     <span className={styles.cartCount}>5</span>
                 </div>
                 <div className={styles.iconContainer}>
-                    <FaBell  />
+                    <FaBell/>
                     <span className={styles.notificationCount}>2</span>
                 </div>
             </div>

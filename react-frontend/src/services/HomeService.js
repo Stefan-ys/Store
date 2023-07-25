@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const HOME_URL = "http://localhost:8080/home";
+
 const HomeService = () => {
     return axios
-        .get("http://localhost:8080/")
+        .get(HOME_URL)
         .then(response => {
             return response.data;
         })

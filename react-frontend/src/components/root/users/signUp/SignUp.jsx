@@ -74,7 +74,7 @@ const SignUp = () => {
                 return;
             }
             try {
-                const response = SignUpService(user);
+                const response = SignUpService(user.username, user.email, user.password, user.confirmPassword);
                 console.log(JSON.stringify((await response)?.data));
                 setSuccess(true);
                 resetUser();

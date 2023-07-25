@@ -7,7 +7,7 @@ import AuthContext from "../../../../context/AuthProvider";
 
 const Login = () => {
 
-    const {setAuth} = useContext(AuthContext);
+    const {setAuthData} = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
@@ -31,22 +31,24 @@ const Login = () => {
 
         try {
             const response = await LoginService(username, password);
-            console.log(JSON.stringify(response?.data));
+            // console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-                setAuth({username, password, roles, accessToken});
+            setAuthData({username, roles, accessToken});
             setUsername("");
             setPassword("");
             setSuccess(true);
         } catch (error) {
-            if (!error?.response) {
-                setError("No Server Response");
-            } else if (error.response?.status === 400) {
-                setError("Missing Username or Password");
-            } else if (error.response?.status === 401) {
-                setError("Unauthorized");
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setError("Missing Username or Password");
+                } else if (error.response.status === 401) {
+                    setError("Unauthorized");
+                } else {
+                    setError("Unexpected Error: " + error.response.statusText);
+                }
             } else {
-                setError("Login Failed");
+                setError("No Server Response");
             }
             errRef.current.focus();
         }
