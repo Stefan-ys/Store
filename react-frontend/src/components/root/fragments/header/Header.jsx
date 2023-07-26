@@ -2,10 +2,10 @@ import React, {useContext} from "react";
 import {NavLink} from "react-router-dom";
 import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../../../../css/Header.module.css";
-import AuthContext from "../../../../context/AuthProvider";
+import AuthenticationService from "../../../../services/authentication/AuthenticationService";
 
 const Header = () => {
-    const {isAuthenticated} = useContext(AuthContext);
+    const isAuthenticated = AuthenticationService.isAuthenticated()
 
     return (
         <header className={styles.header}>
@@ -26,7 +26,7 @@ const Header = () => {
                             Store
                         </NavLink>
                     </li>
-                    {isAuthenticated ? (
+                    {!isAuthenticated ? (
                         <>
                             <li>
                                 <NavLink to="/login" activeClassName={styles.active} className={styles.navLink}>
@@ -41,6 +41,11 @@ const Header = () => {
                         </>
                     ) : (
                         <>
+                            <li>
+                                <NavLink to="/my-profile" activeClassName={styles.active} className={styles.navLink}>
+                                    My Profile
+                                </NavLink>
+                            </li>
                             <li>
                                 <NavLink to="/logout" activeClassName={styles.active} className={styles.navLink}>
                                     Logout

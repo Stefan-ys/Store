@@ -6,6 +6,7 @@ import Home from "./components/root/home/Home";
 import SignUp from "./components/root/users/signUp/SignUp";
 import Login from "./components/root/users/login/Login";
 import AllUsers from "./components/root/users/adminMenu/AllUsers";
+import MyProfile from "./components/root/users/profile/MyProfile";
 
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/users" element={<AllUsers/>}/>
+                <Route path="/my-profile" element={<MyProfile/>}/>
             </Routes>
         </Router>
     );
