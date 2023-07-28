@@ -22,14 +22,4 @@ public class SignUpBindingModel {
     @NotEmpty(message = "Confirm Password is required")
     private String confirmPassword;
 
-    public SignUpBindingModel(@JsonProperty("username") String username,
-                              @JsonProperty("email") String email,
-                              @JsonProperty("password") String password,
-                              @JsonProperty("confirmPassword") String confirmPassword) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
-
 }

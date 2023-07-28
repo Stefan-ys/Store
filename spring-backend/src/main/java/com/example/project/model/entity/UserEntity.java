@@ -1,5 +1,7 @@
 package com.example.project.model.entity;
 
+import com.example.project.model.embeddable.DeliveryInformation;
+import com.example.project.model.embeddable.ShoppingCart;
 import com.mongodb.lang.NonNull;
 
 import lombok.*;
@@ -13,8 +15,6 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "users")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserEntity extends BaseEntity {
     @Indexed(unique = true)
     @NonNull
@@ -24,8 +24,13 @@ public class UserEntity extends BaseEntity {
     private String email;
     @NonNull
     private String password;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
     private Set<RoleEntity> roles = new HashSet<>();
     private LocalDate lastActiveDate = LocalDate.now();
+    private DeliveryInformation deliveryInformation;
+    private ShoppingCart shoppingCart;
 
 }
 

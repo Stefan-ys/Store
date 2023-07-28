@@ -1,6 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.model.dto.binding.SignUpBindingModel;
+import com.example.project.model.dto.view.MyProfileViewModel;
 import com.example.project.model.dto.view.UserViewModel;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.enums.RoleEnum;
@@ -9,6 +10,8 @@ import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,6 +72,15 @@ public class UserServiceImpl implements UserService {
 
         userEntity.setLastActiveDate(LocalDate.now());
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public MyProfileViewModel getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity userEntity = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return modelMapper.map(userEntity, MyProfileViewModel.class);
+
     }
 
     private UserViewModel convertToViewModel(UserEntity userEntity) {
