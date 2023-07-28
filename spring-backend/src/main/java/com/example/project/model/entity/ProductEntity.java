@@ -29,7 +29,7 @@ public class ProductEntity extends BaseEntity {
     private CategoryEnum productCategory;
     private String manufacturer;
     private int rating;
-    private BigDecimal weight;
+    private double weight;
     private LocalDate expirationDate;
     private Set<ProductReview> reviews = new HashSet<>();
 }

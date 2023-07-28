@@ -3,12 +3,16 @@ package com.example.project.service.impl;
 import com.example.project.model.dto.binding.SignUpBindingModel;
 import com.example.project.model.dto.view.MyProfileViewModel;
 import com.example.project.model.dto.view.UserViewModel;
+import com.example.project.model.embeddable.ShoppingCartItem;
+import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.enums.RoleEnum;
+import com.example.project.repository.ProductRepository;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +31,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+
 
     @Override
     public void signUp(SignUpBindingModel signUpBindingModel) {
@@ -50,8 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserViewModel getUser(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username" + username));
+        UserEntity userEntity = getUserByUsername(username);
         return convertToViewModel(userEntity);
     }
 
@@ -67,8 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserActivity(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity userEntity = getUserByUsername(username);
 
         userEntity.setLastActiveDate(LocalDate.now());
         userRepository.save(userEntity);
@@ -77,11 +81,42 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyProfileViewModel getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity userEntity = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity userEntity = getUserByUsername(authentication.getName());
         return modelMapper.map(userEntity, MyProfileViewModel.class);
 
     }
+
+    public void addToCart(String username, ObjectId productId) {
+        UserEntity userEntity = getUserByUsername(username);
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setProductId(productId);
+        item.setPrice(productEntity.getPrice());
+        item.setWeight(productEntity.getWeight());
+        item.setQuantity(1);
+
+        userEntity.getShoppingCart().addItem(item);
+    }
+
+    public void removeFromCart(String username, ObjectId productId) {
+        UserEntity userEntity = getUserByUsername(username);
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setProductId(productId);
+        userEntity.getShoppingCart().removeItem(item);
+
+    }
+
+    public void adjustProductQuantity(String username, ObjectId productId, int quantity) {
+        if (quantity <= 0) {
+            removeFromCart(username, productId);
+            return;
+        }
+        UserEntity userEntity = getUserByUsername(username);
+        ShoppingCartItem item = userEntity.getShoppingCart().getItem(productId);
+        item.setQuantity(quantity);
+    }
+
 
     private UserViewModel convertToViewModel(UserEntity userEntity) {
         UserViewModel viewModel = modelMapper.map(userEntity, UserViewModel.class);
@@ -102,4 +137,8 @@ public class UserServiceImpl implements UserService {
         return viewModel;
     }
 
+    private UserEntity getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
 }
