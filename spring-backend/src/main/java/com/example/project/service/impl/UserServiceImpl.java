@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
     public void addToCart(String username, ObjectId productId) {
         UserEntity userEntity = getUserByUsername(username);
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
@@ -99,6 +100,7 @@ public class UserServiceImpl implements UserService {
         userEntity.getShoppingCart().addItem(item);
     }
 
+    @Override
     public void removeFromCart(String username, ObjectId productId) {
         UserEntity userEntity = getUserByUsername(username);
         ShoppingCartItem item = new ShoppingCartItem();
@@ -107,6 +109,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
     public void adjustProductQuantity(String username, ObjectId productId, int quantity) {
         if (quantity <= 0) {
             removeFromCart(username, productId);
