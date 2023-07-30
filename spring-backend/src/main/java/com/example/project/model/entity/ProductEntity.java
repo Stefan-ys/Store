@@ -26,14 +26,16 @@ public class ProductEntity extends BaseEntity {
     private String catalogNumber;
     @NotNull
     private BigDecimal price;
-    @DBRef
-    private List<GridFSFile> pictures;
+    //    @DBRef
+//    private List<GridFSFile> pictures;
+    @NotNull
     private int quantity;
     private String description;
     private Set<ProductStatusEnum> status = new HashSet<>();
     private CategoryEnum productCategory;
     private String manufacturer;
     private int rating;
+    @NotNull
     private double weight;
     private LocalDate expirationDate;
     private Set<ProductReview> reviews = new HashSet<>();

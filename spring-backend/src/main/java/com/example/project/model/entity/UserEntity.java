@@ -15,6 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class UserEntity extends BaseEntity {
     @Indexed(unique = true)
     @NonNull

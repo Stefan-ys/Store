@@ -21,13 +21,13 @@ public class ProductBindingModel {
     private String catalogNumber;
     @NotNull(message = "Price is required")
     private BigDecimal price;
-    private List<GridFSFile> pictures;
+//    private List<GridFSFile> pictures;
     @NotNull(message = "Quantity is required")
     private int quantity;
     private String description;
-    private Set<ProductStatusEnum> status = new HashSet<>();
+    private Set<String> status = new HashSet<>();
     @NotNull(message = "Product category is required")
-    private CategoryEnum productCategory;
+    private String productCategory;
     private String manufacturer;
     private int rating;
     private double weight;

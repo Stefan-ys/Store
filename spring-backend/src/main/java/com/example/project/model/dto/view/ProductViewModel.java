@@ -12,7 +12,7 @@ public class ProductViewModel {
     private String name;
     private String catalogNumber;
     private BigDecimal price;
-    private List<GridFSFile> pictures;
+//    private List<GridFSFile> pictures;
     private int quantity;
     private String description;
     private List<String> status;
