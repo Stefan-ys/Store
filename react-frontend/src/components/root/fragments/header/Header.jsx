@@ -2,10 +2,10 @@ import React, {useContext} from "react";
 import {NavLink} from "react-router-dom";
 import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../../../../css/Header.module.css";
-import AuthenticationService from "../../../../services/authentication/AuthenticationService";
+import AuthUtils from "../../../../utils/AuthenticationUtil";
 
 const Header = () => {
-    const isAuthenticated = AuthenticationService.isAuthenticated()
+    const { isAuthenticated, getUsername, isAdmin, isModerator } = AuthUtils();
 
     return (
         <header className={styles.header}>
@@ -26,7 +26,7 @@ const Header = () => {
                             Store
                         </NavLink>
                     </li>
-                    {!isAuthenticated ? (
+                    {!isAuthenticated() ? (
                         <>
                             <li>
                                 <NavLink to="/login" activeClassName={styles.active} className={styles.navLink}>
@@ -53,8 +53,16 @@ const Header = () => {
                             </li>
                         </>
                     )}
-                < /ul>
+                </ul>
             </nav>
+            <>
+                {isAuthenticated() && ( // Show welcome message only if user is logged in
+                    <div className={styles.welcomeMessage}>
+                        Welcome {getUsername()} {isAdmin() ? "ADMIN" : ""} {isModerator() ? "MODERATOR" : ""}
+                    </div>
+                )}
+            </>
+
             <div className={styles.icons}>
                 <div className={styles.iconContainer}>
                     <FaShoppingCart/>
