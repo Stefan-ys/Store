@@ -29,15 +29,18 @@ public class InitializeData {
     public void initializationData() {
         if (roleRepository.count() == 0) {
             addRoles();
+            System.out.println("User roles initialized");
         }
         if (userRepository.count() == 0) {
             addUser("admin", "admin@email.com", "adminadmin", RoleEnum.ADMIN);
             addUser("user1", "user1@email.com", "user1user1", RoleEnum.USER);
             addUser("user2", "user2@email.com", "user2user2", RoleEnum.USER);
+            System.out.println("User entities initialized");
         }
         if (productRepository.count() == 0) {
-            addProduct("item1", BigDecimal.valueOf(2.99), 10, "Random Item1", CategoryEnum.ITEM_TYPE_1, ProductStatusEnum.NEW);
-            addProduct("item2", BigDecimal.valueOf(8.99), 2, "Random Item2", CategoryEnum.ITEM_TYPE_2, ProductStatusEnum.PROMOTION);
+            addProduct("item1", BigDecimal.valueOf(2.99), 10, "Random Item1", CategoryEnum.ITEM_TYPE_1, ProductStatusEnum.NEW, 1.9);
+            addProduct("item2", BigDecimal.valueOf(8.99), 2, "Random Item2", CategoryEnum.ITEM_TYPE_2, ProductStatusEnum.PROMOTION, 7.1);
+            System.out.println("Product entities initialized");
         }
 
     }
@@ -52,7 +55,7 @@ public class InitializeData {
                         roleRepository.save(roleEntity);
                     }
             );
-            System.out.println("User roles initialized");
+
         }
     }
 
@@ -62,6 +65,9 @@ public class InitializeData {
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.encode(password));
 
+        RoleEntity userRoleEntity = new RoleEntity();
+        userRoleEntity.setRole(RoleEnum.USER);
+        userEntity.getRoles().add(userRoleEntity);
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRole(role);
         userEntity.getRoles().add(roleEntity);
@@ -70,7 +76,7 @@ public class InitializeData {
 
     }
 
-    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status) {
+    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, double weight) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(name);
         productEntity.setPrice(price);
@@ -78,6 +84,8 @@ public class InitializeData {
         productEntity.setDescription(description);
         productEntity.setProductCategory(category);
         productEntity.getStatus().add(status);
+        productEntity.setWeight(weight);
+        productRepository.save(productEntity);
 
     }
 

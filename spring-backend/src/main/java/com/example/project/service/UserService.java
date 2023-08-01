@@ -1,18 +1,18 @@
 package com.example.project.service;
 
-import com.example.project.model.dto.binding.SignUpBindingModel;
-import com.example.project.model.dto.view.MyProfileViewModel;
-import com.example.project.model.dto.view.UserViewModel;
+import com.example.project.payload.request.RegisterRequest;
+import com.example.project.payload.response.MyProfileResponse;
+import com.example.project.payload.response.UserResponse;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface UserService {
-    void signUp(SignUpBindingModel signUpBindingModel);
+    void signUp(RegisterRequest signUpBindingModel);
 
-    List<UserViewModel> getAllUsers();
+    List<UserResponse> getAllUsers();
 
-    UserViewModel getUser(String username);
+    UserResponse getUser(String username);
 
     boolean containsUsername(String username);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     void updateUserActivity(String username);
 
-    MyProfileViewModel getMyProfile();
+    MyProfileResponse getMyProfile();
 
     void addToCart(String username, ObjectId productId);
 

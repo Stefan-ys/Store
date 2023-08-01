@@ -67,8 +67,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
-                        .requestMatchers("/home").permitAll()
-                        .requestMatchers("/users/all").hasAuthority("ADMIN")
+                        .requestMatchers("/api/home").permitAll()
+                        .requestMatchers("/api/users/all").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 ).cors(AbstractHttpConfigurer::disable);
 
@@ -83,7 +83,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTION"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setMaxAge(3600L);

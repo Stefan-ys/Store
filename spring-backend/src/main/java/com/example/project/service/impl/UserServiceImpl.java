@@ -1,8 +1,8 @@
 package com.example.project.service.impl;
 
-import com.example.project.model.dto.binding.SignUpBindingModel;
-import com.example.project.model.dto.view.MyProfileViewModel;
-import com.example.project.model.dto.view.UserViewModel;
+import com.example.project.payload.request.RegisterRequest;
+import com.example.project.payload.response.MyProfileResponse;
+import com.example.project.payload.response.UserResponse;
 import com.example.project.model.embeddable.ShoppingCartItem;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.UserEntity;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void signUp(SignUpBindingModel signUpBindingModel) {
+    public void signUp(RegisterRequest signUpBindingModel) {
         UserEntity userEntity = new UserEntity();
 
         userEntity.setUsername(signUpBindingModel.getUsername());
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserViewModel> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream().map(this::convertToViewModel).toList();
     }
 
 
     @Override
-    public UserViewModel getUser(String username) {
+    public UserResponse getUser(String username) {
         UserEntity userEntity = getUserByUsername(username);
         return convertToViewModel(userEntity);
     }
@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MyProfileViewModel getMyProfile() {
+    public MyProfileResponse getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = getUserByUsername(authentication.getName());
-        return modelMapper.map(userEntity, MyProfileViewModel.class);
+        return modelMapper.map(userEntity, MyProfileResponse.class);
 
     }
 
@@ -121,8 +121,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private UserViewModel convertToViewModel(UserEntity userEntity) {
-        UserViewModel viewModel = modelMapper.map(userEntity, UserViewModel.class);
+    private UserResponse convertToViewModel(UserEntity userEntity) {
+        UserResponse viewModel = modelMapper.map(userEntity, UserResponse.class);
         viewModel.setRoles(userEntity
                 .getRoles()
                 .stream()

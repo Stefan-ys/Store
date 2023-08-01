@@ -1,7 +1,7 @@
 package com.example.project.web;
 
-import com.example.project.model.dto.view.MyProfileViewModel;
-import com.example.project.model.dto.view.UserViewModel;
+import com.example.project.payload.response.MyProfileResponse;
+import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +22,22 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-users")
-    public ResponseEntity<List<UserViewModel>> getAllUsers() {
-        List<UserViewModel> users = userService.getAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{username}")
-    public ResponseEntity<UserViewModel> getUser(@PathVariable String username) {
-        UserViewModel user = userService.getUser(username);
+    public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
+        UserResponse user = userService.getUser(username);
         return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-profile")
-    public ResponseEntity<MyProfileViewModel> getMyProfile() {
-        MyProfileViewModel myProfile = userService.getMyProfile();
+    public ResponseEntity<MyProfileResponse> getMyProfile() {
+        MyProfileResponse myProfile = userService.getMyProfile();
         return ResponseEntity.ok(myProfile);
     }
 

@@ -1,7 +1,7 @@
 package com.example.project.service.impl;
 
-import com.example.project.model.dto.binding.ProductBindingModel;
-import com.example.project.model.dto.view.ProductViewModel;
+import com.example.project.payload.request.ProductRequest;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
@@ -24,47 +24,47 @@ public class ProductServiceImpl implements ProductService {
 //    private final GridFSBucket gridFSBucket;
 
     @Override
-    public void addProduct(ProductBindingModel productBindingModel) {
+    public void addProduct(ProductRequest productBindingModel) {
         ProductEntity productEntity = modelMapper.map(productBindingModel, ProductEntity.class);
         productRepository.save(productEntity);
     }
 
     @Override
-    public ProductViewModel getProduct(ObjectId productId) {
+    public ProductResponse getProduct(ObjectId productId) {
         ProductEntity productEntity = getProductById(productId);
-        return modelMapper.map(productEntity, ProductViewModel.class);
+        return modelMapper.map(productEntity, ProductResponse.class);
     }
 
     @Override
-    public List<ProductViewModel> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         List<ProductEntity> products = productRepository.findAll();
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
+                .map(product -> modelMapper.map(product, ProductResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductViewModel> getProductsByCategory(String category) {
+    public List<ProductResponse> getProductsByCategory(String category) {
         CategoryEnum categoryEnum = getProductCategoryEnum(category);
 
         List<ProductEntity> products = productRepository.findAllByProductCategory(categoryEnum);
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
+                .map(product -> modelMapper.map(product, ProductResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductViewModel> getProductsByStatus(String status) {
+    public List<ProductResponse> getProductsByStatus(String status) {
         ProductStatusEnum statusEnum = getProductStatusEnum(status);
 
         List<ProductEntity> products = productRepository.findAllByStatus(statusEnum);
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
+                .map(product -> modelMapper.map(product, ProductResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void editProduct(ObjectId productId, ProductBindingModel productBindingModel) {
+    public void editProduct(ObjectId productId, ProductRequest productBindingModel) {
         ProductEntity productEntity = getProductById(productId);
         modelMapper.map(productBindingModel, productEntity);
         productRepository.save(productEntity);

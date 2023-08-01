@@ -1,7 +1,7 @@
 package com.example.project.web;
 
-import com.example.project.model.dto.binding.ProductBindingModel;
-import com.example.project.model.dto.view.ProductViewModel;
+import com.example.project.payload.request.ProductRequest;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,38 +20,38 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductViewModel> getProduct(@PathVariable ObjectId productId) {
-        ProductViewModel productViewModel = productService.getProduct(productId);
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable ObjectId productId) {
+        ProductResponse productViewModel = productService.getProduct(productId);
         return ResponseEntity.ok(productViewModel);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductViewModel>> getAllProducts() {
-        List<ProductViewModel> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductViewModel>> getProductsByCategory(@PathVariable String category) {
-        List<ProductViewModel> products = productService.getProductsByCategory(category);
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String category) {
+        List<ProductResponse> products = productService.getProductsByCategory(category);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<ProductViewModel>> getProductsByStatus(@PathVariable String status) {
-        List<ProductViewModel> products = productService.getProductsByStatus(status);
+    public ResponseEntity<List<ProductResponse>> getProductsByStatus(@PathVariable String status) {
+        List<ProductResponse> products = productService.getProductsByStatus(status);
         return ResponseEntity.ok(products);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-product")
-    public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductBindingModel productBindingModel) {
+    public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
         productService.addProduct(productBindingModel);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit-product/{productId}")
-    public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductBindingModel productBindingModel) {
+    public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductRequest productBindingModel) {
         productService.editProduct(productId, productBindingModel);
         return ResponseEntity.ok().build();
     }

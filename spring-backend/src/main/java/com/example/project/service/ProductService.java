@@ -1,25 +1,23 @@
 package com.example.project.service;
 
-import com.example.project.model.dto.binding.ProductBindingModel;
-import com.example.project.model.dto.view.ProductViewModel;
-import com.example.project.model.enums.CategoryEnum;
-import com.example.project.model.enums.ProductStatusEnum;
+import com.example.project.payload.request.ProductRequest;
+import com.example.project.payload.response.ProductResponse;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface ProductService {
-    void addProduct(ProductBindingModel productBindingModel);
+    void addProduct(ProductRequest productBindingModel);
 
-    ProductViewModel getProduct(ObjectId productId);
+    ProductResponse getProduct(ObjectId productId);
 
-    List<ProductViewModel> getAllProducts();
+    List<ProductResponse> getAllProducts();
 
-    List<ProductViewModel> getProductsByCategory(String category);
+    List<ProductResponse> getProductsByCategory(String category);
 
-    List<ProductViewModel> getProductsByStatus(String status);
+    List<ProductResponse> getProductsByStatus(String status);
 
-    void editProduct(ObjectId productId, ProductBindingModel productBindingModel);
+    void editProduct(ObjectId productId, ProductRequest productBindingModel);
 
     void setProductStatus(ObjectId productId, String status);
 
