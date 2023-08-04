@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.profileBox {
+    border: 2px solid black;
+    padding: 20px;
+    max-width: 400px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.label {
+    font-weight: bold;
+    width: 150px;
+}
+
+.value {
+    flex: 1;
+}
+
+.editInput {
+    flex: 1;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.editButton,
+.saveButton {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.saveButton {
+    background-color: #28a745;
+    margin-right: 10px;
+}

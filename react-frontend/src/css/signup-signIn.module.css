@@ -1,0 +1,118 @@
+.container {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    padding: 40px;
+    background-color: #fff;
+    border: 1px solid #000;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.inputGroup {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    font-size: 18px;
+    text-align: left;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #00bcd4;
+}
+
+.toggleBtn {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.errorMessage {
+    margin-top: 10px;
+}
+
+.alert {
+    background-color: #ffbdbd;
+    color: #d8000c;
+    border: 1px solid #d8000c;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.buttonGroup {
+    margin-top: 20px;
+}
+.button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #ccc; /* Set the default background color to gray */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #333;
+}
+
+.buttonDisabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.paragraph {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+.line {
+    display: block;
+    margin-top: 10px;
+}
+
+/* Add more styles as needed */

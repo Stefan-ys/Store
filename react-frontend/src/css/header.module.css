@@ -1,0 +1,87 @@
+/* Header Component */
+.header {
+    position: relative; /* Set the header as the reference position */
+    padding: 20px 0;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoImage {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navLinks {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.navLink {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    margin-right: 10px;
+    transition: border-bottom 0.3s ease-in-out;
+}
+
+.navLink:hover,
+.navLink.active {
+    border-bottom: 2px solid black;
+}
+
+.welcomeMessage {
+    font-size: 16px;
+    margin-left: 20px;
+}
+
+.role {
+    color: #FF0054;
+}
+
+.icons {
+    position: absolute;
+    right: 20px; /* Adjust as needed */
+    bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+
+.cartIcon,
+.notificationIcon {
+    font-size: 24px;
+    margin-right: 5px;
+}
+
+.cartCount,
+.notificationCount {
+    background-color: #FF0054;
+    color: white;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    margin-left: 2px;
+}
+
+/* Active Link Style */
+.active {
+    border-bottom: 2px solid #FF0054;
+}
