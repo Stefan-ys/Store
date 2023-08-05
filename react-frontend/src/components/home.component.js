@@ -1,25 +1,19 @@
-import React, {useEffect, useState} from "react";
-import HomeService from "../services/home.service";
+import React, {useState} from "react";
 import AuthUtil from "../utils/auth.uitil";
 
 const Home = () => {
     const [welcomeMessage, setWelcomeMessage] = useState("");
     const [username, setUsername] = useState("");
 
-    if(AuthUtil.isLoggedIn()){
-        setUsername(AuthUtil.getUsername);
-    }
+    setWelcomeMessage("spam")
+    setUsername("asdasd");
 
-    useEffect(() => {
-
-
-        return (
-            <div>
-                <h1>Welcome, {!username ? "guest" : username}</h1>
-                <h2>{welcomeMessage}</h2>
-            </div>
-        );
-    });
+    return (
+        <div>
+            <h1>Welcome, {!username ? "guest" : username}</h1>
+            <h2>{welcomeMessage}</h2>
+        </div>
+    );
 }
 
 export default Home;

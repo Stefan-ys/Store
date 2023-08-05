@@ -21,7 +21,8 @@ class AuthService {
 
     logout() {
         localStorage.removeItem("user");
-        return axios.post(API_URL + "/logout", {credentials: "include"});
+        sessionStorage.removeItem("user");
+        return axios.post(API_URL + "/signout", {credentials: "include"});
 
     }
 

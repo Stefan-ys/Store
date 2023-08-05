@@ -46,7 +46,7 @@ const Login = (props) => {
         if (checkBtn.context._errors.length === 0) {
             AuthService.login(username, password)
                 .then(() => {
-                    props.router.navigate("/home");
+                    props.router.navigate("/");
                     window.location.reload();
                 }, error => {
                     const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

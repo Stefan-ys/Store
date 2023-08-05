@@ -1,33 +1,35 @@
-class AuthUtil {
+const AuthUtil = {
     isLoggedIn() {
-
-        return sessionStorage.getItem("user") !== null;
-    }
+        return !!sessionStorage.getItem("user");
+    },
 
     getUsername() {
-        if (this.isLoggedIn()) {
-            console.log(JSON.parse(sessionStorage.getItem("user")));
+        try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             return user.username;
+        } catch (error) {
+            return "guest";
         }
-        return "guest";
-    }
+    },
 
     isAdmin() {
-        if (this.isLoggedIn()) {
+        try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             return user.roles.includes("ROLE_ADMIN");
+        } catch (error) {
+            return false;
         }
-        return false;
-    }
+
+    },
 
     isModerator() {
-        if (this.isLoggedIn()) {
+        try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             return user.roles.includes("ROLE_MODERATOR");
+        } catch (error) {
+            return false;
         }
-        return false;
-    }
+    },
 }
 
-export default new AuthUtil();
+export default AuthUtil;

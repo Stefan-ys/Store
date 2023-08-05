@@ -1,12 +1,27 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { FaShoppingCart, FaBell } from "react-icons/fa";
+import React, {useState} from "react";
+import {NavLink} from "react-router-dom";
+import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../css/header.module.css";
-import AuthUtil from "../utils/auth.uitil"; // Import the AuthUtil file
+import AuthUtil from "../utils/auth.uitil";
+import AuthService from "../services/auth.service";
+
 const HeaderComponent = () => {
+    const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+
+    const isLoggedIn = AuthUtil.isLoggedIn();
     const isAdmin = AuthUtil.isAdmin();
     const isModerator = AuthUtil.isModerator();
-    const isLoggedIn = AuthUtil.isLoggedIn();
+    const getUsername = AuthUtil.getUsername();
+    const handleLogout = async () => {
+        setShowLogoutConfirmation(false);
+        try {
+            await AuthService.logout();
+            // window.location.href = "/home";
+        } catch (error) {
+            console.log("Error occurred during logout: ", error);
+        }
+    };
+
     return (
         <header className={styles.header}>
             <div className={styles.logoContainer}>
@@ -15,9 +30,9 @@ const HeaderComponent = () => {
                 </NavLink>
             </div>
             <div className={styles.welcomeMessage}>
-                {AuthUtil.isLoggedIn() && (
+                {isLoggedIn && (
                     <div className={styles.userRoles}>
-                        Welcome {AuthUtil.getUsername()}
+                        Welcome {getUsername}
                         {isAdmin && <span className={styles.adminRole}>ADMIN</span>}
                         {isModerator && <span className={styles.moderatorRole}>MODERATOR</span>}
                     </div>
@@ -44,12 +59,27 @@ const HeaderComponent = () => {
                         {isLoggedIn ? (
                             <>
                                 <li>
-                                    <NavLink to="/my-profile" activeClassName={styles.active} className={styles.navLink}>
+                                    <NavLink to="/my-profile" activeClassName={styles.active}
+                                             className={styles.navLink}>
                                         My Profile
                                     </NavLink>
                                 </li>
+
+                                {showLogoutConfirmation && (
+                                    <div className={styles.logoutConfirmation}>
+                                        <p>Are you sure you want to log out?</p>
+                                        <button onClick={handleLogout}>Logout</button>
+                                        <button onClick={() => setShowLogoutConfirmation(false)}>Cancel</button>
+                                    </div>
+                                )}
+
                                 <li>
-                                    <NavLink to="/logout" activeClassName={styles.active} className={styles.navLink}>
+                                    <NavLink
+                                        to="/logout"
+                                        activeClassName={styles.active}
+                                        className={styles.navLink}
+                                        onClick={() => setShowLogoutConfirmation(true)}
+                                    >
                                         Logout
                                     </NavLink>
                                 </li>
@@ -72,11 +102,11 @@ const HeaderComponent = () => {
                 </nav>
                 <div className={styles.icons}>
                     <div className={styles.iconContainer}>
-                        <FaShoppingCart />
+                        <FaShoppingCart/>
                         <span className={styles.cartCount}>5</span>
                     </div>
                     <div className={styles.iconContainer}>
-                        <FaBell />
+                        <FaBell/>
                         <span className={styles.notificationCount}>2</span>
                     </div>
                 </div>
