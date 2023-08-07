@@ -64,24 +64,25 @@ const HeaderComponent = () => {
                                         My Profile
                                     </NavLink>
                                 </li>
-
                                 {showLogoutConfirmation && (
                                     <div className={styles.logoutConfirmation}>
-                                        <p>Are you sure you want to log out?</p>
-                                        <button onClick={handleLogout}>Logout</button>
-                                        <button onClick={() => setShowLogoutConfirmation(false)}>Cancel</button>
+                                        <p className={styles.logoutConfirmationTextArea}>Are you sure you want to log
+                                            out?</p>
+                                        <div className={styles.buttonContainer}>
+                                            <button className={styles.button} onClick={handleLogout}>Logout</button>
+                                            <button className={styles.button}
+                                                    onClick={() => setShowLogoutConfirmation(false)}>Cancel
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
-
                                 <li>
                                     <NavLink
                                         to="/logout"
                                         activeClassName={styles.active}
                                         className={styles.navLink}
                                         onClick={() => setShowLogoutConfirmation(true)}
-                                    >
-                                        Logout
-                                    </NavLink>
+                                    >Logout</NavLink>
                                 </li>
                             </>
                         ) : (
@@ -92,7 +93,7 @@ const HeaderComponent = () => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/signup" activeClassName={styles.active} className={styles.navLink}>
+                                    <NavLink to="/register" activeClassName={styles.active} className={styles.navLink}>
                                         Signup
                                     </NavLink>
                                 </li>
