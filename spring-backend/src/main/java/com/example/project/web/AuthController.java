@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,10 +63,10 @@ public class AuthController {
             userService.updateUserActivity(userDetails.getUsername());
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(jwtResponse);
-        } catch (UsernameNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        } catch (InternalAuthenticationServiceException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password.");
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
     }
 
@@ -87,14 +88,14 @@ public class AuthController {
                     .badRequest()
                     .body("Error: Passwords do not match");
         }
+
         userService.signUp(signUpBindingModel);
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
-        System.out.println("Logout");
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("You've been signed out!");
