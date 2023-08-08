@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -30,6 +30,7 @@ const Login = (props) => {
 
     const isFormValid = !!username && !!password;
 
+
     const onChangeUsername = (e) => {
         setUsername(e.target.value);
     };
@@ -57,7 +58,7 @@ const Login = (props) => {
         if (checkBtn.context._errors.length === 0) {
             AuthService.login(username, password)
                 .then(() => {
-                    props.router.navigate("/");
+                    window.open("/my-profile");
                     window.location.reload();
                 }, (error) => {
                     const responseMessage = (error.response && error.response.data && error.response.data.message) ||

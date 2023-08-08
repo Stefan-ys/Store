@@ -22,12 +22,12 @@
     width: 150px;
 }
 
-.value {
+.value,
+.editInput {
     flex: 1;
 }
 
 .editInput {
-    flex: 1;
     padding: 5px;
     margin-left: 10px;
 }
@@ -46,4 +46,10 @@
 .saveButton {
     background-color: #28a745;
     margin-right: 10px;
+}
+
+.alert {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
 }

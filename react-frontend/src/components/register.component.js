@@ -10,7 +10,6 @@ import {PasswordStrengthIndicator} from "../utils/PasswordStrenght";
 import styles from "../css/signup-signin.module.css";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
-const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/;
 const PASSWORD_REGEX = /^(.){5,30}$/;
 
 const required = (value) => {
@@ -30,7 +29,6 @@ const invalidFormat = (message) => {
 
 const RegisterComponent = (props) => {
     const userRef = useRef();
-    const errRef = useRef();
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");

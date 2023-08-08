@@ -4,6 +4,7 @@ import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../css/header.module.css";
 import AuthUtil from "../utils/auth.uitil";
 import AuthService from "../services/auth.service";
+import EventBus from "../common/EventBus";
 
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
@@ -12,11 +13,11 @@ const HeaderComponent = () => {
     const isAdmin = AuthUtil.isAdmin();
     const isModerator = AuthUtil.isModerator();
     const getUsername = AuthUtil.getUsername();
-    const handleLogout = async () => {
-        setShowLogoutConfirmation(false);
+    const handleLogout = () => {
         try {
-            await AuthService.logout();
-            // window.location.href = "/home";
+            AuthService.logout();
+            window.location.href = "/home";
+            setShowLogoutConfirmation(false);
         } catch (error) {
             console.log("Error occurred during logout: ", error);
         }
@@ -77,12 +78,10 @@ const HeaderComponent = () => {
                                     </div>
                                 )}
                                 <li>
-                                    <NavLink
-                                        to="/logout"
-                                        activeClassName={styles.active}
+                                    <button
                                         className={styles.navLink}
                                         onClick={() => setShowLogoutConfirmation(true)}
-                                    >Logout</NavLink>
+                                    >Logout</button>
                                 </li>
                             </>
                         ) : (

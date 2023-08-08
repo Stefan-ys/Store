@@ -1,11 +1,11 @@
 const AuthUtil = {
     isLoggedIn() {
-        return !!sessionStorage.getItem("user");
+        return !!localStorage.getItem("user");
     },
 
     getUsername() {
         try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(localStorage.getItem("user"));
             return user.username;
         } catch (error) {
             return "guest";
@@ -14,7 +14,7 @@ const AuthUtil = {
 
     isAdmin() {
         try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(localStorage.getItem("user"));
             return user.roles.includes("ROLE_ADMIN");
         } catch (error) {
             return false;
@@ -24,7 +24,7 @@ const AuthUtil = {
 
     isModerator() {
         try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(localStorage.getItem("user"));
             return user.roles.includes("ROLE_MODERATOR");
         } catch (error) {
             return false;
