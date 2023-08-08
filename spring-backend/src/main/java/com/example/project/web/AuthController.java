@@ -8,17 +8,13 @@ import com.example.project.payload.response.JwtResponse;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +29,7 @@ public class AuthController {
     private final UserService userService;
 
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticationUser(@Valid @RequestBody LoginRequest loginBindingModel) {
         try {
             Authentication authentication = authenticationManager
@@ -43,7 +39,7 @@ public class AuthController {
 
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+//            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
 
             List<String> roles = userDetails
@@ -53,7 +49,7 @@ public class AuthController {
                     .toList();
 
             JwtResponse jwtResponse = new JwtResponse();
-            jwtResponse.setAccessToken(jwtUtils.generateTokenFromUsername(userDetails.getUsername()));
+            jwtResponse.setAccessToken(jwtUtils.generateJwtTokenFromUsername(userDetails.getUsername()));
             jwtResponse.setRoles(roles);
             jwtResponse.setUsername(userDetails.getUsername());
             jwtResponse.setEmail(userDetails.getEmail());
@@ -62,15 +58,13 @@ public class AuthController {
 
             userService.updateUserActivity(userDetails.getUsername());
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(jwtResponse);
-        } catch (InternalAuthenticationServiceException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password.");
+            return ResponseEntity.ok().body(jwtResponse);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password.");
         }
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest signUpBindingModel) {
 
         if (userService.containsUsername(signUpBindingModel.getUsername())) {
@@ -94,10 +88,10 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully!");
     }
 
-    @PostMapping("/signout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+//        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        return ResponseEntity.ok()
                 .body("You've been signed out!");
     }
 }

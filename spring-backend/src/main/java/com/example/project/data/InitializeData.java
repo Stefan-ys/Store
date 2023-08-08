@@ -65,13 +65,11 @@ public class InitializeData {
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.encode(password));
 
-        RoleEntity userRoleEntity = new RoleEntity();
-        userRoleEntity.setRole(RoleEnum.USER);
+        RoleEntity userRoleEntity = roleRepository.findByRole(RoleEnum.USER);
         userEntity.getRoles().add(userRoleEntity);
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setRole(role);
+        RoleEntity roleEntity = roleRepository.findByRole(role);
         userEntity.getRoles().add(roleEntity);
-
+        System.out.println();
         userRepository.save(userEntity);
 
     }

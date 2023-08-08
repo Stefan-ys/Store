@@ -1,18 +1,23 @@
 package com.example.project.web;
 
+import com.example.project.payload.request.MyProfileRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
+import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
@@ -37,7 +42,16 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-profile")
     public ResponseEntity<MyProfileResponse> getMyProfile() {
-        MyProfileResponse myProfile = userService.getMyProfile();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        MyProfileResponse myProfile = userService.getMyProfile(authentication.getName());
+        return ResponseEntity.ok(myProfile);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/my-profile")
+    public ResponseEntity<MyProfileResponse> updateProfile(@Valid @RequestBody MyProfileRequest myProfileRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        MyProfileResponse myProfile = userService.updateMyProfile(authentication.getName(), myProfileRequest);
         return ResponseEntity.ok(myProfile);
     }
 

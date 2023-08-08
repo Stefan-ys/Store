@@ -1,5 +1,7 @@
 package com.example.project.service.impl;
 
+import com.example.project.model.embeddable.Address;
+import com.example.project.payload.request.MyProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
@@ -14,9 +16,6 @@ import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -79,10 +78,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MyProfileResponse getMyProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity userEntity = getUserByUsername(authentication.getName());
+    public MyProfileResponse getMyProfile(String username) {
+        UserEntity userEntity = getUserByUsername(username);
         return modelMapper.map(userEntity, MyProfileResponse.class);
+
+    }
+    @Override
+    public MyProfileResponse updateMyProfile(String username, MyProfileRequest myProfileRequest) {
+        UserEntity userEntity = getUserByUsername(username);
+        userEntity.setEmail(myProfileRequest.getEmail());
+        userEntity.setPhoneNumber(myProfileRequest.getPhoneNumber());
+        Address address = new Address();
+        //TO DO
+        userEntity.getDeliveryInformation().setAddress(address);
+
+        UserEntity updatedUserEntity = userRepository.save(userEntity);
+
+        return modelMapper.map(updatedUserEntity, MyProfileResponse.class);
 
     }
 
