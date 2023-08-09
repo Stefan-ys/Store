@@ -5,7 +5,7 @@ const API_USERS_URL = "http://localhost:8080/api/user";
 
 const getMyProfile = () => {
     return axios
-        .get(API_USERS_URL + "/my-profile", {headers: authHeader()})
+        .get(API_USERS_URL + "/my-profile", {headers: authHeader(), withCredentials: false})
         .then((response) => response.data)
         .catch((error) => {
             throw error;

@@ -1,14 +1,17 @@
 .container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align at the top of the screen */
     height: 100vh;
+    background-color: #f0f0f0;
 }
 
 .profileBox {
     border: 2px solid black;
     padding: 20px;
     max-width: 400px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .row {
@@ -25,27 +28,42 @@
 .value,
 .editInput {
     flex: 1;
+    font-size: 18px; /* Increase font size */
 }
 
 .editInput {
     padding: 5px;
     margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .editButton,
-.saveButton {
-    margin-top: 10px;
-    padding: 10px;
+.saveButton,
+.cancelButton {
+    padding: 10px 20px;
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    font-size: 16px;
 }
 
 .saveButton {
     background-color: #28a745;
     margin-right: 10px;
+}
+
+.cancelButton {
+    background-color: #dc3545;
 }
 
 .alert {

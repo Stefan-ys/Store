@@ -12,11 +12,6 @@ const MyProfileComponent = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
 
     const [userData, setUserData] = useState({
         username: "john_doe",
@@ -24,13 +19,14 @@ const MyProfileComponent = () => {
         firstName: "John",
         lastName: "Doe",
         phoneNumber: "123-456-7890",
-        address: {
-            town: "New York",
-            street: "Main Street",
-            number: "123",
-            postcode: "10001",
-        },
     });
+
+    const [deliveryAddress, setDeliveryAddress] = useState({
+        town: "New York",
+        street: "Main Street",
+        number: "123",
+        postcode: "10001",
+    })
 
     useEffect(() => {
         fetchMyProfileData();
@@ -42,13 +38,13 @@ const MyProfileComponent = () => {
             .then((data) => {
                 userData.username = data.username;
                 userData.email = data.email;
+                userData.phoneNumber = data.phoneNumber;
                 userData.firstName = data.firstName;
                 userData.lastName = data.lastName;
-                userData.phoneNumber = data.phoneNumber;
                 setLoading(false);
             })
             .catch((error) => {
-                // console.log("Error fetching user profile data: ", error);
+                console.log("Error fetching user profile data: ", error);
                 setMessage(error.response ? error.response.data.message : "An error has occurred.");
                 setLoading(false);
             });
@@ -68,12 +64,6 @@ const MyProfileComponent = () => {
             firstName: userData.firstName,
             lastName: userData.lastName,
             phoneNumber: userData.phoneNumber,
-            address: {
-                town: userData.address.town,
-                street: userData.address.street,
-                number: userData.address.number,
-                postcode: userData.address.postcode,
-            },
         };
 
         UserService.updateMyProfile(requestData)
@@ -82,9 +72,10 @@ const MyProfileComponent = () => {
                 setEditMode(false);
                 setLoading(false);
                 setMessage("Profile updated successfully");
+                fetchMyProfileData();
             })
             .catch((error) => {
-                // console.log("Error updating user profile: ", error);
+                console.log("Error updating user profile: ", error);
                 setMessage(error.response ? error.response.data.message : "An error has occurred.");
                 setLoading(false);
             });
@@ -130,7 +121,7 @@ const MyProfileComponent = () => {
                             className={styles.editInput}
                         />
                     ) : (
-                        <span className={styles.value}>{userData.firstName}</span>
+                        <span className={styles.value}>{userData.phoneNumber}</span>
                     )}
                 </div>
                 <div className={styles.row}>
@@ -161,15 +152,27 @@ const MyProfileComponent = () => {
                         <span className={styles.value}>{userData.lastName}</span>
                     )}
                 </div>
+
+                {message && <div className={styles.alert}>{message}</div>}
+                <div className={styles.buttons}>
+                    {editMode && (
+                        <button
+                            className={styles.cancelButton}
+                            onClick={() => setEditMode(false)}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                    <button
+                        className={editMode ? styles.saveButton : styles.editButton}
+                        onClick={editMode ? handleSaveClick : handleEditClick}
+                        disabled={loading}
+                    >
+                        {loading ? "Loading..." : editMode ? "Save" : "Edit"}
+                    </button>
+                </div>
             </div>
-            {message && <div className={styles.alert}>{message}</div>}
-            <button
-                className={editMode ? styles.saveButton : styles.editButton}
-                onClick={editMode ? handleSaveClick : handleEditClick}
-                disabled={loading}
-            >
-                {loading ? "Loading..." : editMode ? "Save" : "Edit"}
-            </button>
         </div>
     );
 };
