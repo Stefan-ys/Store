@@ -69,6 +69,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api/home").permitAll()
+                        .requestMatchers("/api/store/**").permitAll()
                         .requestMatchers("/api/users/all").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .anyRequest().authenticated()

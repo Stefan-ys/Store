@@ -49,7 +49,6 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/my-profile")
     public ResponseEntity<MyProfileResponse> updateProfile(@Valid @RequestBody MyProfileUpdateRequest myProfileRequest) {
-        System.out.println(myProfileRequest.getEmail());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyProfileResponse myProfile = userService.updateMyProfile(authentication.getName(), myProfileRequest);
         return ResponseEntity.ok(myProfile);

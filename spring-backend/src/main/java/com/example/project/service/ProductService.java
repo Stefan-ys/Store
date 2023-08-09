@@ -1,7 +1,7 @@
 package com.example.project.service;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductStoreResponse;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -9,13 +9,13 @@ import java.util.List;
 public interface ProductService {
     void addProduct(ProductRequest productBindingModel);
 
-    ProductResponse getProduct(ObjectId productId);
+    ProductStoreResponse getProduct(ObjectId productId);
 
-    List<ProductResponse> getAllProducts();
+    List<ProductStoreResponse> getAllProducts();
 
-    List<ProductResponse> getProductsByCategory(String category);
+    List<ProductStoreResponse> getProductsByCategory(String category);
 
-    List<ProductResponse> getProductsByStatus(String status);
+    List<ProductStoreResponse> getProductsByStatus(String status);
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
 

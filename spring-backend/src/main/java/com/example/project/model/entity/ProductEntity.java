@@ -25,7 +25,7 @@ public class ProductEntity extends BaseEntity {
     private String catalogNumber;
     @NotNull
     private BigDecimal price;
-    //    @DBRef
+//    @DBRef
 //    private List<GridFSFile> pictures;
     @NotNull
     private int quantity;

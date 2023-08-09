@@ -1,7 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductStoreResponse;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
@@ -30,36 +30,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getProduct(ObjectId productId) {
+    public ProductStoreResponse getProduct(ObjectId productId) {
         ProductEntity productEntity = getProductById(productId);
-        return modelMapper.map(productEntity, ProductResponse.class);
+        return modelMapper.map(productEntity, ProductStoreResponse.class);
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
+    public List<ProductStoreResponse> getAllProducts() {
         List<ProductEntity> products = productRepository.findAll();
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
+                .map(product -> modelMapper.map(product, ProductStoreResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductResponse> getProductsByCategory(String category) {
+    public List<ProductStoreResponse> getProductsByCategory(String category) {
         CategoryEnum categoryEnum = getProductCategoryEnum(category);
 
         List<ProductEntity> products = productRepository.findAllByProductCategory(categoryEnum);
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
+                .map(product -> modelMapper.map(product, ProductStoreResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductResponse> getProductsByStatus(String status) {
+    public List<ProductStoreResponse> getProductsByStatus(String status) {
         ProductStatusEnum statusEnum = getProductStatusEnum(status);
 
         List<ProductEntity> products = productRepository.findAllByStatus(statusEnum);
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
+                .map(product -> modelMapper.map(product, ProductStoreResponse.class))
                 .collect(Collectors.toList());
     }
 
