@@ -1,6 +1,6 @@
 package com.example.project.service;
 
-import com.example.project.payload.request.MyProfileRequest;
+import com.example.project.payload.request.MyProfileUpdateRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
@@ -23,7 +23,7 @@ public interface UserService {
 
     MyProfileResponse getMyProfile(String username);
 
-    MyProfileResponse updateMyProfile(String username, MyProfileRequest myProfileRequest);
+    MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest);
 
     void addToCart(String username, ObjectId productId);
 

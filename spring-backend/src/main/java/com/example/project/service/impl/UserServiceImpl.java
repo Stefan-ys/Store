@@ -1,7 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.model.embeddable.Address;
-import com.example.project.payload.request.MyProfileRequest;
+import com.example.project.payload.request.MyProfileUpdateRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
@@ -83,14 +83,17 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userEntity, MyProfileResponse.class);
 
     }
+
     @Override
-    public MyProfileResponse updateMyProfile(String username, MyProfileRequest myProfileRequest) {
+    public MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest) {
         UserEntity userEntity = getUserByUsername(username);
         userEntity.setEmail(myProfileRequest.getEmail());
         userEntity.setPhoneNumber(myProfileRequest.getPhoneNumber());
-        Address address = new Address();
-        //TO DO
-        userEntity.getDeliveryInformation().setAddress(address);
+        userEntity.setFirstName(myProfileRequest.getFirstName());
+        userEntity.setLastName(myProfileRequest.getLastName());
+
+//        Address address = new Address();
+//        userEntity.getDeliveryInformation().setAddress(address);
 
         UserEntity updatedUserEntity = userRepository.save(userEntity);
 

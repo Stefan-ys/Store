@@ -1,12 +1,11 @@
 package com.example.project.web;
 
-import com.example.project.payload.request.MyProfileRequest;
+import com.example.project.payload.request.MyProfileUpdateRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -49,7 +48,8 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/my-profile")
-    public ResponseEntity<MyProfileResponse> updateProfile(@Valid @RequestBody MyProfileRequest myProfileRequest) {
+    public ResponseEntity<MyProfileResponse> updateProfile(@Valid @RequestBody MyProfileUpdateRequest myProfileRequest) {
+        System.out.println(myProfileRequest.getEmail());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyProfileResponse myProfile = userService.updateMyProfile(authentication.getName(), myProfileRequest);
         return ResponseEntity.ok(myProfile);
