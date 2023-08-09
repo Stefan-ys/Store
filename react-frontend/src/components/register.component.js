@@ -8,6 +8,7 @@ import {FaCheck, FaTimes, FaInfoCircle, FaEye} from "react-icons/fa";
 import AuthService from "../services/auth.service";
 import {PasswordStrengthIndicator} from "../utils/PasswordStrenght";
 import styles from "../css/signup-signin.module.css";
+import {withRouter} from "../common/with-router";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const PASSWORD_REGEX = /^(.){5,30}$/;
@@ -261,4 +262,4 @@ const RegisterComponent = (props) => {
     );
 };
 
-export default RegisterComponent;
+export default withRouter(RegisterComponent);

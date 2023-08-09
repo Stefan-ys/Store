@@ -5,9 +5,10 @@ import isEmail from "validator/es/lib/isEmail";
 import CheckButton from "react-validation/build/button";
 import styles from "../css/my-profile.module.css";
 import UserService from "../services/user.service";
+import {withRouter} from "../common/with-router";
 
 
-const MyProfileComponent = () => {
+const MyProfile = () => {
 
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -177,4 +178,4 @@ const MyProfileComponent = () => {
     );
 };
 
-export default MyProfileComponent;
+export default withRouter(MyProfile);

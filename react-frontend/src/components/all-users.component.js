@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "../css/stats-table.module.css"
 import AllUsersService from "../services/all-users.service";
+import {withRouter} from "../common/with-router";
 
 const AllUsersComponent = () => {
     const [users, setUsers] = useState([]);
@@ -44,4 +45,4 @@ const AllUsersComponent = () => {
 };
 
 
-export default AllUsersComponent;
+export default withRouter(AllUsersComponent);

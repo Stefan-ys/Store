@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {withRouter} from "../common/with-router";
 
 
 const Home = () => {
@@ -16,4 +17,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default withRouter(Home);

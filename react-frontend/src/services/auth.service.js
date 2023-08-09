@@ -8,7 +8,6 @@ const login = (username, password) => {
         .post(API_URL + "/login", {username, password})
         .then((response) => {
             if (response.data.accessToken) {
-                console.log(response.data);
                 localStorage.setItem("user", JSON.stringify(response.data));
             }
             return response.data;

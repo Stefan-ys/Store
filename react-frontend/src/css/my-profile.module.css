@@ -1,17 +1,18 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align at the top of the screen */
-    height: 100vh;
-    background-color: #f0f0f0;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    padding: 40px;
+    background-color: #fff;
+    border: 1px solid #000;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 .profileBox {
-    border: 2px solid black;
-    padding: 20px;
-    max-width: 400px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-left: 0px;
 }
 
 .row {
@@ -23,6 +24,7 @@
 .label {
     font-weight: bold;
     width: 150px;
+    text-align: left;
 }
 
 .value,
@@ -40,30 +42,40 @@
 
 .buttons {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
+    /*justify-content: space-between;*/
+    /*align-items: center;*/
+    /*margin-top: 10px;*/
+
 }
 
 .editButton,
 .saveButton,
 .cancelButton {
     padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    display: block;
+    width: 100%;
+
     font-size: 16px;
+    color: #fff;
+    background-color: #ccc;
+    transition: background-color 0.3s ease-in-out;
 }
+.editButton:hover {
+    background-color: #333;
+}
+
 
 .saveButton {
     background-color: #28a745;
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .cancelButton {
     background-color: #dc3545;
+    margin-right: 10px;
 }
 
 .alert {

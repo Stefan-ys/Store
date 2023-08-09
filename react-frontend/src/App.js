@@ -5,8 +5,9 @@ import Header from "./components/header.component";
 import Home from "./components/home.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
-import AllUsers from "./components/all-users.component";
 import MyProfile from "./components/my-profile.component";
+import Store from "./components/store.component";
+import AllUsers from "./components/all-users.component";
 
 
 import './App.css';
@@ -23,7 +24,7 @@ const App = () => {
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/my-profile" element={<MyProfile/>}/>
-                    {/*<Route path="/logout" element={<Logout/>}/>*/}
+                    <Route path="/store" element={<Store/>}/>
                     {/*<Route path="/admin" element={<AdminBoard/>}/>*/}
                     {/*<Route path="/all-users" element={<AllUsers/>}/>*/}
                 </Routes>

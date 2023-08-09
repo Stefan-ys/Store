@@ -5,6 +5,7 @@ import styles from "../css/header.module.css";
 import AuthUtil from "../utils/auth.uitil";
 import AuthService from "../services/auth.service";
 import EventBus from "../common/EventBus";
+import {withRouter} from "../common/with-router";
 
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
@@ -34,8 +35,8 @@ const HeaderComponent = () => {
                 {isLoggedIn && (
                     <div className={styles.userRoles}>
                         Welcome {getUsername}
-                        {isAdmin && <span className={styles.adminRole}>ADMIN</span>}
-                        {isModerator && <span className={styles.moderatorRole}>MODERATOR</span>}
+                        {isAdmin && <span className={styles.adminRole}> ADMIN</span>}
+                        {isModerator && <span className={styles.moderatorRole}> MODERATOR</span>}
                     </div>
                 )}
             </div>
@@ -116,4 +117,4 @@ const HeaderComponent = () => {
     );
 };
 
-export default HeaderComponent;
+export default withRouter(HeaderComponent);

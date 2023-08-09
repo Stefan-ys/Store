@@ -1,6 +1,7 @@
 import React, {useContext} from "react";
 import {Link} from "react-router-dom";
 import styles from "../css/admin-menu.module.css";
+import {withRouter} from "../common/with-router";
 
 const AdminMenu = () => {
 
@@ -30,4 +31,4 @@ const AdminMenu = () => {
     );
 };
 
-export default AdminMenu;
+export default withRouter(AdminMenu);
