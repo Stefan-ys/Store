@@ -2,10 +2,10 @@ import React, {useRef, useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import { withRouter } from "../common/with-router";
-import { Link } from "react-router-dom";
+import {withRouter} from "../common/with-router";
+import {Link} from "react-router-dom";
 import AuthService from "../services/auth.service";
-import { FaEye } from "react-icons/fa";
+import {FaEye} from "react-icons/fa";
 import styles from "../css/signup-signin.module.css";
 
 const required = (value) => {
@@ -26,9 +26,8 @@ const Login = (props) => {
     const [form, setForm] = useState(null);
     const [checkBtn, setCheckBtn] = useState(null);
     const [hidePassword, setHidePassword] = useState(true);
-    const [focusedField, setFocusedField] = useState(null);
 
-    const isFormValid = !!username && !!password;
+    const [focusedField, setFocusedField] = useState(null);
 
 
     const onChangeUsername = (e) => {
@@ -55,22 +54,19 @@ const Login = (props) => {
 
         form.validateAll();
 
-        if (checkBtn.context._errors.length === 0) {
-            AuthService.login(username, password)
-                .then(() => {
-                    window.open("/my-profile");
-                    window.location.reload();
-                }, (error) => {
-                    const responseMessage = (error.response && error.response.data && error.response.data.message) ||
-                        error.message ||
-                        error.toString();
+        AuthService.login(username, password)
+            .then(() => {
+                window.open("/my-profile");
+                window.location.reload();
+            }, (error) => {
+                const responseMessage = (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
 
-                    setMessage(responseMessage);
-                    setLoading(false);
-                });
-        } else {
-            setLoading(false);
-        }
+                setMessage(responseMessage);
+                setLoading(false);
+            });
+
     };
 
     return (
@@ -129,16 +125,13 @@ const Login = (props) => {
                             setHidePassword(!hidePassword);
                         }}
                     >
-                        <FaEye style={{ color: !hidePassword ? "#FF0054" : "#c3c3c3" }} />
+                        <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>
                         {hidePassword ? "Show" : "Hide"} password
                     </a>
                 </div>
 
                 <div className={styles.buttonGroup}>
-                    <button
-                        className={`${styles.button} ${loading || !isFormValid ? styles.buttonDisabled : ""}`}
-                        disabled={loading || !isFormValid}
-                    >
+                    <button className={styles.button}>
                         {loading && <span className="spinner-border spinner-border-sm"></span>}
                         <span>Login</span>
                     </button>
@@ -149,7 +142,7 @@ const Login = (props) => {
 
             <p className={styles.paragraph}>
                 Need an Account?
-                <br />
+                <br/>
                 <span className={styles.line}>
                     <Link to="/signup">Sign Up</Link>
                 </span>

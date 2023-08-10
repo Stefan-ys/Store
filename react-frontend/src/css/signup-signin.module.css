@@ -64,6 +64,7 @@
     margin-bottom: 30px;
 }
 
+
 .buttonGroup {
     margin-top: 20px;
 }
@@ -139,13 +140,11 @@
     border: 1px solid #ff0000;
 }
 
-.validLabel {
-    color: #009900; /* Green color for valid labels */
-}
+
 
 .validIcon {
     color: #009900; /* Green color for check icons */
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 .invalidAlert {
@@ -158,14 +157,25 @@
 }
 
 .validAlert {
-    background-color: #ccffcc;
-    color: #009900;
-    border: 1px solid #009900;
+    background-color: #ccc;
+    color: #000000;
+    border: 1px solid #000000;
     border-radius: 4px;
     padding: 10px;
     margin-top: 5px;
+
 }
 
 .infoCircle {
     margin-right: 1000px;
+}
+
+.infoButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.showInfo {
+    display: block;
 }

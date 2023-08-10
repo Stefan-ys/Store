@@ -1,14 +1,15 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import isEmail from "validator/es/lib/isEmail";
 import CheckButton from "react-validation/build/button";
 import {Link} from "react-router-dom";
-import {FaCheck, FaTimes, FaInfoCircle, FaEye} from "react-icons/fa";
+import {FaCheck, FaEye} from "react-icons/fa";
 import AuthService from "../services/auth.service";
-import {PasswordStrengthIndicator} from "../utils/PasswordStrenght";
+import {PasswordStrengthIndicator} from "../utils/password-strength.util";
 import styles from "../css/signup-signin.module.css";
 import {withRouter} from "../common/with-router";
+import InfoButton from "../utils/info-button.util";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const PASSWORD_REGEX = /^(.){5,30}$/;
@@ -16,7 +17,7 @@ const PASSWORD_REGEX = /^(.){5,30}$/;
 const required = (value) => {
     if (!value) {
         return (
-            <div className={styles.alert} role="alert">
+            <div className="alert alert-danger" role="alert">
                 This field is required!
             </div>
         );
@@ -24,13 +25,7 @@ const required = (value) => {
 };
 
 
-const invalidFormat = (message) => {
-    return <div className={styles.alert}>{message}</div>;
-};
-
-const RegisterComponent = (props) => {
-    const userRef = useRef();
-
+const RegisterComponent = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -50,8 +45,7 @@ const RegisterComponent = (props) => {
     const [validPassword, setValidPassword] = useState(false);
     const [validMatch, setValidMatch] = useState(false);
 
-    const isFormValid = validUsername && validEmail && validPassword && validMatch && !!username && !!email && !!password && !!confirmPassword;
-
+    const [focusedField, setFocusedField] = useState(null);
 
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username));
@@ -83,6 +77,14 @@ const RegisterComponent = (props) => {
         setConfirmPassword(e.target.value);
     };
 
+    const handleFocus = (fieldName) => {
+        setFocusedField(fieldName);
+    };
+
+    const handleBlur = () => {
+        setFocusedField(null);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -91,23 +93,39 @@ const RegisterComponent = (props) => {
 
         form.validateAll();
 
-        if (checkBtn.context._errors.length === 0) {
+        if (checkBtn.context._errors.length === 0 && !!validUsername && validEmail && validPassword && validMatch) {
             AuthService.register(username, email, password, confirmPassword)
                 .then((response) => {
-                        setMessage(response.data.message);
-                        setSuccess(true);
-                        setLoading(true);
-                    }, (error) => {
-                        const responseMessage =  error.response.data ||
-                             (error.response.data && error.response && error.response.data.message)
-                             || error.message
-                             || error.toString();
-                       console.log(error.response.data);
-                        setMessage(responseMessage);
-                        setSuccess(false);
-                        setLoading(false);
-                    });
+                    setMessage(response.data.message);
+                    setSuccess(true);
+                    setLoading(true);
+                }, (error) => {
+                    const responseMessage = error.response.data ||
+                        (error.response.data && error.response && error.response.data.message)
+                        || error.message
+                        || error.toString();
+                    console.log(error.response.data);
+                    setMessage(responseMessage);
+                    setSuccess(false);
+                    setLoading(false);
+                });
         } else {
+            let err = "";
+            if(username.length > 0 && !validUsername){
+                err = "Invalid username!\n";
+            }
+            if(email.length > 0 && !validEmail){
+                err += "Invalid email address!\n";
+            }
+            if(password.length > 0 && !validPassword){
+                err += "Invalid password!\n";
+            }
+            if(password.length > 0 && confirmPassword.length > 0 && password !== confirmPassword){
+                err += "Passwords do not match!";
+            }
+
+
+            setMessage(err);
             setSuccess(false);
             setLoading(false);
         }
@@ -133,101 +151,100 @@ const RegisterComponent = (props) => {
                         </div>
                     )}
 
+
                     <Form onSubmit={handleSubmit} ref={setForm}>
                         {/* Username */}
-                        <label htmlFor="username"
-                               className={`${styles.label} ${validUsername ? styles.validLabel : ""}`}>
-                            Username:
-                            {validUsername ? <FaCheck className={styles.validIcon}/> : null}
-                        </label>
-                        <Input
-                            type="text"
-                            id="username"
-                            autoComplete="off"
-                            className={`${styles.input} ${validUsername ? styles.validInput : styles.invalidInput}`}
-                            onChange={onChangeUsername}
-                            value={username}
-                            required
-                            aria-invalid={validUsername ? "false" : "true"}
-                            aria-describedby="uidnote"
-                        />
-                        <div className={`${styles.alert} ${validUsername ? styles.validAlert : styles.invalidAlert}`}>
-                            <FaInfoCircle className={styles.infoCircle}/>
-                            Username must be:<br/>
-                            between 4 to 24 characters,<br/>
-                            begin with a letter,<br/>
-                            consist of letters, numbers, underscores, or hyphens.
-                        </div>
+                        <div className={styles.inputGroup}>
+                            <label htmlFor="username" className={styles.label}>
+                                Username:
+                                {validUsername ? <FaCheck className={styles.validIcon}/> : null}
+                            </label>
+                            <Input
+                                type="text"
+                                id="username"
+                                autoComplete="off"
+                                className={`${styles.input} ${focusedField === "username" ? styles.focused : ""}`}
+                                onChange={onChangeUsername}
+                                value={username}
+                                validations={[required]}
+                                aria-invalid={validUsername ? "false" : "true"}
+                                aria-describedby="uidnote"
+                                onFocus={() => handleFocus("username")}
+                                onBlur={handleBlur}
+                            />
 
+                        <InfoButton text=" Username must be:
+                                        between 4 to 24 characters,
+                                        begin with a letter,
+                                        consist of letters, numbers, underscores, or hyphens."/>
+                        </div>
                         {/* Email */}
-                        <label htmlFor="email" className={`${styles.label} ${validEmail ? styles.validLabel : ""}`}>
+                        <label htmlFor="username" className={styles.label}>
                             Email address:
                             {validEmail ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
-                        <Input
-                            type="email"
-                            id="email"
-                            ref={userRef}
-                            autoComplete="off"
-                            className={`${styles.input} ${validEmail ? styles.validInput : styles.invalidInput}`}
-                            onChange={onChangeEmail}
-                            value={email}
-                            required
-                            aria-invalid={validEmail ? "false" : "true"}
-                            aria-describedby="mailnote"
-                        />
+                        <div className={styles.inputGroup}>
+                            <Input
+                                type="email"
+                                id="email"
+                                autoComplete="off"
+                                className={`${styles.input} ${focusedField === "emial" ? styles.focused : ""}`}
+                                onChange={onChangeEmail}
+                                value={email}
+                                validations={[required]}
+                                aria-invalid={validEmail ? "false" : "true"}
+                                aria-describedby="mailnote"
+                                onFocus={() => handleFocus("email")}
+                                onBlur={handleBlur}
+                            />
+                            <InfoButton text="Must be a valid email address."/>
 
-                        <div className={`${styles.alert} ${validEmail ? styles.validAlert : styles.invalidAlert}`}>
-                            <FaInfoCircle className={styles.infoCircle}/>
-                            Must be a valid email address.
                         </div>
-
                         {/* Password */}
-                        <label htmlFor="password"
-                               className={`${styles.label} ${validPassword ? styles.validLabel : ""}`}>
+                        <label htmlFor="email" className={styles.label}>
                             Password:
                             {validPassword ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
-                        <Input
-                            type={hidePassword ? "password" : "text"}
-                            id="password"
-                            className={`${styles.input} ${validPassword ? styles.validInput : styles.invalidInput}`}
-                            onChange={onChangePassword}
-                            value={password}
-                            required
-                            aria-invalid={validPassword ? "false" : "true"}
-                            aria-describedby="pwdnote"
-                        />
-                        <PasswordStrengthIndicator password={password}/>
-
-                        <div className={`${styles.alert} ${validPassword ? styles.validAlert : styles.invalidAlert}`}>
-                            <FaInfoCircle className={styles.infoCircle}/>
-                            Password must be between 5 to 30 characters.<br/>
-                            Include uppercase and lowercase letters, numbers, and special characters<br/>
-                            to create a strong password.
+                        <div className={styles.inputGroup}>
+                            <Input
+                                type={hidePassword ? "password" : "text"}
+                                id="password"
+                                className={`${styles.input} ${focusedField === "password" ? styles.focused : ""}`}
+                                onChange={onChangePassword}
+                                value={password}
+                                validations={[required]}
+                                aria-invalid={validPassword ? "false" : "true"}
+                                aria-describedby="pwdnote"
+                                onFocus={() => handleFocus("password")}
+                                onBlur={handleBlur}
+                            />
+                            <PasswordStrengthIndicator password={password}/>
+                            <InfoButton text="Password must be between 5 to 30 characters.
+                                    Include uppercase and lowercase letters, numbers, and special characters
+                                    to create a strong password."/>
                         </div>
 
                         {/* Confirm Password */}
-                        <label htmlFor="confirm_pwd"
-                               className={`${styles.label} ${validMatch ? styles.validLabel : ""}`}>
+                        <label htmlFor="confirmPassword" className={styles.label}>
                             Confirm Password:
                             {validMatch ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
-                        <Input
-                            type={hidePassword ? "password" : "text"}
-                            id="confirm_pwd"
-                            className={`${styles.input} ${validMatch ? styles.validInput : styles.invalidInput}`}
-                            onChange={onChangeConfirmPassword}
-                            value={confirmPassword}
-                            required
-                            aria-invalid={validMatch ? "false" : "true"}
-                            aria-describedby="confirmnote"
-                        />
-
-                        <div className={`${styles.alert} ${validMatch ? styles.validAlert : styles.invalidAlert}`}>
-                            <FaInfoCircle className={styles.infoCircle}/>
-                            Must match the first password input field.
+                        <div className={styles.inputGroup}>
+                            <Input
+                                type={hidePassword ? "password" : "text"}
+                                name="confirmPassword"
+                                className={`${styles.input} ${focusedField === "confirmPassword" ? styles.focused : ""}`}
+                                onChange={onChangeConfirmPassword}
+                                value={confirmPassword}
+                                validations={[required]}
+                                aria-invalid={validMatch ? "false" : "true"}
+                                aria-describedby="confirmnote"
+                                onFocus={() => handleFocus("confirmPassword")}
+                                onBlur={handleBlur}
+                            />
+                            <InfoButton text="Must match the first password input field."/>
                         </div>
+
                         <a
                             href="#"
                             className={hidePassword ? styles.toggleBtn : styles.active}
@@ -241,8 +258,7 @@ const RegisterComponent = (props) => {
 
                         <div className={styles.buttonGroup}>
                             <button
-                                className={`${styles.button} ${loading || !isFormValid ? styles.buttonDisabled : ''}`}
-                                disabled={loading || !isFormValid}>
+                                className={styles.button}>
                                 {loading && (<span className="spinner-border spinner-border-sm"></span>)}
                                 <span>Register</span>
                             </button>
