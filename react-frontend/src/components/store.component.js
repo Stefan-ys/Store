@@ -1,13 +1,20 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/store.module.css";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
 import Pagination from "../utils/paginator.util";
 import StoreService from "../services/store.service";
 
-
 const Store = () => {
+    const mockProduct = {
+        name: "ITEM",
+        description: "lorem ipsum blablabla",
+        price: 9.99,
+        catalogNumber: 1, // Adding a unique identifier for the key
+    };
+
     const [products, setProducts] = useState([]);
-    const [sortBy, setSortBy] = useState('name'); // Default sorting criteria
+
+    const [sortBy, setSortBy] = useState("name"); // Default sorting criteria
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 10; // Number of products per page
 
@@ -16,13 +23,8 @@ const Store = () => {
     }, []);
 
     const fetchProducts = () => {
-        StoreService.getProducts() // Replace with your actual service method
-            .then((data) => {
-                setProducts(data);
-            })
-            .catch((error) => {
-                console.log('Error fetching products: ', error);
-            });
+        // Simulating fetching products from a service
+        setProducts(Array.from({ length: 30 }, (_, index) => ({ ...mockProduct, catalogNumber: index + 1 })));
     };
 
     const sortProducts = (sortBy) => {
@@ -37,19 +39,32 @@ const Store = () => {
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = products.slice(
+        indexOfFirstProduct,
+        indexOfLastProduct
+    );
 
     return (
         <div className={styles.storeContainer}>
-            <div className={styles.sortOptions}>
-                <button onClick={() => sortProducts('name')}>Sort by Name</button>
-                <button onClick={() => sortProducts('price')}>Sort by Price</button>
-                {/* Add more sorting options as needed */}
+            <div className={styles.menuBar}>
+                <div className={styles.categoryBar}>
+                    <button>ALL</button>
+                    <button>CAT 1</button>
+                    <button>CAT 2</button>
+                    <button>CAT 3</button>
+                    <button>CAT 4</button>
+                </div>
+                <div className={styles.sortOptions}>
+                    <button onClick={() => sortProducts("name")}>Sort by Name</button>
+                    <button onClick={() => sortProducts("price")}>Sort by Price</button>
+                    {/* Add more sorting options as needed */}
+                </div>
+
             </div>
             <div className={styles.productGrid}>
                 {currentProducts.map((product) => (
                     <div key={product.catalogNumber} className={styles.productBox}>
-                        {/*<img src=/!* product picture *!/ alt={product.name} />*/}
+                        {/* <img src={product.picture} alt={product.name} /> */}
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
                         <p>Price: ${product.price}</p>
