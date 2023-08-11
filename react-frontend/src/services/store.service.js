@@ -13,6 +13,17 @@ const getProducts = () => {
         });
 };
 
-const StoreService = {getProducts};
+const getProduct = () => {
+    return axios
+        .get(API_STORE_URL + "/product")
+        .then((response)=> response.data)
+        .catch((error) => {
+            console.log("Axios error: ", error);
+            throw error;
+        })
+}
+
+
+const StoreService = {getProducts, getProduct};
 
 export default StoreService;

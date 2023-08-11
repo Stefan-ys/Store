@@ -7,6 +7,8 @@ import Register from "./components/register.component";
 import Login from "./components/login.component";
 import MyProfile from "./components/my-profile.component";
 import Store from "./components/store.component";
+import Product from "./components/product-view.component";
+import ShoppingCart from "./components/shopping-cart.component";
 import AllUsers from "./components/all-users.component";
 
 
@@ -25,6 +27,8 @@ const App = () => {
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/my-profile" element={<MyProfile/>}/>
                     <Route path="/store" element={<Store/>}/>
+                    <Route path="/product" element={<Product/>}/>
+                    <Route path="/shopping-cart" element={<ShoppingCart/>}/>
                     {/*<Route path="/admin" element={<AdminBoard/>}/>*/}
                     {/*<Route path="/all-users" element={<AllUsers/>}/>*/}
                 </Routes>

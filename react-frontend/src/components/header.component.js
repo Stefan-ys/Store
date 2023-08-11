@@ -66,6 +66,12 @@ const HeaderComponent = () => {
                                         My Profile
                                     </NavLink>
                                 </li>
+                                <li>
+                                    <NavLink to="/shopping-cart" activeClassName={styles.active}
+                                             className={styles.navLink}>
+                                        Shopping Cart
+                                    </NavLink>
+                                </li>
                                 {showLogoutConfirmation && (
                                     <div className={styles.logoutConfirmation}>
                                         <p className={styles.logoutConfirmationTextArea}>Are you sure you want to log
@@ -82,7 +88,8 @@ const HeaderComponent = () => {
                                     <button
                                         className={styles.navLink}
                                         onClick={() => setShowLogoutConfirmation(true)}
-                                    >Logout</button>
+                                    >Logout
+                                    </button>
                                 </li>
                             </>
                         ) : (
@@ -103,7 +110,9 @@ const HeaderComponent = () => {
                 </nav>
                 <div className={styles.icons}>
                     <div className={styles.iconContainer}>
-                        <FaShoppingCart/>
+                        <NavLink to="/shopping-cart">
+                            <FaShoppingCart/>
+                        </NavLink>
                         <span className={styles.cartCount}>5</span>
                     </div>
                     <div className={styles.iconContainer}>

@@ -7,7 +7,7 @@ import StoreService from "../services/store.service";
 const Store = () => {
     const mockProduct = {
         name: "ITEM",
-        description: "lorem ipsum blablabla",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         price: 9.99,
         catalogNumber: 1, // Adding a unique identifier for the key
     };
@@ -67,8 +67,8 @@ const Store = () => {
                         {/* <img src={product.picture} alt={product.name} /> */}
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
-                        <p>Price: ${product.price}</p>
-                        <button>Add to Cart</button>
+                        <p>Price: {product.price} $</p>
+                        <button className={styles.button}>Add to Cart</button>
                     </div>
                 ))}
             </div>

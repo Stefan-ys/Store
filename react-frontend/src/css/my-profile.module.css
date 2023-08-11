@@ -30,7 +30,8 @@
 .value,
 .editInput {
     flex: 1;
-    font-size: 18px; /* Increase font size */
+    font-size: 18px;
+    text-align: left;
 }
 
 .editInput {
