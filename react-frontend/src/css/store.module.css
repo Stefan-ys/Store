@@ -1,0 +1,39 @@
+
+.storeContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.menuBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.sortOptions {
+    display: flex;
+    gap: 10px;
+}
+
+.categoryBar {
+    display: flex;
+    gap: 10px;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.productBox {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
