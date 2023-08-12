@@ -27,36 +27,6 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
 
-//
-//    @Value("${project.app.jwtCookieName}")
-//    private String jwtCookie;
-//
-//    public String getJwtFromCookies(HttpServletRequest request) {
-//        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-//        if (cookie != null) {
-//            return cookie.getValue();
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-//        String jwt = generateJwtTokenFromUsername(userPrincipal.getUsername());
-//        return ResponseCookie
-//                .from(jwtCookie, jwt)
-//                .path("/api")
-//                .maxAge(24 * 60 * 60)
-//                .httpOnly(true)
-//                .build();
-//    }
-//
-//    public ResponseCookie getCleanJwtCookie() {
-//        return ResponseCookie
-//                .from(jwtCookie)
-//                .path("/api")
-//                .build();
-//    }
-//
     public String getUsernameFromJwtToken(String token) {
         return Jwts
                 .parserBuilder()

@@ -13,35 +13,38 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/store")
 public class StoreController {
     private final ProductService productService;
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable ObjectId productId) {
-        ProductStoreResponse productViewModel = productService.getProduct(productId);
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable String productId) {
+
+        ProductStoreResponse productViewModel = productService.getProduct(new ObjectId(productId));
         return ResponseEntity.ok(productViewModel);
     }
 
     @GetMapping("/all-products")
-    public ResponseEntity<List<ProductStoreResponse>> getAllProducts() {
-        List<ProductStoreResponse> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductStoreResponse>> getAllProducts(String sortBy) {
+        List<ProductStoreResponse> products = productService.getAllProducts(sortBy);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category) {
-        List<ProductStoreResponse> products = productService.getProductsByCategory(category);
+    public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category, String sortBy) {
+        List<ProductStoreResponse> products = productService.getProductsByCategory(category, sortBy);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status) {
-        List<ProductStoreResponse> products = productService.getProductsByStatus(status);
+    public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status, String sortBy) {
+        List<ProductStoreResponse> products = productService.getProductsByStatus(status, sortBy);
         return ResponseEntity.ok(products);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-product")
     public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
@@ -62,7 +65,6 @@ public class StoreController {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();
     }
-
 
 
 }

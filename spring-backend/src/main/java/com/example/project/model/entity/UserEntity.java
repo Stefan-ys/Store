@@ -1,6 +1,6 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.DeliveryInformation;
+import com.example.project.model.embeddable.Address;
 import com.example.project.model.embeddable.ShoppingCart;
 
 
@@ -21,6 +21,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class UserEntity extends BaseEntity {
+    private LocalDate lastActiveDate = LocalDate.now();
     @Indexed(unique = true)
     @NotBlank
     @Size(min = 4, max = 24)
@@ -36,9 +37,10 @@ public class UserEntity extends BaseEntity {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private LocalDate lastActiveDate = LocalDate.now();
     @DBRef
-    private DeliveryInformation deliveryInformation;
+    private Address paymentAddress;
+    @DBRef
+    private Address deliveryInformation;
     @DBRef
     private ShoppingCart shoppingCart;
 

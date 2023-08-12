@@ -5,6 +5,7 @@ import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,15 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@AllArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-users")
