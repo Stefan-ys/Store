@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import styles from "../css/product-view.module.css";
 import { withRouter } from "../common/with-router";
 import StoreService from "../services/store.service";
+import { useParams } from "react-router-dom";
 
 const ProductView = () => {
+    const { productId } = useParams();
+
     const mockProduct = {
         name: "ITEM",
         description: "Lorem ipsum dolor sit amet...",
@@ -33,12 +36,15 @@ const ProductView = () => {
     const [loading, setLoading] = useState(false);
     const [reviewExpanded, setReviewExpanded] = useState(false);
 
-    const fetchProductData = () => {
+    useEffect(() => {
+        fetchProductData(productId);
+    }, [productId]);
+
+    const fetchProductData = (productId) => {
         setLoading(true);
-        StoreService.getProduct()
+        StoreService.getProduct(productId)
             .then((data) => {
-                // TODO: Set the fetched product data to the state 'product'
-                setLoading(false);
+                setProduct(data);
             })
             .catch((error) => {
                 console.log("Error fetching product data: ", error);
@@ -47,12 +53,18 @@ const ProductView = () => {
                         ? error.response.data.message
                         : "An error has occurred."
                 );
-            });
+            })
+            .finally(
+                setLoading(false)
+            );
+
+
     };
 
     useEffect(() => {
-        fetchProductData();
-    }, []);
+        fetchProductData(productId);
+    }, [productId]);
+    
 
     const handleAddToCartClick = () => {
         // TODO: Implement the logic to add the product to the cart
@@ -120,7 +132,7 @@ const ProductView = () => {
                                     id="username"
                                     name="username"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
+                                // Add more attributes and event handlers as needed
                                 />
                             </div>
                             <div className={styles.formGroup}>
@@ -129,7 +141,7 @@ const ProductView = () => {
                                     id="rating"
                                     name="rating"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
+                                // Add more attributes and event handlers as needed
                                 >
                                     <option value="5">5 Stars</option>
                                     <option value="4">4 Stars</option>
@@ -145,7 +157,7 @@ const ProductView = () => {
                                     name="comment"
                                     rows="4"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
+                                // Add more attributes and event handlers as needed
                                 ></textarea>
                             </div>
                             <button type="submit" className={styles.submitReviewButton}>

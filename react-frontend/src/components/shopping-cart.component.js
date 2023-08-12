@@ -6,16 +6,14 @@ const ShoppingCart = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Example user products in the shopping cart
     const userProducts = [
         {name: "Product 1", count: 2, price: 10.99},
         {name: "Product 2", count: 1, price: 5.99},
         {name: "Product 3", count: 5, price: 1},
         {name: "Product 5", count: 1, price: 44.5},
-        // ... add more products as needed ...
+
     ];
 
-    // Calculate total price and total products count
     const totalPrice = userProducts.reduce((total, product) => total + product.count * product.price, 0);
     const totalProducts = userProducts.reduce((total, product) => total + product.count, 0);
 
