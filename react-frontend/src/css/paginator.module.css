@@ -1,0 +1,41 @@
+/* paginator.module.css */
+
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  
+  .pagination {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination li button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .pagination li.active {
+    background-color: white;
+    color: black;
+  }
+  

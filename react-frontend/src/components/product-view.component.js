@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "../css/product-view.module.css";
 import { withRouter } from "../common/with-router";
 import StoreService from "../services/store.service";
-import { useParams } from "react-router-dom";
+import ShoppingCartService from "../services/shopping-cart.service";
+import { useParams, useLocation } from "react-router-dom";
+
 
 const ProductView = () => {
     const { productId } = useParams();
+    const location = useLocation();
 
     const mockProduct = {
         name: "ITEM",
@@ -42,6 +45,7 @@ const ProductView = () => {
 
     const fetchProductData = (productId) => {
         setLoading(true);
+        console.log(productId);
         StoreService.getProduct(productId)
             .then((data) => {
                 setProduct(data);
@@ -57,17 +61,32 @@ const ProductView = () => {
             .finally(
                 setLoading(false)
             );
-
-
     };
 
     useEffect(() => {
         fetchProductData(productId);
     }, [productId]);
-    
 
-    const handleAddToCartClick = () => {
-        // TODO: Implement the logic to add the product to the cart
+
+
+    const handleAddToCartClick = (productId) => {
+        setLoading(true);
+        console.log(productId);
+        ShoppingCartService.addToCart(productId)
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.log("Error fetching product data: ", error);
+                setMessage(
+                    error.response
+                        ? error.response.data.message
+                        : "An error has occurred."
+                );
+            })
+            .finally(
+                setLoading(false)
+            );
     };
 
     const handleLeaveReviewClick = () => {

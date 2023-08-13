@@ -1,5 +1,5 @@
 import axios from "axios";
-import authHeader from "./auth-header";
+
 
 const API_STORE_URL = "http://localhost:8080/api/store";
 
@@ -13,9 +13,10 @@ const getProducts = (sortBy) => {
         });
 };
 
-const getProduct = () => {
+const getProduct = (productId) => {
+    console.log("service", productId);
     return axios
-        .get(API_STORE_URL + "/product/{productId}")
+        .get(API_STORE_URL + "/product/" + productId)
         .then((response)=> response.data)
         .catch((error) => {
             console.log("Axios error: ", error);

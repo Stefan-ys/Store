@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/store.module.css";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
 import Pagination from "../utils/paginator.util";
 import StoreService from "../services/store.service";
 import { Link } from "react-router-dom";
@@ -17,15 +17,15 @@ const Store = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const [sortBy, setSortBy] = useState("name"); // Default sorting criteria
+    const [sortBy, setSortBy] = useState("name"); 
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 10; // Number of products per page
+    const [productsPerPage, setProductsPerPage] = useState(12); 
 
     useEffect(() => {
-        fetchProducts();
+        getProducts();
     }, []);
 
-    const fetchProducts = () => {
+    const getProducts = () => {
         setLoading(true);
         // setProducts(Array.from({ length: 30 }, (_, index) => ({ ...mockProduct, catalogNumber: index + 1 })));
         StoreService.getProducts(sortBy)
@@ -41,11 +41,7 @@ const Store = () => {
             });
     };
 
-    const sortProducts = (sortBy) => {
-        setSortBy(sortBy);
-        // Implement sorting logic based on the selected criteria
-        // Update the 'products' state with the sorted products
-    };
+
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -69,8 +65,8 @@ const Store = () => {
                     <button>CAT 4</button>
                 </div>
                 <div className={styles.sortOptions}>
-                    <button onClick={() => sortProducts("name")}>Sort by Name</button>
-                    <button onClick={() => sortProducts("price")}>Sort by Price</button>
+                    <button onClick={() => getProducts("name")}>Sort by Name</button>
+                    <button onClick={() => getProducts("price")}>Sort by Price</button>
                     {/* Add more sorting options as needed */}
                 </div>
 
@@ -78,15 +74,15 @@ const Store = () => {
             <div className={styles.productGrid}>
                 {currentProducts.map((product) => (
                     <div key={product.catalogNumber} className={styles.productBox}>
-                        
+
                         {/* <img src={product.picture} alt={product.name} /> */}
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
                         <p>Price: {product.price} $</p>
                         <div className={styles.buttonsContainer}>
-                        <Link to={`/product/${product.id}`}>
-                            <button className={styles.button}>View Product</button>
-                        </Link>
+                        <Link to={`/product/${product.id}`} className={styles.button}>
+                                View Product
+                            </Link>
                             <button className={styles.button}>Add to Cart</button>
                         </div>
                     </div>
