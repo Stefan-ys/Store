@@ -5,16 +5,12 @@ import com.example.project.payload.request.MyProfileUpdateRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.MyProfileResponse;
 import com.example.project.payload.response.UserResponse;
-import com.example.project.model.embeddable.ShoppingCartItem;
-import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.enums.RoleEnum;
-import com.example.project.repository.ProductRepository;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +26,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
@@ -101,39 +96,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void addToCart(String username, ObjectId productId) {
-        UserEntity userEntity = getUserByUsername(username);
-        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
-
-        ShoppingCartItem item = new ShoppingCartItem();
-        item.setProductId(productId);
-        item.setPrice(productEntity.getPrice());
-        item.setWeight(productEntity.getWeight());
-        item.setQuantity(1);
-
-        userEntity.getShoppingCart().addItem(item);
-    }
-
-    @Override
-    public void removeFromCart(String username, ObjectId productId) {
-        UserEntity userEntity = getUserByUsername(username);
-        ShoppingCartItem item = new ShoppingCartItem();
-        item.setProductId(productId);
-        userEntity.getShoppingCart().removeItem(item);
-
-    }
-
-    @Override
-    public void adjustProductQuantity(String username, ObjectId productId, int quantity) {
-        if (quantity <= 0) {
-            removeFromCart(username, productId);
-            return;
-        }
-        UserEntity userEntity = getUserByUsername(username);
-        ShoppingCartItem item = userEntity.getShoppingCart().getItem(productId);
-        item.setQuantity(quantity);
-    }
 
 
     private UserResponse convertToViewModel(UserEntity userEntity) {

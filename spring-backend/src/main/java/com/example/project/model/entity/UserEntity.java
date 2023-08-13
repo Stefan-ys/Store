@@ -4,6 +4,7 @@ import com.example.project.model.embeddable.Address;
 import com.example.project.model.embeddable.ShoppingCart;
 
 
+import com.example.project.model.embeddable.ShoppingCartProduct;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -43,6 +44,7 @@ public class UserEntity extends BaseEntity {
     private Address deliveryInformation;
     @DBRef
     private ShoppingCart shoppingCart;
+
 
 }
 

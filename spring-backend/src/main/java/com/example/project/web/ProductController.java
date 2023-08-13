@@ -1,7 +1,7 @@
 package com.example.project.web;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductStoreResponse;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -13,35 +13,37 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/products")
+@RequestMapping("/api/store")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable ObjectId productId) {
-        ProductResponse productViewModel = productService.getProduct(productId);
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable("productId") String productId) {
+        ProductStoreResponse productViewModel = productService.getProduct(new ObjectId(productId));
         return ResponseEntity.ok(productViewModel);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllProducts();
+    @GetMapping("/all-products")
+    public ResponseEntity<List<ProductStoreResponse>> getAllProducts(String sortBy) {
+        List<ProductStoreResponse> products = productService.getAllProducts(sortBy);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String category) {
-        List<ProductResponse> products = productService.getProductsByCategory(category);
+    public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category, String sortBy) {
+        List<ProductStoreResponse> products = productService.getProductsByCategory(category, sortBy);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<ProductResponse>> getProductsByStatus(@PathVariable String status) {
-        List<ProductResponse> products = productService.getProductsByStatus(status);
+    public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status, String sortBy) {
+        List<ProductStoreResponse> products = productService.getProductsByStatus(status, sortBy);
         return ResponseEntity.ok(products);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-product")
     public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
@@ -62,7 +64,5 @@ public class ProductController {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();
     }
-
-
 
 }

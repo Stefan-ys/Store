@@ -25,9 +25,4 @@ public interface UserService {
 
     MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest);
 
-    void addToCart(String username, ObjectId productId);
-
-    void removeFromCart(String username, ObjectId productId);
-
-    void adjustProductQuantity(String username, ObjectId productId, int quantity);
 }

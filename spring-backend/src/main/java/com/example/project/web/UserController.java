@@ -52,22 +52,5 @@ public class UserController {
         return ResponseEntity.ok(myProfile);
     }
 
-    @PostMapping("/{username}/add-to-cart")
-    public ResponseEntity<Void> addToCart(@PathVariable String username, @RequestParam("productId") ObjectId productId) {
-        userService.addToCart(username, productId);
-        return ResponseEntity.ok().build();
-    }
 
-    @DeleteMapping("/{username}/remove-from-cart")
-    public ResponseEntity<Void> removeFromCart(@PathVariable String username, @RequestParam("productId") ObjectId productId) {
-        userService.removeFromCart(username, productId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{username}/adjust-quantity")
-    public ResponseEntity<Void> adjustProductQuantity(@PathVariable String username, @RequestParam("productId") ObjectId productId,
-                                                      @RequestParam("quantity") int quantity) {
-        userService.adjustProductQuantity(username, productId, quantity);
-        return ResponseEntity.ok().build();
-    }
 }

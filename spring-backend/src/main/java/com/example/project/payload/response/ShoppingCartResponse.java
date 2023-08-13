@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class ShoppingCartResponse {
     private BigDecimal totalPrice;
-    private double totalWeight;
-    private List<ItemResponse> items;
+    private BigDecimal totalWeight;
+    private List<ShoppingCartProductResponse> products;
 }
