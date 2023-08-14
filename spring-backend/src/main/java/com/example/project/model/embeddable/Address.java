@@ -1,7 +1,6 @@
 package com.example.project.model.embeddable;
 
 import lombok.Data;
-
 @Data
 public class Address {
     private String firstName;

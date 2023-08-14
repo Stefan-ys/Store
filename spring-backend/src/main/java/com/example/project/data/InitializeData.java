@@ -45,7 +45,7 @@ public class InitializeData {
                         "Lorem ipsum bla bla bla.......",
                         i % 2 == 0 ? CategoryEnum.ITEM_TYPE_1 : CategoryEnum.ITEM_TYPE_2,
                         i % 3 == 0 ? ProductStatusEnum.NEW : ProductStatusEnum.PROMOTION,
-                        (Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
+                        BigDecimal.valueOf(Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
                 );
             }
 
@@ -83,7 +83,7 @@ public class InitializeData {
 
     }
 
-    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, double weight) {
+    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(name);
         productEntity.setPrice(price);

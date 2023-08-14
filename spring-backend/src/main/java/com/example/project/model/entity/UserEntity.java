@@ -4,13 +4,11 @@ import com.example.project.model.embeddable.Address;
 import com.example.project.model.embeddable.ShoppingCart;
 
 
-import com.example.project.model.embeddable.ShoppingCartProduct;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -22,7 +20,6 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class UserEntity extends BaseEntity {
-    private LocalDate lastActiveDate = LocalDate.now();
     @Indexed(unique = true)
     @NotBlank
     @Size(min = 4, max = 24)
@@ -34,16 +31,14 @@ public class UserEntity extends BaseEntity {
     @NotBlank
     @Size(min = 5, max = 30)
     private String password;
-    private Set<RoleEntity> roles = new HashSet<>();
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    @DBRef
+    private Set<RoleEntity> roles = new HashSet<>();
+    private LocalDate lastDateActive = LocalDate.now();
+    private Address deliveryAddress;
     private Address paymentAddress;
-    @DBRef
-    private Address deliveryInformation;
-    @DBRef
-    private ShoppingCart shoppingCart;
+    private ShoppingCart shoppingCart = new ShoppingCart();
 
 
 }

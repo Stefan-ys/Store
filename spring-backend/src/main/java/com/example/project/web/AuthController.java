@@ -39,8 +39,6 @@ public class AuthController {
 
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
 
             List<String> roles = userDetails
                     .getAuthorities()
@@ -90,7 +88,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser() {
-//        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+
         return ResponseEntity.ok()
                 .body("You've been signed out!");
     }

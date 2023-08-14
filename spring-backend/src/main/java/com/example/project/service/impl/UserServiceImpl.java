@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserActivity(String username) {
         UserEntity userEntity = getUserByUsername(username);
 
-        userEntity.setLastActiveDate(LocalDate.now());
+        userEntity.setLastDateActive(LocalDate.now());
         userRepository.save(userEntity);
     }
 
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList()));
         LocalDate currentDate = LocalDate.now();
         LocalDate createdDate = userEntity.getCreatedDate();
-        LocalDate activeDate = userEntity.getLastActiveDate();
+        LocalDate activeDate = userEntity.getLastDateActive();
 
         viewModel.setCreatedAt(createdDate +
                 String.format("(%s days since)", ChronoUnit.DAYS.between(currentDate, currentDate)));
