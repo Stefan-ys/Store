@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styles from "../css/store.module.css";
-import { withRouter } from "../common/with-router";
+import {withRouter} from "../common/with-router";
 import Pagination from "../utils/paginator.util";
 import StoreService from "../services/store.service";
-import { Link } from "react-router-dom";
+import ShoppingCartService from "../services/shopping-cart.service";
+import {Link} from "react-router-dom";
 
 const Store = () => {
     const mockProduct = {
@@ -17,14 +18,17 @@ const Store = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const [sortBy, setSortBy] = useState("name"); 
+    const [sortBy, setSortBy] = useState("name");
     const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage, setProductsPerPage] = useState(12); 
+    const [productsPerPage, setProductsPerPage] = useState(12);
 
     useEffect(() => {
         getProducts();
     }, []);
 
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
     const getProducts = () => {
         setLoading(true);
         // setProducts(Array.from({ length: 30 }, (_, index) => ({ ...mockProduct, catalogNumber: index + 1 })));
@@ -33,7 +37,23 @@ const Store = () => {
                 setProducts(data);
             })
             .catch((error) => {
-                console.log("Error fetching user profile data: ", error);
+                console.log("Error fetching products data: ", error);
+                setMessage(error.response ? error.response.data.message : "An error has occurred.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    const addToShoppingCart = (productId) => {
+        setLoading(true);
+        ShoppingCartService.addToCart(productId)
+            .then((data) => {
+                // TODO: show on success message
+                setMessage("Product added to cart successfully.")
+            })
+            .catch((error) => {
+                console.log("Error adding product to cart: ", error);
                 setMessage(error.response ? error.response.data.message : "An error has occurred.");
             })
             .finally(() => {
@@ -42,10 +62,6 @@ const Store = () => {
     };
 
 
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -67,7 +83,6 @@ const Store = () => {
                 <div className={styles.sortOptions}>
                     <button onClick={() => getProducts("name")}>Sort by Name</button>
                     <button onClick={() => getProducts("price")}>Sort by Price</button>
-                    {/* Add more sorting options as needed */}
                 </div>
 
             </div>
@@ -80,10 +95,12 @@ const Store = () => {
                         <p>{product.description}</p>
                         <p>Price: {product.price} $</p>
                         <div className={styles.buttonsContainer}>
-                        <Link to={`/product/${product.id}`} className={styles.button}>
+                            <Link to={`/product/${product.id}`} className={styles.button}>
                                 View Product
                             </Link>
-                            <button className={styles.button}>Add to Cart</button>
+                            <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to
+                                Cart
+                            </button>
                         </div>
                     </div>
                 ))}

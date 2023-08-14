@@ -1,20 +1,16 @@
-import React, {useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
+import styles from "../css/signup-signin.module.css";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import {withRouter} from "../common/with-router";
-import {Link} from "react-router-dom";
 import AuthService from "../services/auth.service";
-import {FaEye} from "react-icons/fa";
-import styles from "../css/signup-signin.module.css";
+import { Link } from "react-router-dom";
+import { withRouter } from "../common/with-router";
+import { FaEye } from "react-icons/fa";
 
 const required = (value) => {
     if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
+        return <div className={styles.alert}>This field is required!</div>;
     }
 };
 
@@ -24,19 +20,9 @@ const Login = (props) => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(null);
-    const [checkBtn, setCheckBtn] = useState(null);
     const [hidePassword, setHidePassword] = useState(true);
-
     const [focusedField, setFocusedField] = useState(null);
-
-
-    const onChangeUsername = (e) => {
-        setUsername(e.target.value);
-    };
-
-    const onChangePassword = (e) => {
-        setPassword(e.target.value);
-    };
+    const checkButton = useRef();
 
     const handleFocus = (fieldName) => {
         setFocusedField(fieldName);
@@ -46,27 +32,26 @@ const Login = (props) => {
         setFocusedField(null);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
         setMessage("");
         setLoading(true);
 
-        form.validateAll();
+        try {
+            await form.validateAll();
+            await AuthService.login(username, password);
+            props.history.push("/nome");
+            window.location.reload();
 
-        AuthService.login(username, password)
-            .then(() => {
-                window.open("/my-profile");
-                window.location.reload();
-            }, (error) => {
-                const responseMessage = (error.response && error.response.data && error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+        } catch (error) {
+            const responseMessage = (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString();
+            setMessage(responseMessage);
 
-                setMessage(responseMessage);
-                setLoading(false);
-            });
-
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -82,6 +67,7 @@ const Login = (props) => {
             )}
 
             <Form onSubmit={handleSubmit} ref={setForm}>
+                {/* USERNAME INPUT */}
                 <div className={styles.inputGroup}>
                     <label htmlFor="username" className={styles.label}>
                         Username:
@@ -90,17 +76,16 @@ const Login = (props) => {
                         type="text"
                         name="username"
                         autoComplete="off"
-                        onChange={onChangeUsername}
                         value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         validations={[required]}
                         onFocus={() => handleFocus("username")}
                         onBlur={handleBlur}
-                        className={`${styles.input} ${
-                            focusedField === "username" ? styles.focused : ""
-                        }`}
+                        className={`${styles.input} ${focusedField === "username" ? styles.focused : ""
+                            }`}
                     />
                 </div>
-
+                {/* PASSWORD INPUT */}
                 <div className={styles.inputGroup}>
                     <label htmlFor="password" className={styles.label}>
                         Password:
@@ -109,40 +94,41 @@ const Login = (props) => {
                         type={hidePassword ? "password" : "text"}
                         name="password"
                         autoComplete="off"
-                        onChange={onChangePassword}
                         value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         validations={[required]}
                         onFocus={() => handleFocus("password")}
                         onBlur={handleBlur}
-                        className={`${styles.input} ${
-                            focusedField === "password" ? styles.focused : ""
-                        }`}
+                        className={`${styles.input} ${focusedField === "password" ? styles.focused : ""
+                            }`}
                     />
                     <a
                         href="#"
-                        className={hidePassword ? styles.toggleBtn : styles.active}
-                        onClick={() => {
-                            setHidePassword(!hidePassword);
-                        }}
+                        className={`${styles.toggleBtn} ${hidePassword ? "" : styles.active}`}
+                        onClick={() => setHidePassword(!hidePassword)}
                     >
-                        <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>
+                        <FaEye style={{ color: hidePassword ? "#c3c3c3" : "#FF0054" }} />
                         {hidePassword ? "Show" : "Hide"} password
                     </a>
                 </div>
 
+                {/* SUBMIT BUTTON */}
                 <div className={styles.buttonGroup}>
-                    <button className={styles.button}>
-                        {loading && <span className="spinner-border spinner-border-sm"></span>}
+                    <CheckButton
+                        ref={checkButton}
+                        className={styles.button}
+                        disabled={loading}
+                    >
+                        {loading && <div className={styles.spinner}></div>}
                         <span>Login</span>
-                    </button>
+                    </CheckButton>
                 </div>
-
-                <CheckButton ref={setCheckBtn}></CheckButton>
             </Form>
 
+            {/* SIGN UP LINK */}
             <p className={styles.paragraph}>
                 Need an Account?
-                <br/>
+                <br />
                 <span className={styles.line}>
                     <Link to="/signup">Sign Up</Link>
                 </span>

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styles from "../css/product-view.module.css";
-import { withRouter } from "../common/with-router";
+import {withRouter} from "../common/with-router";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
-import { useParams, useLocation } from "react-router-dom";
+import {useParams, useLocation} from "react-router-dom";
 
 
 const ProductView = () => {
-    const { productId } = useParams();
+    const {productId} = useParams();
     const location = useLocation();
 
     const mockProduct = {
@@ -68,25 +68,20 @@ const ProductView = () => {
     }, [productId]);
 
 
-
-    const handleAddToCartClick = (productId) => {
+    const addToShoppingCart = (productId) => {
         setLoading(true);
-        console.log(productId);
         ShoppingCartService.addToCart(productId)
             .then((data) => {
-                console.log(data);
+                // TODO: show on success message
+                setMessage("Product added to cart successfully.")
             })
             .catch((error) => {
-                console.log("Error fetching product data: ", error);
-                setMessage(
-                    error.response
-                        ? error.response.data.message
-                        : "An error has occurred."
-                );
+                console.log("Error adding product to cart: ", error);
+                setMessage(error.response ? error.response.data.message : "An error has occurred.");
             })
-            .finally(
-                setLoading(false)
-            );
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     const handleLeaveReviewClick = () => {
@@ -115,7 +110,7 @@ const ProductView = () => {
 
             <button
                 className={styles.button}
-                onClick={handleAddToCartClick}
+                onClick={addToShoppingCart(product.id)}
                 disabled={loading}
             >
                 {loading ? "Adding to Cart..." : "Add to Cart"}
@@ -151,7 +146,7 @@ const ProductView = () => {
                                     id="username"
                                     name="username"
                                     className={styles.inputField}
-                                // Add more attributes and event handlers as needed
+                                    // Add more attributes and event handlers as needed
                                 />
                             </div>
                             <div className={styles.formGroup}>
@@ -160,7 +155,7 @@ const ProductView = () => {
                                     id="rating"
                                     name="rating"
                                     className={styles.inputField}
-                                // Add more attributes and event handlers as needed
+                                    // Add more attributes and event handlers as needed
                                 >
                                     <option value="5">5 Stars</option>
                                     <option value="4">4 Stars</option>
@@ -176,7 +171,7 @@ const ProductView = () => {
                                     name="comment"
                                     rows="4"
                                     className={styles.inputField}
-                                // Add more attributes and event handlers as needed
+                                    // Add more attributes and event handlers as needed
                                 ></textarea>
                             </div>
                             <button type="submit" className={styles.submitReviewButton}>

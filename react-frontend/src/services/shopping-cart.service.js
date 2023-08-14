@@ -3,9 +3,20 @@ import axios from "axios";
 const API_CART_URL = "http://localhost:8080/api/shopping-cart";
 
 
-const addToCart = (productId) => {
+const getProducts = () => {
     return axios
-        .post(API_CART_URL + "/add", { productId })
+        .get(API_CART_URL + "/get-products")
+        .then((response) => response.data)
+        .then((error) => {
+            console.error("Error getting products from cart : ", error);
+            throw error;
+        });
+}
+const addToCart = (productId) => {
+
+    return axios
+        .post(API_CART_URL + "/add-product/" + productId)
+        .then((response) => response.data)
         .then((error) => {
             console.error("Error adding to cart: ", error);
             throw error;
@@ -14,7 +25,7 @@ const addToCart = (productId) => {
 
 const removeFromCart = (productId) => {
     return axios
-        .delete(API_CART_URL + "/remove/" + { productId })
+        .delete(API_CART_URL + "/remove-product/" + productId)
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error removing from cart: ", error);
@@ -24,7 +35,7 @@ const removeFromCart = (productId) => {
 
 const removeAll = () => {
     return axios
-        .delete(API_CART_URL + "remove-all")
+        .delete(API_CART_URL + "/clear-cart")
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error remove from cart: ", error);
@@ -34,7 +45,8 @@ const removeAll = () => {
 
 const changeQuantity = (productId, quantity) => {
     return axios
-        .put((response) => response.data)
+        .put(API_CART_URL + "/change-quantity/" + productId, {params: {quantity}})
+        .then((response) => response.data)
         .catch((error) => {
             console.log("Error changing quantity: ", error);
             throw error;
@@ -45,5 +57,5 @@ const transferToUserCart = (cartItems) => {
 
 };
 
-const ShoppingCartService = { addToCart, removeFromCart, removeAll, changeQuantity, transferToUserCart };
+const ShoppingCartService = {getProducts ,addToCart, removeFromCart, removeAll, changeQuantity, transferToUserCart};
 export default ShoppingCartService;
