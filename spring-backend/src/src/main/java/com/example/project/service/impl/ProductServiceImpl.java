@@ -36,15 +36,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductStoreResponse> getAllProducts() {
+    public List<ProductStoreResponse> getAllProducts(String sortBy) {
         List<ProductEntity> products = productRepository.findAll();
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductStoreResponse.class))
+                .map(product -> {
+                    ProductStoreResponse productStoreResponse = modelMapper
+                            .map(product, ProductStoreResponse.class);
+                    productStoreResponse.setId(product.getId().toString());
+                    return productStoreResponse;
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductStoreResponse> getProductsByCategory(String category) {
+    public List<ProductStoreResponse> getProductsByCategory(String category, String sortBy) {
         CategoryEnum categoryEnum = getProductCategoryEnum(category);
 
         List<ProductEntity> products = productRepository.findAllByProductCategory(categoryEnum);
@@ -54,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductStoreResponse> getProductsByStatus(String status) {
+    public List<ProductStoreResponse> getProductsByStatus(String status, String sortBy) {
         ProductStatusEnum statusEnum = getProductStatusEnum(status);
 
         List<ProductEntity> products = productRepository.findAllByStatus(statusEnum);
@@ -77,6 +82,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.getStatus().add(productStatusEnum);
         productRepository.save(productEntity);
     }
+
     @Override
     public void removeProductStatus(ObjectId productId, String status) {
         ProductEntity productEntity = getProductById(productId);

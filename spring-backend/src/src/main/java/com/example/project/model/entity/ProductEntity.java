@@ -35,7 +35,7 @@ public class ProductEntity extends BaseEntity {
     private String manufacturer;
     private int rating;
     @NotNull
-    private double weight;
+    private BigDecimal weight;
     private LocalDate expirationDate;
     @DBRef
     private Set<ProductReview> reviews = new HashSet<>();

@@ -70,7 +70,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api/home").permitAll()
                         .requestMatchers("/api/store/**").permitAll()
-                        .requestMatchers("/api/users/all").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/moderator/**").hasAuthority("MODERATOR")
                         .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .anyRequest().authenticated()
                 ).cors(AbstractHttpConfigurer::disable);
