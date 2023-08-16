@@ -22,26 +22,38 @@ public class ProductController {
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable("productId") String productId) {
-        ProductStoreResponse productViewModel = productService.getProduct(new ObjectId(productId));
-        return ResponseEntity.ok(productViewModel);
+        ProductStoreResponse productResponse = productService.getProduct(new ObjectId(productId));
+        if(productResponse == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
     @GetMapping("/all-products")
     public ResponseEntity<List<ProductStoreResponse>> getAllProducts(String sortBy) {
         List<ProductStoreResponse> products = productService.getAllProducts(sortBy);
-        return ResponseEntity.ok(products);
+        if(products == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/category/{category}")
     public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category, String sortBy) {
         List<ProductStoreResponse> products = productService.getProductsByCategory(category, sortBy);
-        return ResponseEntity.ok(products);
+        if(products == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status, String sortBy) {
         List<ProductStoreResponse> products = productService.getProductsByStatus(status, sortBy);
-        return ResponseEntity.ok(products);
+        if(products == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

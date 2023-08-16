@@ -1,19 +1,18 @@
 package com.example.project.web;
 
-import com.example.project.payload.request.MyProfileUpdateRequest;
-import com.example.project.payload.response.MyProfileResponse;
-import com.example.project.payload.response.UserResponse;
+import com.example.project.payload.request.AddressRequest;
+import com.example.project.payload.request.ProfileEditRequest;
+import com.example.project.payload.response.AddressResponse;
+import com.example.project.payload.response.ProfileResponse;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -22,35 +21,48 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/all-users")
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
-        UserResponse user = userService.getUser(username);
-        return ResponseEntity.ok(user);
-    }
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-profile")
-    public ResponseEntity<MyProfileResponse> getMyProfile() {
+    public ResponseEntity<ProfileResponse> retrieveProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MyProfileResponse myProfile = userService.getMyProfile(authentication.getName());
-        return ResponseEntity.ok(myProfile);
+        ProfileResponse myProfile = userService.getProfile(authentication.getName());
+        if (myProfile == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(myProfile, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/my-profile")
-    public ResponseEntity<MyProfileResponse> updateProfile(@Valid @RequestBody MyProfileUpdateRequest myProfileRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MyProfileResponse myProfile = userService.updateMyProfile(authentication.getName(), myProfileRequest);
-        return ResponseEntity.ok(myProfile);
+    @GetMapping("/my-address")
+    public ResponseEntity<AddressResponse> retrieveAddress(@RequestParam String address) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        AddressResponse addressResponse = userService.getAddress(address, username);
+        if (addressResponse == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(addressResponse, HttpStatus.OK);
     }
 
 
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/my-profile/edit-profile")
+    public ResponseEntity<ProfileResponse> updateProfile(@Valid @RequestBody ProfileEditRequest myProfileRequest) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        ProfileResponse myProfile = userService.editProfile(username, myProfileRequest);
+        if (myProfile == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(myProfile, HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/my-profile/edit-address")
+    public ResponseEntity<AddressResponse> updateAddress(@Valid @RequestBody AddressRequest addressRequest, @RequestParam String address) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        AddressResponse addressResponse = userService.editAddress(username, address, addressRequest);
+        if (addressResponse == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(addressResponse, HttpStatus.OK);
+    }
 }

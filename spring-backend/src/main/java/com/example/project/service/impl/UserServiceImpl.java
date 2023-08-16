@@ -1,9 +1,12 @@
 package com.example.project.service.impl;
 
 
-import com.example.project.payload.request.MyProfileUpdateRequest;
+import com.example.project.model.embeddable.Address;
+import com.example.project.payload.request.AddressRequest;
+import com.example.project.payload.request.ProfileEditRequest;
 import com.example.project.payload.request.RegisterRequest;
-import com.example.project.payload.response.MyProfileResponse;
+import com.example.project.payload.response.AddressResponse;
+import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.enums.RoleEnum;
@@ -73,29 +76,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MyProfileResponse getMyProfile(String username) {
+    public ProfileResponse getProfile(String username) {
         UserEntity userEntity = getUserByUsername(username);
-        return modelMapper.map(userEntity, MyProfileResponse.class);
+        return modelMapper.map(userEntity, ProfileResponse.class);
 
     }
 
     @Override
-    public MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest) {
+    public ProfileResponse editProfile(String username, ProfileEditRequest myProfileRequest) {
         UserEntity userEntity = getUserByUsername(username);
+
         userEntity.setEmail(myProfileRequest.getEmail());
         userEntity.setPhoneNumber(myProfileRequest.getPhoneNumber());
         userEntity.setFirstName(myProfileRequest.getFirstName());
         userEntity.setLastName(myProfileRequest.getLastName());
 
-//        Address address = new Address();
-//        userEntity.getDeliveryInformation().setAddress(address);
-
         UserEntity updatedUserEntity = userRepository.save(userEntity);
 
-        return modelMapper.map(updatedUserEntity, MyProfileResponse.class);
+        return modelMapper.map(updatedUserEntity, ProfileResponse.class);
 
     }
 
+    @Override
+    public AddressResponse getAddress(String address, String username) {
+        UserEntity userEntity = getUserByUsername(username);
+        if (address.equals("payment")) {
+            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
+        }
+        if (address.equals("delivery")) {
+            return modelMapper.map(userEntity.getDeliveryAddress(), AddressResponse.class);
+        }
+        return null;
+    }
+
+    @Override
+    public AddressResponse editAddress(String username, String address, AddressRequest addressRequest) {
+        UserEntity userEntity = getUserByUsername(username);
+        if (address.equals("payment")) {
+            userEntity.setPaymentAddress(modelMapper.map(addressRequest, Address.class));
+            userRepository.save(userEntity);
+            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
+        }
+        if (address.equals("delivery")) {
+            userEntity.setDeliveryAddress(modelMapper.map(addressRequest, Address.class));
+            userRepository.save(userEntity);
+            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
+        }
+        return null;
+    }
 
 
     private UserResponse convertToViewModel(UserEntity userEntity) {

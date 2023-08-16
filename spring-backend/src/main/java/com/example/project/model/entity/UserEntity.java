@@ -20,11 +20,11 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class UserEntity extends BaseEntity {
-    @Indexed(unique = true)
+    @Indexed(unique = true, background = true)
     @NotBlank
     @Size(min = 4, max = 24)
     private String username;
-    @Indexed(unique = true)
+    @Indexed(unique = true, background = true)
     @NotBlank
     @Email
     private String email;
@@ -36,8 +36,8 @@ public class UserEntity extends BaseEntity {
     private String phoneNumber;
     private Set<RoleEntity> roles = new HashSet<>();
     private LocalDate lastDateActive = LocalDate.now();
-    private Address deliveryAddress;
-    private Address paymentAddress;
+    private Address deliveryAddress = new Address();
+    private Address paymentAddress = new Address();
     private ShoppingCart shoppingCart = new ShoppingCart();
 
 
