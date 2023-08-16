@@ -65,9 +65,6 @@
     margin-bottom: 30px;
 }
 
-.alert-danger {
-    color: #d8000c;
-}
 
 .buttonGroup {
     margin-top: 20px;
@@ -91,11 +88,13 @@
 
 .button:hover {
     background-color: #333;
-    transform: scale(1.05); /* Animate on push */
+    transform: scale(1.05);
+    /* Animate on push */
 }
 
 .button:active {
-    transform: scale(0.95); /* Animate on click */
+    transform: scale(0.95);
+    /* Animate on click */
 }
 
 .spinner {
@@ -128,8 +127,13 @@
 }
 
 @keyframes spin {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .paragraph {
@@ -164,7 +168,8 @@
 
 
 .validIcon {
-    color: #009900; /* Green color for check icons */
+    color: #009900;
+    /* Green color for check icons */
     margin-left: 10px;
 }
 
@@ -199,4 +204,8 @@
 
 .showInfo {
     display: block;
+}
+
+.danger {
+    color: #d8000c;
 }

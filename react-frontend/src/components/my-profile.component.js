@@ -1,18 +1,26 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import isEmail from "validator/es/lib/isEmail";
-import CheckButton from "react-validation/build/button";
 import styles from "../css/my-profile.module.css";
 import UserService from "../services/user.service";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
+import data from "bootstrap/js/src/dom/data";
 
+const required = (value) => {
+    if (!value) {
+        return <div className={styles.danger}>This field is required!</div>;
+    }
+};
 
 const MyProfile = () => {
-
-    const [message, setMessage] = useState("");
+    const [messageProfile, setMessageProfile] = useState("");
+    const [messagePayment, setMessagePayment] = useState("");
+    const [messageDelivery, setMessageDelivery] = useState("");
     const [loading, setLoading] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+    const [profileEditMode, setProfileEditMode] = useState(false);
+    const [paymentEditMode, setPaymentEditMode] = useState(false);
+    const [deliveryEditMode, setDeliveryEditMode] = useState(false);
 
     const [userData, setUserData] = useState({
         username: "john_doe",
@@ -22,159 +30,287 @@ const MyProfile = () => {
         phoneNumber: "123-456-7890",
     });
 
+    const [paymentAddress, setPaymentAddress] = useState({
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        country: "",
+        state: "",
+        town: "",
+        postcode: "",
+        street: "",
+        number: "",
+        floor: "",
+        additionalInfo: "",
+    })
     const [deliveryAddress, setDeliveryAddress] = useState({
-        town: "New York",
-        street: "Main Street",
-        number: "123",
-        postcode: "10001",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        country: "",
+        state: "",
+        town: "",
+        postcode: "",
+        street: "",
+        number: "",
+        floor: "",
+        additionalInfo: "",
     })
 
     useEffect(() => {
         fetchMyProfileData();
     }, []);
 
-    const fetchMyProfileData = () => {
+    const fetchMyProfileData = async () => {
+        setMessageProfile("");
+        setMessageProfile("");
+        setMessageDelivery("");
         setLoading(true);
-        UserService.getMyProfile()
-            .then((data) => {
-                userData.username = data.username;
-                userData.email = data.email;
-                userData.phoneNumber = data.phoneNumber;
-                userData.firstName = data.firstName;
-                userData.lastName = data.lastName;
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log("Error fetching user profile data: ", error);
-                setMessage(error.response ? error.response.data.message : "An error has occurred.");
-                setLoading(false);
+
+        try {
+            const profileData = await UserService.getMyProfile();
+            setUserData({
+                username: profileData.username,
+                email: profileData.email,
+                firstName: profileData.firstName,
+                lastName: profileData.lastName,
+                phoneNumber: profileData.phoneNumber,
             });
-    };
-
-
-    const handleEditClick = () => {
-        setEditMode(!editMode);
-        setMessage("");
-    };
-
-    const handleSaveClick = () => {
-        setLoading(true);
-
-        const requestData = {
-            email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            phoneNumber: userData.phoneNumber,
+        } catch (error) {
+            const responseMessage = error.response?.data?.message || error.message || error.toString();
+            console.log(responseMessage);
+            setMessageProfile(responseMessage);
         };
 
-        UserService.updateMyProfile(requestData)
-            .then((data) => {
-                setUserData(data);
-                setEditMode(false);
-                setLoading(false);
-                setMessage("Profile updated successfully");
-                fetchMyProfileData();
-            })
-            .catch((error) => {
-                console.log("Error updating user profile: ", error);
-                setMessage(error.response ? error.response.data.message : "An error has occurred.");
-                setLoading(false);
+        try {
+            const paymentAddressData = await UserService.getMyAddress("payment");
+            setPaymentAddress({
+                firstName: paymentAddressData.firstName,
+                lastName: paymentAddressData.lastName,
+                phoneNumber: paymentAddressData.phoneNumber,
+                email: paymentAddressData.email,
+                country: paymentAddressData.country,
+                state: paymentAddressData.state,
+                town: paymentAddressData.town,
+                postcode: paymentAddressData.postcode,
+                street: paymentAddressData.street,
+                number: paymentAddressData.number,
+                floor: paymentAddressData.floor,
+                additionalInfo: paymentAddressData.additionalInfo,
             });
+
+
+        } catch (error) {
+            const responseMessage = error.response?.data?.message || error.message || error.toString();
+            console.log(responseMessage);
+            setMessagePayment(responseMessage);
+        };
+
+        try {
+            const deliveryAddressData = await UserService.getMyAddress("delivery");
+            setDeliveryAddress({
+                firstName: deliveryAddressData.firstName,
+                lastName: deliveryAddressData.lastName,
+                phoneNumber: deliveryAddressData.phoneNumber,
+                email: deliveryAddressData.email,
+                country: deliveryAddressData.country,
+                state: deliveryAddressData.state,
+                town: deliveryAddressData.town,
+                postcode: deliveryAddressData.postcode,
+                street: deliveryAddressData.street,
+                number: deliveryAddressData.number,
+                floor: deliveryAddressData.floor,
+                additionalInfo: deliveryAddressData.additionalInfo,
+            });
+        } catch (error) {
+            const responseMessage = error.response?.data?.message || error.message || error.toString();
+            console.log(responseMessage);
+            setMessageDelivery(responseMessage);
+        };
+        setLoading(false);
+
+    };
+
+    const handleEditProfileClick = (event) => {
+        event.preventDefault();
+        setProfileEditMode(!profileEditMode);
+        setMessageProfile("");
+    };
+
+    const handleEditPaymentClick = (event) => {
+        event.preventDefault();
+        setPaymentEditMode(!paymentEditMode);
+        setMessagePayment("");
+    };
+
+    const handleEditDeliveryClick = (event) => {
+        event.preventDefault();
+        setDeliveryEditMode(!deliveryEditMode);
+        setMessageDelivery("");
+    };
+
+    const handleSaveClick = (param) => {
+        setLoading(true);
+        if (param === "profile") {
+            try {
+                UserService.updateMyProfile(userData);
+                setMessageProfile("Profile data updated successfully.");
+                setProfileEditMode(false);
+            } catch (error) {
+                const responseMessage = error.response?.data?.message || error.message || error.toString();
+                setMessageProfile(responseMessage);
+            } finally {
+                setLoading(false);
+            }
+        }
+        else if (param === "paymentAddress") {
+            try {
+                UserService.updateMyAddress(paymentAddress, "payment");
+                setMessagePayment("Payment address updated successfully.");
+                setPaymentEditMode(false);
+            } catch (error) {
+                const responseMessage = error.response?.data?.message || error.message || error.toString();
+                setMessagePayment(responseMessage);
+            } finally {
+                setLoading(false);
+            }
+        } else if (param === "deliveryAddress") {
+            try {
+                UserService.updateMyAddress(deliveryAddress, "delivery");
+                setMessageDelivery("Delivery address updated successfully.");
+                setDeliveryEditMode(false);
+            } catch (error) {
+                const responseMessage = error.response?.data?.message || error.message || error.toString();
+                setMessageDelivery(responseMessage);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+    };
+
+    const handleAddressChange = (addressType) => (event) => {
+        event.preventDefault();
+        const { name, value } = event.target;
+        if (addressType === "payment") {
+            setPaymentAddress((prevPaymentAddress) => ({
+                ...prevPaymentAddress,
+                [name]: value,
+            }));
+        } else if (addressType === "delivery") {
+            setDeliveryAddress((prevDeliveryAddress) => ({
+                ...prevDeliveryAddress,
+                [name]: value,
+            }));
+        }
     };
 
     const handleChange = (event) => {
-        const {name, value} = event.target;
+        event.preventDefault();
+        const { name, value } = event.target;
         setUserData((prevUserData) => ({
             ...prevUserData,
             [name]: value,
         }));
     };
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.profileBox}>
-                <div className={styles.row}>
-                    <span className={styles.label}>Username:</span>
-                    <span className={styles.value}>{userData.username}</span>
-                </div>
-                <div className={styles.row}>
-                    <span className={styles.label}>Email:</span>
-                    {editMode ? (
-                        <input
-                            type="text"
-                            name="email"
-                            value={userData.email}
-                            onChange={handleChange}
-                            className={styles.editInput}
-                        />
-                    ) : (
-                        <span className={styles.value}>{userData.email}</span>
-                    )}
-                </div>
-                <div className={styles.row}>
-                    <span className={styles.label}>Phone number:</span>
-                    {editMode ? (
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            value={userData.phoneNumber}
-                            onChange={handleChange}
-                            className={styles.editInput}
-                        />
-                    ) : (
-                        <span className={styles.value}>{userData.phoneNumber}</span>
-                    )}
-                </div>
-                <div className={styles.row}>
-                    <span className={styles.label}>First name:</span>
-                    {editMode ? (
-                        <input
-                            type="text"
-                            name="firstName"
-                            value={userData.firstName}
-                            onChange={handleChange}
-                            className={styles.editInput}
-                        />
-                    ) : (
-                        <span className={styles.value}>{userData.firstName}</span>
-                    )}
-                </div>
-                <div className={styles.row}>
-                    <span className={styles.label}>Last Name:</span>
-                    {editMode ? (
-                        <input
-                            type="text"
-                            name="lastName"
-                            value={userData.lastName}
-                            onChange={handleChange}
-                            className={styles.editInput}
-                        />
-                    ) : (
-                        <span className={styles.value}>{userData.lastName}</span>
-                    )}
-                </div>
+    const camelCaseToNormal = (fieldName) => {
+        return fieldName
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/^./, (str) => str.toUpperCase());
+    };
 
-                {message && <div className={styles.alert}>{message}</div>}
-                <div className={styles.buttons}>
-                    {editMode && (
-                        <button
-                            className={styles.cancelButton}
-                            onClick={() => setEditMode(false)}
-                            disabled={loading}
-                        >
-                            Cancel
-                        </button>
-                    )}
-                    <button
-                        className={editMode ? styles.saveButton : styles.editButton}
-                        onClick={editMode ? handleSaveClick : handleEditClick}
-                        disabled={loading}
-                    >
-                        {loading ? "Loading..." : editMode ? "Save" : "Edit"}
-                    </button>
-                </div>
+    const buttons = (handleEditClick, editMode) => (
+        <div className={styles.buttons}>
+            {editMode && (
+                <button
+                    className={styles.cancelButton}
+                    onClick={handleEditClick}
+                    disabled={loading}
+                >
+                    Cancel
+                </button>
+            )}
+            <button
+                className={editMode ? styles.saveButton : styles.editButton}
+                onClick={editMode ? handleSaveClick : handleEditClick}
+                disabled={loading}
+            >
+                {loading ? "Loading..." : editMode ? "Save" : "Edit"}
+            </button>
+        </div>
+    );
+
+    const profileContainer = (
+        <div className={styles.profileContainer}>
+            <div className={styles.profileBox}>
+                <Form>
+                    <h2>My Profile</h2>
+                    {messageProfile && <div className={styles.alert}>{messageProfile}</div>}
+                    <div className={styles.row}>
+                        <span className={styles.label}>Username:</span>
+                        <span className={styles.value}>{userData.username}</span>
+                    </div>
+                    {Object.entries(userData).map(([fieldName, fieldValue]) => (
+                        fieldName !== "username" && (
+                            <div className={styles.row} key={fieldName}>
+                                <span
+                                    className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
+                                {profileEditMode ? (
+                                    <Input
+                                        type="text"
+                                        name={fieldName}
+                                        value={fieldValue}
+                                        onChange={handleChange}
+                                        className={styles.editInput}
+                                    />
+                                ) : (
+                                    <span className={styles.value}>{fieldValue}</span>
+                                )}
+                            </div>
+                        )))}
+                    {buttons(handleEditProfileClick, profileEditMode)}
+                </Form>
             </div>
         </div>
+    );
+
+    const addressContainer = (headerName, address, editMode, handleEditClick) => (
+        <div className={headerName === "Payment Address" ? styles.paymentAddressContainer : styles.deliveryAddressContainer}>
+            <div className={styles.addressBox}>
+                <Form>
+                    <h2>{headerName}</h2>
+                    {(headerName === "Payment Address" ? messagePayment : messageDelivery) && <div className={styles.alert}>{headerName === "Payment Address" ? messagePayment : messageDelivery}</div>}
+                    {Object.entries(address).map(([fieldName, fieldValue]) => (
+                        <div className={styles.row} key={fieldName}>
+                            <span className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
+                            {(headerName === "Payment Address" ? paymentEditMode : deliveryEditMode) ? (
+                                <Input
+                                    type="text"
+                                    name={fieldName}
+                                    value={fieldValue}
+                                    onChange={handleAddressChange(headerName === "Payment Address" ? "payment" : "delivery")}
+                                    className={styles.editInput}
+                                />
+                            ) : (
+                                <span className={styles.value}>{fieldValue}</span>
+                            )}
+                        </div>
+                    ))}
+                    {buttons((headerName === "Payment Address" ? handleEditPaymentClick : handleEditDeliveryClick), (headerName === "Payment Address" ? paymentEditMode : deliveryEditMode))}
+                </Form>
+            </div>
+        </div>
+    );
+
+    return (
+        <section className={styles.section}>
+            {profileContainer}
+            {addressContainer("Payment Address", paymentAddress, paymentEditMode, handleEditPaymentClick)}
+            {addressContainer("Delivery Address", deliveryAddress, deliveryEditMode, handleEditDeliveryClick)}
+        </section>
     );
 };
 

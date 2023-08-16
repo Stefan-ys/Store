@@ -16,7 +16,7 @@ const PASSWORD_REGEX = /^(.){5,30}$/;
 
 const required = (value) => {
     if (!value) {
-        return <div className={styles.alert}>This field is required!</div>;
+        return <div className={styles.danger}>This field is required!</div>;
     }
 };
 const RegisterComponent = () => {
@@ -31,13 +31,13 @@ const RegisterComponent = () => {
     const [hidePassword, setHidePassword] = useState(true);
     const [focusedField, setFocusedField] = useState(null);
 
-    const checkButton = useRef();
+
 
     const validation = {
         validUsername: USER_REGEX.test(username),
         validEmail: isEmail(email),
         validPassword: PASSWORD_REGEX.test(password),
-        validMatch: password === confirmPassword && PASSWORD_REGEX.test(password),
+        validMatch: password === confirmPassword && confirmPassword.length > 0,
     };
 
 
@@ -55,11 +55,9 @@ const RegisterComponent = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setMessage("");
         setLoading(true);
-
-        form.validateAll();
-
+        setMessage("");
+        
         const errorMessage = [];
 
         if (!validation.validUsername && username.length > 0) {
@@ -71,11 +69,12 @@ const RegisterComponent = () => {
         if (!validation.validPassword && password.length > 0) {
             errorMessage.push("Invalid password!");
         }
-        if (!validation.validMatch && password.length > 0) {
+        if (validation.validMatch && confirmPassword > 0) {
             errorMessage.push("Passwords do not march!");
         }
-        
-        if (errorMessage.length > 0) {
+        form.validateAll();
+        const emptyFields = (username.length == 0 || email.length == 0 || password == 0 || confirmPassword == 0);
+        if (errorMessage.length > 0 || emptyFields) {
             setMessage(errorMessage.join("\n"));
             setSuccess(false);
             setLoading(false);
@@ -83,11 +82,11 @@ const RegisterComponent = () => {
         }
 
         try {
-            const response = await AuthService.register(username, email, password, confirmPassword);
-            setMessage(response.data.message);
+            await AuthService.register(username, email, password, confirmPassword);
+            setMessage("Registration is successful!")
             setSuccess(true);
         } catch (error) {
-            const responseMessage = error.response?.data?.message || error.message || error.toString();
+            const responseMessage = error.response.data.errors.join("\n") || error.response?.data?.message || error.message || error.toString();
             setMessage(responseMessage);
             setSuccess(false);
         } finally {
@@ -101,7 +100,7 @@ const RegisterComponent = () => {
                 <section className={styles.container}>
                     <h1>Success!</h1>
                     <p>
-                        <Link to="/login">Sign In</Link>
+                        <Link to="/login">Login</Link>
                     </p>
                 </section>
             ) : (
@@ -221,10 +220,10 @@ const RegisterComponent = () => {
                         </a>
 
                         <div className={styles.buttonGroup}>
-                            <CheckButton ref={checkButton} className={styles.button}>
-                                {loading && (<span className="spinner-border spinner-border-sm"></span>)}
+                            <button className={styles.button}>
                                 <span>Register</span>
-                            </CheckButton>
+                                {loading && (<span className={styles.spinner}></span>)}
+                            </button>
                         </div>
                     </Form>
                     <p>
