@@ -10,7 +10,7 @@ import { FaEye } from "react-icons/fa";
 
 const required = (value) => {
     if (!value) {
-        return <div className={styles.alert}>This field is required!</div>;
+        return <div className={styles.danger}>This field is required!</div>;
     }
 };
 
@@ -36,17 +36,21 @@ const Login = (props) => {
         event.preventDefault();
         setMessage("");
         setLoading(true);
+        form.validateAll();
+        if (username.length == 0 || password.length == 0) {
+            setLoading(false);
+            return;
+        }
 
         try {
-            await form.validateAll();
-            await AuthService.login(username, password);
-            props.history.push("/nome");
+            const data = await AuthService.login(username, password);
+            setMessage("Welcome " + data.username + "!");
+
+            props.router.navigate("/home");
             window.location.reload();
 
         } catch (error) {
-            const responseMessage = (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
+            const responseMessage = error.response.data.errors.join("\n") || error.response?.data?.message || error.message || error.toString() ;
             setMessage(responseMessage);
 
         } finally {
@@ -56,7 +60,7 @@ const Login = (props) => {
 
     return (
         <section className={styles.container}>
-            <h1 className={styles.heading}>Sign In</h1>
+            <h1 className={styles.heading}>Login</h1>
 
             {message && (
                 <div className={styles.errorMessage}>
@@ -114,14 +118,14 @@ const Login = (props) => {
 
                 {/* SUBMIT BUTTON */}
                 <div className={styles.buttonGroup}>
-                    <CheckButton
+                    <button
                         ref={checkButton}
                         className={styles.button}
                         disabled={loading}
                     >
-                        {loading && <div className={styles.spinner}></div>}
                         <span>Login</span>
-                    </CheckButton>
+                        {loading && (<span className={styles.spinner}></span>)}
+                    </button>
                 </div>
             </Form>
 
