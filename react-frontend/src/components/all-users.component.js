@@ -1,20 +1,20 @@
 import React, {useEffect, useState} from "react";
-import styles from "../css/stats-table.module.css"
-import AllUsersService from "../services/all-users.service";
+import styles from "../css/stats-table.module.css";
+
 import {withRouter} from "../common/with-router";
 
 const AllUsersComponent = () => {
     const [users, setUsers] = useState([]);
 
-    useEffect(() => {
-        AllUsersService()
-            .then((response) => {
-                setUsers(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     AllUsersService()
+    //         .then((response) => {
+    //             setUsers(response);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // }, []);
 
     console.log(users);
     return (
