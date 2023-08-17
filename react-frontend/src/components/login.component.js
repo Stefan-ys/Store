@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "../css/signup-signin.module.css";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 import { Link } from "react-router-dom";
 import { withRouter } from "../common/with-router";
@@ -37,7 +36,7 @@ const Login = (props) => {
         setMessage("");
         setLoading(true);
         form.validateAll();
-        if (username.length == 0 || password.length == 0) {
+        if (username.length === 0 || password.length === 0) {
             setLoading(false);
             return;
         }
@@ -50,8 +49,8 @@ const Login = (props) => {
             window.location.reload();
 
         } catch (error) {
-            const responseMessage = error.response.data.errors.join("\n") || error.response?.data?.message || error.message || error.toString() ;
-            setMessage(responseMessage);
+            const responseMessage = error.response.data.errors || error.response?.data?.message || error.message || error.toString();
+            setMessage(responseMessage.join("\n"));
 
         } finally {
             setLoading(false);
@@ -123,8 +122,7 @@ const Login = (props) => {
                         className={styles.button}
                         disabled={loading}
                     >
-                        <span>Login</span>
-                        {loading && (<span className={styles.spinner}></span>)}
+                        {loading ? (<span className={styles.spinner}></span>) : <span>Login</span>}
                     </button>
                 </div>
             </Form>

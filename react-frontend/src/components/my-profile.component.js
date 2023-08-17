@@ -1,269 +1,171 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import isEmail from "validator/es/lib/isEmail";
 import styles from "../css/my-profile.module.css";
 import UserService from "../services/user.service";
-import { withRouter } from "../common/with-router";
-import data from "bootstrap/js/src/dom/data";
+import {withRouter} from "../common/with-router";
 
-const required = (value) => {
-    if (!value) {
-        return <div className={styles.danger}>This field is required!</div>;
-    }
-};
 
 const MyProfile = () => {
-    const [messageProfile, setMessageProfile] = useState("");
-    const [messagePayment, setMessagePayment] = useState("");
-    const [messageDelivery, setMessageDelivery] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [profileEditMode, setProfileEditMode] = useState(false);
-    const [paymentEditMode, setPaymentEditMode] = useState(false);
-    const [deliveryEditMode, setDeliveryEditMode] = useState(false);
-
-    const [userData, setUserData] = useState({
+    const [profileData, setProfileData] = useState({
         username: "john_doe",
         email: "john.doe@example.com",
         firstName: "John",
         lastName: "Doe",
         phoneNumber: "123-456-7890",
     });
-
-    const [paymentAddress, setPaymentAddress] = useState({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        email: "",
-        country: "",
-        state: "",
-        town: "",
-        postcode: "",
-        street: "",
-        number: "",
-        floor: "",
-        additionalInfo: "",
-    })
-    const [deliveryAddress, setDeliveryAddress] = useState({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        email: "",
-        country: "",
-        state: "",
-        town: "",
-        postcode: "",
-        street: "",
-        number: "",
-        floor: "",
-        additionalInfo: "",
-    })
+    const [paymentAddressData, setPaymentAddressData] = useState({
+        firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
+        town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
+    });
+    const [deliveryAddressData, setDeliveryAddressData] = useState({
+        firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
+        town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
+    });
+    const [loading, setLoading] = useState({profile: false, payment: false, delivery: false,});
+    const [message, setMessage] = useState({profile: "", payment: "", delivery: "",});
+    const [editMode, setEditMode] = useState({profile: false, payment: false, delivery: false,});
 
     useEffect(() => {
-        fetchMyProfileData();
+        fetchData();
     }, []);
 
-    const fetchMyProfileData = async () => {
-        setMessageProfile("");
-        setMessageProfile("");
-        setMessageDelivery("");
-        setLoading(true);
+    const fetchData = async () => {
+        setLoading({profile: true, payment: true, delivery: true,});
+        setMessage({profile: "", payment: "", delivery: "",});
 
         try {
-            const profileData = await UserService.getMyProfile();
-            setUserData({
-                username: profileData.username,
-                email: profileData.email,
-                firstName: profileData.firstName,
-                lastName: profileData.lastName,
-                phoneNumber: profileData.phoneNumber,
-            });
+            const profile = await UserService.getMyProfile();
+            setProfileData(profile);
         } catch (error) {
-            const responseMessage = error.response?.data?.message || error.message || error.toString();
-            console.log(responseMessage);
-            setMessageProfile(responseMessage);
-        };
-
-        try {
-            const paymentAddressData = await UserService.getMyAddress("payment");
-            setPaymentAddress({
-                firstName: paymentAddressData.firstName,
-                lastName: paymentAddressData.lastName,
-                phoneNumber: paymentAddressData.phoneNumber,
-                email: paymentAddressData.email,
-                country: paymentAddressData.country,
-                state: paymentAddressData.state,
-                town: paymentAddressData.town,
-                postcode: paymentAddressData.postcode,
-                street: paymentAddressData.street,
-                number: paymentAddressData.number,
-                floor: paymentAddressData.floor,
-                additionalInfo: paymentAddressData.additionalInfo,
-            });
-
-
-        } catch (error) {
-            const responseMessage = error.response?.data?.message || error.message || error.toString();
-            console.log(responseMessage);
-            setMessagePayment(responseMessage);
-        };
-
-        try {
-            const deliveryAddressData = await UserService.getMyAddress("delivery");
-            setDeliveryAddress({
-                firstName: deliveryAddressData.firstName,
-                lastName: deliveryAddressData.lastName,
-                phoneNumber: deliveryAddressData.phoneNumber,
-                email: deliveryAddressData.email,
-                country: deliveryAddressData.country,
-                state: deliveryAddressData.state,
-                town: deliveryAddressData.town,
-                postcode: deliveryAddressData.postcode,
-                street: deliveryAddressData.street,
-                number: deliveryAddressData.number,
-                floor: deliveryAddressData.floor,
-                additionalInfo: deliveryAddressData.additionalInfo,
-            });
-        } catch (error) {
-            const responseMessage = error.response?.data?.message || error.message || error.toString();
-            console.log(responseMessage);
-            setMessageDelivery(responseMessage);
-        };
-        setLoading(false);
-
-    };
-
-    const handleEditProfileClick = (event) => {
-        event.preventDefault();
-        setProfileEditMode(!profileEditMode);
-        setMessageProfile("");
-    };
-
-    const handleEditPaymentClick = (event) => {
-        event.preventDefault();
-        setPaymentEditMode(!paymentEditMode);
-        setMessagePayment("");
-    };
-
-    const handleEditDeliveryClick = (event) => {
-        event.preventDefault();
-        setDeliveryEditMode(!deliveryEditMode);
-        setMessageDelivery("");
-    };
-
-    const handleSaveClick = (param) => {
-        setLoading(true);
-        if (param === "profile") {
-            try {
-                UserService.updateMyProfile(userData);
-                setMessageProfile("Profile data updated successfully.");
-                setProfileEditMode(false);
-            } catch (error) {
-                const responseMessage = error.response?.data?.message || error.message || error.toString();
-                setMessageProfile(responseMessage);
-            } finally {
-                setLoading(false);
-            }
-        }
-        else if (param === "paymentAddress") {
-            try {
-                UserService.updateMyAddress(paymentAddress, "payment");
-                setMessagePayment("Payment address updated successfully.");
-                setPaymentEditMode(false);
-            } catch (error) {
-                const responseMessage = error.response?.data?.message || error.message || error.toString();
-                setMessagePayment(responseMessage);
-            } finally {
-                setLoading(false);
-            }
-        } else if (param === "deliveryAddress") {
-            try {
-                UserService.updateMyAddress(deliveryAddress, "delivery");
-                setMessageDelivery("Delivery address updated successfully.");
-                setDeliveryEditMode(false);
-            } catch (error) {
-                const responseMessage = error.response?.data?.message || error.message || error.toString();
-                setMessageDelivery(responseMessage);
-            } finally {
-                setLoading(false);
-            }
+            handleErrorMessage("profile", error);
+        } finally {
+            setLoading((prevLoading) => ({...prevLoading, profile: false}));
         }
 
-    };
+        try {
+            const paymentAddress = await UserService.getMyAddress("payment");
+            setPaymentAddressData(paymentAddress);
+        } catch (error) {
+            handleErrorMessage("payment", error);
+        } finally {
+            setLoading((prevLoading) => ({...prevLoading, payment: false}));
+        }
 
-    const handleAddressChange = (addressType) => (event) => {
-        event.preventDefault();
-        const { name, value } = event.target;
-        if (addressType === "payment") {
-            setPaymentAddress((prevPaymentAddress) => ({
-                ...prevPaymentAddress,
-                [name]: value,
-            }));
-        } else if (addressType === "delivery") {
-            setDeliveryAddress((prevDeliveryAddress) => ({
-                ...prevDeliveryAddress,
-                [name]: value,
-            }));
+        try {
+            const deliveryAddress = await UserService.getMyAddress("delivery");
+            setDeliveryAddressData(deliveryAddress);
+        } catch (error) {
+            handleErrorMessage("delivery", error);
+        } finally {
+            setLoading((prevLoading) => ({...prevLoading, delivery: false}));
         }
     };
 
-    const handleChange = (event) => {
-        event.preventDefault();
-        const { name, value } = event.target;
-        setUserData((prevUserData) => ({
-            ...prevUserData,
-            [name]: value,
-        }));
+    const handleErrorMessage = (type, error) => {
+        const responseMessage = error.response?.data?.message || error.message || error.toString();
+        setMessage((prevMessage) => ({...prevMessage, [type]: responseMessage}));
     };
+
+    function handleEditClick(param) {
+        setEditMode((prevEditMode) => ({...prevEditMode, [param]: !prevEditMode[param]}));
+        setMessage((prevMessage) => ({...prevMessage, [param]: ""}));
+
+    }
+
+    const handleSaveClick = async (param, data) => {
+        setLoading((prevLoading) => ({...prevLoading, [param]: true}));
+        try {
+            await UserService.updateMyProfile(data);
+            setMessage((prevMessage) => ({...prevMessage, [param]: `${param} data updated successfully.`}));
+            setEditMode((prevEditMode) => ({...prevEditMode, [param]: false}));
+        } catch (error) {
+            handleErrorMessage(param, error);
+        } finally {
+            setLoading((prevLoading) => ({...prevLoading, [param]: false}));
+        }
+    };
+
+    const handleProfileChange = () => (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        const updatedProfileData = {...profileData, [name]: value};
+        setProfileData(updatedProfileData);
+    }
+
+    const handleAddressChange = (type) => (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        const addressData = type === "payment" ? paymentAddressData : deliveryAddressData;
+        const updatedAddress = {...addressData, [name]: value};
+        if (type === "payment") {
+            setPaymentAddressData(updatedAddress);
+        } else if (type === "delivery") {
+            setDeliveryAddressData(updatedAddress);
+        }
+    };
+
 
     const camelCaseToNormal = (fieldName) => {
-        return fieldName
+        const words = fieldName
             .replace(/([a-z])([A-Z])/g, '$1 $2')
-            .replace(/^./, (str) => str.toUpperCase());
+            .split(/[_\s]+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+        return words.join(' ');
     };
 
-    const buttons = (handleEditClick, editMode) => (
+    const renderButtons = (param, data) => (
         <div className={styles.buttons}>
-            {editMode && (
+            {editMode[param] ? (
+                <div>
+
+                    <button
+                        className={styles.cancelButton}
+                        onClick={() => handleEditClick(param)}
+                        disabled={loading[param]}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className={styles.saveButton}
+                        onClick={() => handleSaveClick(param, data)}
+                        disabled={loading[param]}
+                    >
+                        Save
+                    </button>
+                </div>
+            ) : (
                 <button
-                    className={styles.cancelButton}
-                    onClick={handleEditClick}
-                    disabled={loading}
-                >
-                    Cancel
-                </button>
-            )}
-            <button
-                className={editMode ? styles.saveButton : styles.editButton}
-                onClick={editMode ? handleSaveClick : handleEditClick}
-                disabled={loading}
-            >
-                {loading ? "Loading..." : editMode ? "Save" : "Edit"}
-            </button>
+                    className={styles.editButton}
+                    onClick={() => handleEditClick(param)}
+                    disabled={loading[param]}>
+                    {loading[param] ? (<span className={styles.spinner}></span>) : <span> Edit </span>}
+                </button>)}
         </div>
     );
 
-    const profileContainer = (
+    const renderProfileContainer = () => (
         <div className={styles.profileContainer}>
             <div className={styles.profileBox}>
                 <Form>
                     <h2>My Profile</h2>
-                    {messageProfile && <div className={styles.alert}>{messageProfile}</div>}
+                    {message.profile && <div className={styles.alert}>{message.profile}</div>}
                     <div className={styles.row}>
                         <span className={styles.label}>Username:</span>
-                        <span className={styles.value}>{userData.username}</span>
+                        <span className={styles.value}>{profileData.username}</span>
                     </div>
-                    {Object.entries(userData).map(([fieldName, fieldValue]) => (
+                    {Object.entries(profileData).map(([fieldName, fieldValue]) => (
                         fieldName !== "username" && (
                             <div className={styles.row} key={fieldName}>
                                 <span
                                     className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
-                                {profileEditMode ? (
+                                {editMode.profile ? (
                                     <Input
                                         type="text"
                                         name={fieldName}
                                         value={fieldValue}
-                                        onChange={handleChange}
+                                        onChange={() => (handleProfileChange("profile"))}
                                         className={styles.editInput}
                                     />
                                 ) : (
@@ -271,27 +173,27 @@ const MyProfile = () => {
                                 )}
                             </div>
                         )))}
-                    {buttons(handleEditProfileClick, profileEditMode)}
+                    {renderButtons("profile", profileData)}
                 </Form>
             </div>
         </div>
     );
 
-    const addressContainer = (headerName, address, editMode, handleEditClick) => (
-        <div className={headerName === "Payment Address" ? styles.paymentAddressContainer : styles.deliveryAddressContainer}>
+    const renderAddressContainer = (param, addressData) => (
+        <div className={param === "payment" ? styles.paymentAddressContainer : styles.deliveryAddressContainer}>
             <div className={styles.addressBox}>
                 <Form>
-                    <h2>{headerName}</h2>
-                    {(headerName === "Payment Address" ? messagePayment : messageDelivery) && <div className={styles.alert}>{headerName === "Payment Address" ? messagePayment : messageDelivery}</div>}
-                    {Object.entries(address).map(([fieldName, fieldValue]) => (
+                    <h2>{camelCaseToNormal(param) + " Address"}</h2>
+                    {message[param] && <div className={styles.alert}>{message[param]}</div>}
+                    {Object.entries(addressData).map(([fieldName, fieldValue]) => (
                         <div className={styles.row} key={fieldName}>
                             <span className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
-                            {(headerName === "Payment Address" ? paymentEditMode : deliveryEditMode) ? (
+                            {editMode[param] ? (
                                 <Input
                                     type="text"
                                     name={fieldName}
                                     value={fieldValue}
-                                    onChange={handleAddressChange(headerName === "Payment Address" ? "payment" : "delivery")}
+                                    onChange={() => handleAddressChange(param)}
                                     className={styles.editInput}
                                 />
                             ) : (
@@ -299,7 +201,7 @@ const MyProfile = () => {
                             )}
                         </div>
                     ))}
-                    {buttons((headerName === "Payment Address" ? handleEditPaymentClick : handleEditDeliveryClick), (headerName === "Payment Address" ? paymentEditMode : deliveryEditMode))}
+                    {renderButtons(param, addressData)}
                 </Form>
             </div>
         </div>
@@ -307,9 +209,9 @@ const MyProfile = () => {
 
     return (
         <section className={styles.section}>
-            {profileContainer}
-            {addressContainer("Payment Address", paymentAddress, paymentEditMode, handleEditPaymentClick)}
-            {addressContainer("Delivery Address", deliveryAddress, deliveryEditMode, handleEditDeliveryClick)}
+            {renderProfileContainer()}
+            {renderAddressContainer("payment", paymentAddressData)}
+            {renderAddressContainer("delivery", deliveryAddressData)}
         </section>
     );
 };
