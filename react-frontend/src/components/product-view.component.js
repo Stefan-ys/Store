@@ -1,13 +1,18 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/product-view.module.css";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
-import {useParams, useLocation} from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 
 const ProductView = () => {
-    const {productId} = useParams();
+    const [product, setProduct] = useState(mockProduct);
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [reviewExpanded, setReviewExpanded] = useState(false);
+
+    const { productId } = useParams();
     const location = useLocation();
 
     const mockProduct = {
@@ -34,63 +39,41 @@ const ProductView = () => {
         ],
     };
 
-    const [product, setProduct] = useState(mockProduct);
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [reviewExpanded, setReviewExpanded] = useState(false);
-
     useEffect(() => {
-        fetchProductData(productId);
-    }, [productId]);
+        fetchProductData();
+    }, [product]);
 
-    const fetchProductData = (productId) => {
+    const fetchProductData = () => {
         setLoading(true);
-        console.log(productId);
-        StoreService.getProduct(productId)
-            .then((data) => {
-                setProduct(data);
-            })
-            .catch((error) => {
-                console.log("Error fetching product data: ", error);
-                setMessage(
-                    error.response
-                        ? error.response.data.message
-                        : "An error has occurred."
-                );
-            })
-            .finally(
-                setLoading(false)
-            );
+        setMessage("");
+        try {
+            const product = StoreService.getProduct(productId);
+        } catch (error) {
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
+
     };
 
-    useEffect(() => {
-        fetchProductData(productId);
-    }, [productId]);
-
-
-    const addToShoppingCart = (productId) => {
+    const addToShoppingCart = () => {
         setLoading(true);
-        ShoppingCartService.addToCart(productId)
-            .then((data) => {
-                // TODO: show on success message
-                setMessage("Product added to cart successfully.")
-            })
-            .catch((error) => {
-                console.log("Error adding product to cart: ", error);
-                setMessage(error.response ? error.response.data.message : "An error has occurred.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        setMessage("");
+
+        try {
+            ShoppingCartService.addToCart([productId]);
+
+        } catch (error) {
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleLeaveReviewClick = () => {
-        setReviewExpanded(true);
+    const handleReviewClick = () => {
+        setReviewExpanded(!reviewExpanded);
     };
 
-    const handleCancelReviewClick = () => {
-        setReviewExpanded(false);
-    };
 
 
     return (
@@ -110,7 +93,7 @@ const ProductView = () => {
 
             <button
                 className={styles.button}
-                onClick={addToShoppingCart(product.id)}
+                onClick={addToShoppingCart}
                 disabled={loading}
             >
                 {loading ? "Adding to Cart..." : "Add to Cart"}
@@ -130,7 +113,7 @@ const ProductView = () => {
                 </ul>
                 <button
                     className={styles.button}
-                    onClick={handleLeaveReviewClick}
+                    onClick={handleReviewClick}
                 >
                     Leave Review
                 </button>
@@ -141,12 +124,11 @@ const ProductView = () => {
                         <form>
                             <div className={styles.formGroup}>
                                 <label htmlFor="username">Username:</label>
-                                <input
+                                <Input
                                     type="text"
                                     id="username"
                                     name="username"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
                                 />
                             </div>
                             <div className={styles.formGroup}>
@@ -155,7 +137,6 @@ const ProductView = () => {
                                     id="rating"
                                     name="rating"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
                                 >
                                     <option value="5">5 Stars</option>
                                     <option value="4">4 Stars</option>
@@ -171,16 +152,17 @@ const ProductView = () => {
                                     name="comment"
                                     rows="4"
                                     className={styles.inputField}
-                                    // Add more attributes and event handlers as needed
                                 ></textarea>
                             </div>
-                            <button type="submit" className={styles.submitReviewButton}>
+                            <button type="submit"
+                                className={styles.submitReviewButton}
+                                onClick={handleSubmitReview(comment, rating)}>
                                 Submit Review
                             </button>
                             <button
                                 type="button"
                                 className={styles.button}
-                                onClick={handleCancelReviewClick}
+                                onClick={handleReviewClick}
                             >
                                 Cancel
                             </button>

@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import styles from "../css/my-profile.module.css";
 import UserService from "../services/user.service";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
 
 
 const MyProfile = () => {
@@ -22,17 +22,17 @@ const MyProfile = () => {
         firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
         town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
     });
-    const [loading, setLoading] = useState({profile: false, payment: false, delivery: false,});
-    const [message, setMessage] = useState({profile: "", payment: "", delivery: "",});
-    const [editMode, setEditMode] = useState({profile: false, payment: false, delivery: false,});
+    const [loading, setLoading] = useState({ profile: false, payment: false, delivery: false, });
+    const [message, setMessage] = useState({ profile: "", payment: "", delivery: "", });
+    const [editMode, setEditMode] = useState({ profile: false, payment: false, delivery: false, });
 
     useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = async () => {
-        setLoading({profile: true, payment: true, delivery: true,});
-        setMessage({profile: "", payment: "", delivery: "",});
+        setLoading({ profile: true, payment: true, delivery: true, });
+        setMessage({ profile: "", payment: "", delivery: "", });
 
         try {
             const profile = await UserService.getMyProfile();
@@ -40,7 +40,7 @@ const MyProfile = () => {
         } catch (error) {
             handleErrorMessage("profile", error);
         } finally {
-            setLoading((prevLoading) => ({...prevLoading, profile: false}));
+            setLoading((prevLoading) => ({ ...prevLoading, profile: false }));
         }
 
         try {
@@ -49,7 +49,7 @@ const MyProfile = () => {
         } catch (error) {
             handleErrorMessage("payment", error);
         } finally {
-            setLoading((prevLoading) => ({...prevLoading, payment: false}));
+            setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
         }
 
         try {
@@ -58,46 +58,51 @@ const MyProfile = () => {
         } catch (error) {
             handleErrorMessage("delivery", error);
         } finally {
-            setLoading((prevLoading) => ({...prevLoading, delivery: false}));
+            setLoading((prevLoading) => ({ ...prevLoading, delivery: false }));
         }
     };
 
     const handleErrorMessage = (type, error) => {
         const responseMessage = error.response?.data?.message || error.message || error.toString();
-        setMessage((prevMessage) => ({...prevMessage, [type]: responseMessage}));
+        setMessage((prevMessage) => ({ ...prevMessage, [type]: responseMessage }));
     };
 
     function handleEditClick(param) {
-        setEditMode((prevEditMode) => ({...prevEditMode, [param]: !prevEditMode[param]}));
-        setMessage((prevMessage) => ({...prevMessage, [param]: ""}));
+        setEditMode((prevEditMode) => ({ ...prevEditMode, [param]: !prevEditMode[param] }));
+        setMessage((prevMessage) => ({ ...prevMessage, [param]: "" }));
 
     }
 
     const handleSaveClick = async (param, data) => {
-        setLoading((prevLoading) => ({...prevLoading, [param]: true}));
+        setLoading((prevLoading) => ({ ...prevLoading, [param]: true }));
         try {
-            await UserService.updateMyProfile(data);
-            setMessage((prevMessage) => ({...prevMessage, [param]: `${param} data updated successfully.`}));
-            setEditMode((prevEditMode) => ({...prevEditMode, [param]: false}));
+
+            if (param === "profile") {
+                await UserService.updateMyProfile(data);
+            } else {
+                await UserService.updateMyAddress(data, param);
+            }
+            setMessage((prevMessage) => ({ ...prevMessage, [param]: `${param} data updated successfully.` }));
+            setEditMode((prevEditMode) => ({ ...prevEditMode, [param]: false }));
         } catch (error) {
             handleErrorMessage(param, error);
         } finally {
-            setLoading((prevLoading) => ({...prevLoading, [param]: false}));
+            setLoading((prevLoading) => ({ ...prevLoading, [param]: false }));
         }
     };
 
-    const handleProfileChange = () => (event) => {
+    const handleProfileChange = (event) => {
         event.preventDefault();
-        const {name, value} = event.target;
-        const updatedProfileData = {...profileData, [name]: value};
+        const { name, value } = event.target;
+        const updatedProfileData = { ...profileData, [name]: value };
         setProfileData(updatedProfileData);
     }
 
     const handleAddressChange = (type) => (event) => {
         event.preventDefault();
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         const addressData = type === "payment" ? paymentAddressData : deliveryAddressData;
-        const updatedAddress = {...addressData, [name]: value};
+        const updatedAddress = { ...addressData, [name]: value };
         if (type === "payment") {
             setPaymentAddressData(updatedAddress);
         } else if (type === "delivery") {
@@ -118,8 +123,7 @@ const MyProfile = () => {
     const renderButtons = (param, data) => (
         <div className={styles.buttons}>
             {editMode[param] ? (
-                <div>
-
+                <div className={styles.buttons}>
                     <button
                         className={styles.cancelButton}
                         onClick={() => handleEditClick(param)}
@@ -137,7 +141,7 @@ const MyProfile = () => {
                 </div>
             ) : (
                 <button
-                    className={styles.editButton}
+                    className={styles.button}
                     onClick={() => handleEditClick(param)}
                     disabled={loading[param]}>
                     {loading[param] ? (<span className={styles.spinner}></span>) : <span> Edit </span>}
@@ -165,7 +169,7 @@ const MyProfile = () => {
                                         type="text"
                                         name={fieldName}
                                         value={fieldValue}
-                                        onChange={() => (handleProfileChange("profile"))}
+                                        onChange={handleProfileChange}
                                         className={styles.editInput}
                                     />
                                 ) : (
@@ -193,7 +197,7 @@ const MyProfile = () => {
                                     type="text"
                                     name={fieldName}
                                     value={fieldValue}
-                                    onChange={() => handleAddressChange(param)}
+                                    onChange={handleAddressChange(param)}
                                     className={styles.editInput}
                                 />
                             ) : (

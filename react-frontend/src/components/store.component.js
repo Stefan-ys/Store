@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/store.module.css";
-import {withRouter} from "../common/with-router";
+import { withRouter } from "../common/with-router";
 import Pagination from "../utils/paginator.util";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Store = () => {
     const mockProduct = {
@@ -94,9 +94,11 @@ const Store = () => {
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
                         <p>Price: {product.price} $</p>
-                        <div className={styles.buttonsContainer}>
-                            <Link to={`/product/${product.id}`} className={styles.button}>
-                                View Product
+                        <div>
+                            <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
+                                <button className={styles.button}>
+                                    View Product
+                                </button>
                             </Link>
                             <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to
                                 Cart

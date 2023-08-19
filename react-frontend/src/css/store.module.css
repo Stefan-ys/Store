@@ -49,6 +49,7 @@
 }
 
 .buttonGroup {
+    display: table;
     margin-top: 20px;
 }
 
@@ -68,3 +69,4 @@
 .button:hover {
     background-color: #333;
 }
+
