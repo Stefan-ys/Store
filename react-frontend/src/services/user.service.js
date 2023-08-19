@@ -13,6 +13,7 @@ const getMyProfile = () => {
 };
 
 const updateMyProfile = (data) => {
+    console.log(data.email + "  " + data.phoneNumber);
     return axios
         .put(API_USERS_URL + "/my-profile", data, { headers: authHeader() })
         .then((response) => response.data)
@@ -32,7 +33,7 @@ const getMyAddress = (address) => {
 
 const updateMyAddress = (data, address) => {
     return axios
-        .put(API_USERS_URL + "/my-address", { data, address }, { headers: authHeader() })
+        .put(API_USERS_URL + "/my-address", data, { params: { address }, headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             throw error;
