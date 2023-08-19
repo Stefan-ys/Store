@@ -1,19 +1,17 @@
 package com.example.project.service.impl;
 
-
 import com.example.project.model.embeddable.Address;
-import com.example.project.payload.request.AddressRequest;
-import com.example.project.payload.request.ProfileEditRequest;
 import com.example.project.payload.request.RegisterRequest;
-import com.example.project.payload.response.AddressResponse;
-import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
+import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.enums.RoleEnum;
+import com.example.project.repository.ProductRepository;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
@@ -71,58 +70,66 @@ public class UserServiceImpl implements UserService {
     public void updateUserActivity(String username) {
         UserEntity userEntity = getUserByUsername(username);
 
-        userEntity.setLastDateActive(LocalDate.now());
+        userEntity.setLastActiveDate(LocalDate.now());
         userRepository.save(userEntity);
     }
 
     @Override
-    public ProfileResponse getProfile(String username) {
+    public MyProfileResponse getMyProfile(String username) {
         UserEntity userEntity = getUserByUsername(username);
-        return modelMapper.map(userEntity, ProfileResponse.class);
+        return modelMapper.map(userEntity, MyProfileResponse.class);
 
     }
 
     @Override
-    public ProfileResponse editProfile(String username, ProfileEditRequest myProfileRequest) {
+    public MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest) {
         UserEntity userEntity = getUserByUsername(username);
-
         userEntity.setEmail(myProfileRequest.getEmail());
         userEntity.setPhoneNumber(myProfileRequest.getPhoneNumber());
         userEntity.setFirstName(myProfileRequest.getFirstName());
         userEntity.setLastName(myProfileRequest.getLastName());
 
+//        Address address = new Address();
+//        userEntity.getDeliveryInformation().setAddress(address);
+
         UserEntity updatedUserEntity = userRepository.save(userEntity);
 
-        return modelMapper.map(updatedUserEntity, ProfileResponse.class);
+        return modelMapper.map(updatedUserEntity, MyProfileResponse.class);
 
     }
 
     @Override
-    public AddressResponse getAddress(String address, String username) {
+    public void addToCart(String username, ObjectId productId) {
         UserEntity userEntity = getUserByUsername(username);
-        if (address.equals("payment")) {
-            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
-        }
-        if (address.equals("delivery")) {
-            return modelMapper.map(userEntity.getDeliveryAddress(), AddressResponse.class);
-        }
-        return null;
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setProductId(productId);
+        item.setPrice(productEntity.getPrice());
+        item.setWeight(productEntity.getWeight());
+        item.setQuantity(1);
+
+        userEntity.getShoppingCart().addItem(item);
     }
 
     @Override
-    public AddressResponse editAddress(String username, String address, AddressRequest addressRequest) {
+    public void removeFromCart(String username, ObjectId productId) {
         UserEntity userEntity = getUserByUsername(username);
-        if (address.equals("payment")) {
-            userEntity.setPaymentAddress(modelMapper.map(addressRequest, Address.class));
-            userRepository.save(userEntity);
-            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setProductId(productId);
+        userEntity.getShoppingCart().removeItem(item);
+
+    }
+
+    @Override
+    public void adjustProductQuantity(String username, ObjectId productId, int quantity) {
+        if (quantity <= 0) {
+            removeFromCart(username, productId);
+            return;
         }
-        if (address.equals("delivery")) {
-            userEntity.setDeliveryAddress(modelMapper.map(addressRequest, Address.class));
-            userRepository.save(userEntity);
-            return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
-        }
-        return null;
+        UserEntity userEntity = getUserByUsername(username);
+        ShoppingCartItem item = userEntity.getShoppingCart().getItem(productId);
+        item.setQuantity(quantity);
     }
 
 
@@ -135,7 +142,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList()));
         LocalDate currentDate = LocalDate.now();
         LocalDate createdDate = userEntity.getCreatedDate();
-        LocalDate activeDate = userEntity.getLastDateActive();
+        LocalDate activeDate = userEntity.getLastActiveDate();
 
         viewModel.setCreatedAt(createdDate +
                 String.format("(%s days since)", ChronoUnit.DAYS.between(currentDate, currentDate)));

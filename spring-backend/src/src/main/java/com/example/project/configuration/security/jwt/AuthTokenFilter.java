@@ -54,5 +54,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             return headerAuth.substring(7);
         }
         return null;
+//        return jwtUtils.getJwtFromCookies(request);
     }
 }
