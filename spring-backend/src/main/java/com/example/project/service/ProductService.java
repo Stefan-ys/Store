@@ -11,11 +11,11 @@ public interface ProductService {
 
     ProductStoreResponse getProduct(ObjectId productId);
 
-    List<ProductStoreResponse> getAllProducts(String sortBy);
+    List<ProductStoreResponse> getAllProducts();
 
-    List<ProductStoreResponse> getProductsByCategory(String category, String sortBy);
+    List<ProductStoreResponse> getProductsByCategory(String category);
 
-    List<ProductStoreResponse> getProductsByStatus(String status, String sortBy);
+    List<ProductStoreResponse> getProductsByStatus(String status);
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
 

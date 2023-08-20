@@ -1,6 +1,5 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.ProductReview;
 import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -35,7 +34,7 @@ public class ProductEntity extends BaseEntity {
     private String manufacturer;
     private int rating;
     @NotNull
-    private BigDecimal weight;
+    private double weight;
     private LocalDate expirationDate;
     @DBRef
     private Set<ProductReview> reviews = new HashSet<>();
