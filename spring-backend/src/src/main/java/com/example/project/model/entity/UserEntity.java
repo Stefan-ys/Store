@@ -1,7 +1,5 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.ShoppingCart;
-
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
