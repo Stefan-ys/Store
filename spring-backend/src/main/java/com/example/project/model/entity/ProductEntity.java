@@ -2,16 +2,17 @@ package com.example.project.model.entity;
 
 import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +25,7 @@ public class ProductEntity extends BaseEntity {
     private String catalogNumber;
     @NotNull
     private BigDecimal price;
-//    @DBRef
+    //    @DBRef
 //    private List<GridFSFile> pictures;
     @NotNull
     private int quantity;
@@ -32,10 +33,23 @@ public class ProductEntity extends BaseEntity {
     private Set<ProductStatusEnum> status = new HashSet<>();
     private CategoryEnum productCategory;
     private String manufacturer;
-    private int rating;
+    private double rating;
+    private Set<ObjectId> usersThatRatedProduct;
     @NotNull
-    private double weight;
+    private BigDecimal weight;
     private LocalDate expirationDate;
-    @DBRef
-    private Set<ProductReview> reviews = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ProductEntity that = (ProductEntity) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId());
+    }
 }
