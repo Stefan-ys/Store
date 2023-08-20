@@ -1,6 +1,5 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.ProductReview;
 import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.mongodb.client.gridfs.model.GridFSFile;
