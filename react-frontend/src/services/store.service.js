@@ -1,11 +1,12 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 
-const API_STORE_URL = "http://localhost:8080/api/store";
+const API_STORE_URL = "http://localhost:8080/api/product";
 
 const getProducts = (sortBy) => {
     return axios
-        .get(API_STORE_URL + "/all-products", { params: { sortBy }, headers: authHeader() })
+        .get(API_STORE_URL + "/all", { params: { sortBy }, headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -15,7 +16,7 @@ const getProducts = (sortBy) => {
 
 const getProduct = (productId) => {
     return axios
-        .get(API_STORE_URL + "/product/" + productId, { headers: authHeader() })
+        .get(API_STORE_URL + "/" + productId, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -24,8 +25,9 @@ const getProduct = (productId) => {
 };
 
 const submitReview = (productId, comment, rating) => {
+    console.log(productId, " -- ", comment, " -- ", rating);
     return axios
-        .post(API_STORE_URL + "/product/" + productId, { params: { address, rating }, headers: authHeader() })
+        .post(API_STORE_URL + "/review/" + productId, { params: { comment, rating }, headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -34,6 +36,6 @@ const submitReview = (productId, comment, rating) => {
 
 };
 
-const StoreService = { getProducts, getProduct };
+const StoreService = { getProducts, getProduct, submitReview };
 
 export default StoreService;

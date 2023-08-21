@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/header.component";
 // import AdminBoard from "./components/admin-menu.component";
 import Home from "./components/home.component";
@@ -17,24 +17,24 @@ import './App.css';
 const App = () => {
 
     return (
-        
-            <div>
-                <Header path="/header" element={<Header />} />
-                <div className="container mt-3">
-                    <Routes>
-                        {/*<Route path="/" element={<Home/>}/>*/}
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/my-profile" element={<MyProfile />} />
-                        <Route path="/store" element={<Store />} />
-                        <Route path="/product/:productId" element={<ProductView />} />
-                        <Route path="/shopping-cart" element={<ShoppingCart />} />
-                        {/*<Route path="/admin" element={<AdminBoard/>}/>*/}
-                        {/*<Route path="/all-users" element={<AllUsers/>}/>*/}
-                    </Routes>
-                </div>
+
+        <div>
+            <Header path="/header" element={<Header />} />
+            <div className="container mt-3">
+                <Routes>
+                    {/*<Route path="/" element={<Home/>}/>*/}
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/my-profile" element={<MyProfile />} />
+                    <Route path="/store" element={<Store />} />
+                    <Route path="/product/:productId" component={ProductView} element={<ProductView />} />
+                    <Route path="/shopping-cart" element={<ShoppingCart />} />
+                    {/*<Route path="/admin" element={<AdminBoard/>}/>*/}
+                    {/*<Route path="/all-users" element={<AllUsers/>}/>*/}
+                </Routes>
             </div>
+        </div>
     );
 }
 
