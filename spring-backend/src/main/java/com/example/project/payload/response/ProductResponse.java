@@ -1,24 +1,25 @@
 package com.example.project.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class ProductResponse {
+    private String id;
     private String name;
     private String catalogNumber;
     private BigDecimal price;
-//    private List<GridFSFile> pictures;
-    private int quantity;
+    private List<GridFSFile> pictures;
     private String description;
     private List<String> status;
     private String productCategory;
     private String manufacturer;
-    private int rating;
-    private double weight;
-    private LocalDate expirationDate;
-    private List<ProductReviewResponse> reviews;
+    private double rating;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<CommentResponse> comments = new ArrayList<>();
+
 }

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class CommentEntity extends BaseEntity {
+    private Integer rating;
     private ObjectId productId;
     private String username;
     private String comment;

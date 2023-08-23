@@ -16,4 +16,6 @@ public interface ProductRepository extends MongoRepository<ProductEntity, Object
     List<ProductEntity> findAllByProductCategory(CategoryEnum category);
 
     List<ProductEntity> findAllByStatus(ProductStatusEnum status);
+
+
 }

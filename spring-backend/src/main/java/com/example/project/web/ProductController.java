@@ -1,7 +1,8 @@
 package com.example.project.web;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductStoreResponse;
+import com.example.project.payload.request.ReviewRequest;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,62 +18,61 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/store")
+@RequestMapping("/api/product")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable("productId") String productId) {
-        ProductStoreResponse productResponse = productService.getProduct(new ObjectId(productId));
-        if(productResponse == null){
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable("productId") String productId) {
+        ProductResponse productResponse = productService.getProduct(new ObjectId(productId));
+        if (productResponse == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/all-products")
-    public ResponseEntity<List<ProductStoreResponse>> getAllProducts(String sortBy) {
-        List<ProductStoreResponse> products = productService.getAllProducts(sortBy);
-        if(products == null){
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponse>> getAllProducts(String sortBy) {
+        List<ProductResponse> products = productService.getAllProducts(sortBy);
+        if (products == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category, String sortBy) {
-        List<ProductStoreResponse> products = productService.getProductsByCategory(category, sortBy);
-        if(products == null){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/review")
+    public ResponseEntity<Void> reviewProduct(@RequestBody ReviewRequest reviewRequest) {
+        ObjectId productId = new ObjectId(reviewRequest.getProductId());
+        String comment = reviewRequest.getComment();
+        int rating = reviewRequest.getRating();
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status, String sortBy) {
-        List<ProductStoreResponse> products = productService.getProductsByStatus(status, sortBy);
-        if(products == null){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (rating > 0) {
+            productService.rateProduct(productId, username, rating);
         }
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        if (comment != null && comment.length() > 0) {
+            productService.commentProduct(productId, username, comment, rating);
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add-product")
+    @PostMapping("/add")
     public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
         productService.addProduct(productBindingModel);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/edit-product/{productId}")
+    @PutMapping("/edit/{productId}")
     public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductRequest productBindingModel) {
         productService.editProduct(productId, productBindingModel);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete-product/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable ObjectId productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();

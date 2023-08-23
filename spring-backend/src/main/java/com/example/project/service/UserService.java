@@ -1,31 +1,34 @@
 package com.example.project.service;
 
+import com.example.project.payload.request.AddressWithNoValidationRequest;
+import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
+import com.example.project.payload.response.AddressResponse;
+import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface UserService {
+
     void signUp(RegisterRequest signUpBindingModel);
 
     List<UserResponse> getAllUsers();
 
-    UserResponse getUser(String username);
+    UserResponse getUser(ObjectId userId);
 
     boolean containsUsername(String username);
 
     boolean containsEmail(String email);
 
-    void updateUserActivity(String username);
+    void updateUserActivity(ObjectId userId);
 
-    MyProfileResponse getMyProfile(String username);
+    ProfileResponse getProfile(ObjectId userId);
 
-    MyProfileResponse updateMyProfile(String username, MyProfileUpdateRequest myProfileRequest);
+    ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest);
 
-    void addToCart(String username, ObjectId productId);
+    AddressResponse getAddress(String address, ObjectId userId);
 
-    void removeFromCart(String username, ObjectId productId);
-
-    void adjustProductQuantity(String username, ObjectId productId, int quantity);
+    AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest);
 }

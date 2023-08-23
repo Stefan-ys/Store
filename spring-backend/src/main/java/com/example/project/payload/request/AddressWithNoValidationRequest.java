@@ -1,9 +1,12 @@
-package com.example.project.payload.response;
+package com.example.project.payload.request;
+
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class AddressResponse {
+@NoArgsConstructor
+public class AddressWithNoValidationRequest {
     private String firstName;
     private String lastName;
     private String phoneNumber;

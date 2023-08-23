@@ -1,21 +1,18 @@
 package com.example.project.service;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductStoreResponse;
+import com.example.project.payload.response.ProductResponse;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface ProductService {
+
+    ProductResponse getProduct(ObjectId productId);
+
+    List<ProductResponse> getAllProducts(String sortBy);
+
     void addProduct(ProductRequest productBindingModel);
-
-    ProductStoreResponse getProduct(ObjectId productId);
-
-    List<ProductStoreResponse> getAllProducts();
-
-    List<ProductStoreResponse> getProductsByCategory(String category);
-
-    List<ProductStoreResponse> getProductsByStatus(String status);
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
 
@@ -24,4 +21,8 @@ public interface ProductService {
     void removeProductStatus(ObjectId productId, String status);
 
     void deleteProduct(ObjectId productId);
+
+    void commentProduct(ObjectId productId, String username, String comment, int rating);
+
+    void rateProduct(ObjectId productId, String username, int rating);
 }

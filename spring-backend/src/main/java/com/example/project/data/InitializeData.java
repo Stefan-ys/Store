@@ -38,8 +38,17 @@ public class InitializeData {
             System.out.println("User entities initialized");
         }
         if (productRepository.count() == 0) {
-            addProduct("item1", BigDecimal.valueOf(2.99), 10, "Random Item1", CategoryEnum.ITEM_TYPE_1, ProductStatusEnum.NEW, 1.9);
-            addProduct("item2", BigDecimal.valueOf(8.99), 2, "Random Item2", CategoryEnum.ITEM_TYPE_2, ProductStatusEnum.PROMOTION, 7.1);
+            for (int i = 1; i <= 100; i++) {
+                addProduct("item" + i,
+                        BigDecimal.valueOf(Math.round(( 5 + Math.random() * 20) * Math.pow(10, 2)) / Math.pow(10, 2)),
+                        10,
+                        "Lorem ipsum bla bla bla.......",
+                        i % 2 == 0 ? CategoryEnum.ITEM_TYPE_1 : CategoryEnum.ITEM_TYPE_2,
+                        i % 3 == 0 ? ProductStatusEnum.NEW : ProductStatusEnum.PROMOTION,
+                        BigDecimal.valueOf(Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
+                );
+            }
+
             System.out.println("Product entities initialized");
         }
 
@@ -74,7 +83,7 @@ public class InitializeData {
 
     }
 
-    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, double weight) {
+    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(name);
         productEntity.setPrice(price);

@@ -2,6 +2,7 @@ package com.example.project.model.entity;
 
 import com.example.project.model.embeddable.ShoppingCartProduct;
 import lombok.Getter;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,8 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Document(collection = "shopping_cart")
+@Document(collection = "shopping_carts")
 @Getter
+@Setter
 public class ShoppingCartEntity extends BaseEntity {
 
     private ObjectId userId;

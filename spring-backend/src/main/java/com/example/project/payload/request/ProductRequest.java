@@ -11,14 +11,14 @@ import java.util.Set;
 
 @Data
 public class ProductRequest {
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "product name is required")
     private String name;
-    @NotBlank(message = "Catalog number is required")
+    @NotBlank(message = "Product catalog number is required")
     private String catalogNumber;
-    @NotNull(message = "Price is required")
+    @NotNull(message = "Product price is required")
     private BigDecimal price;
 //    private List<GridFSFile> pictures;
-    @NotNull(message = "Quantity is required")
+    @NotNull(message = "Product quantity is required")
     private int quantity;
     private String description;
     private Set<String> status = new HashSet<>();
@@ -26,6 +26,7 @@ public class ProductRequest {
     private String productCategory;
     private String manufacturer;
     private int rating;
-    private double weight;
+    @NotNull(message = "Product weight is required")
+    private BigDecimal weight;
     private LocalDate expirationDate;
 }

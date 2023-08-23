@@ -4,15 +4,14 @@ import com.example.project.payload.response.ShoppingCartResponse;
 import org.bson.types.ObjectId;
 
 public interface ShoppingCartService {
-    public ShoppingCartResponse getShoppingCart(String username);
 
-    public void addProductToCart(ObjectId productId, String username);
+    ShoppingCartResponse getShoppingCart(ObjectId userId);
 
-    public void removeProductFromCart(ObjectId productId, String username);
+    void addProductToCart(ObjectId productId, ObjectId userId);
 
-    public void removeAllProductsFromCart(String username);
+    void removeProductFromCart(ObjectId productId, ObjectId userId);
 
-    public void setProductQuantity(ObjectId productId, String username, int quantity);
+    void removeAllProductsFromCart(ObjectId userId);
 
-    public void transferProductsToCart(String username, ShoppingCartResponse products);
+    void setProductQuantity(ObjectId productId, ObjectId userId, int quantity);
 }

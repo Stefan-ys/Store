@@ -11,9 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "products")
@@ -25,8 +23,8 @@ public class ProductEntity extends BaseEntity {
     private String catalogNumber;
     @NotNull
     private BigDecimal price;
-    //    @DBRef
-//    private List<GridFSFile> pictures;
+
+    //    private List<GridFSFile> pictures;
     @NotNull
     private int quantity;
     private String description;
@@ -34,7 +32,7 @@ public class ProductEntity extends BaseEntity {
     private CategoryEnum productCategory;
     private String manufacturer;
     private double rating;
-    private Set<ObjectId> usersThatRatedProduct;
+    private Map<String, Integer> usersRating = new HashMap<>();
     @NotNull
     private BigDecimal weight;
     private LocalDate expirationDate;

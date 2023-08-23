@@ -2,13 +2,13 @@ package com.example.project.web;
 
 import com.example.project.configuration.security.jwt.JwtUtils;
 import com.example.project.configuration.security.services.UserDetailsImpl;
+import com.example.project.exeption.custom.ResourceNotFoundException;
 import com.example.project.payload.request.LoginRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.JwtResponse;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +22,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
@@ -39,8 +39,6 @@ public class AuthController {
 
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
 
             List<String> roles = userDetails
                     .getAuthorities()
@@ -56,32 +54,16 @@ public class AuthController {
             jwtResponse.setId(userDetails.getId());
 
 
-            userService.updateUserActivity(userDetails.getUsername());
+            userService.updateUserActivity(userDetails.getId());
 
             return ResponseEntity.ok().body(jwtResponse);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password.");
+            throw new ResourceNotFoundException("Wrong username or password.");
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest signUpBindingModel) {
-
-        if (userService.containsUsername(signUpBindingModel.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(String.format("Error: Username - %s is already taken!", signUpBindingModel.getUsername()));
-        }
-        if (userService.containsEmail(signUpBindingModel.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(String.format("Error: Email - %s is already taken!", signUpBindingModel.getEmail()));
-        }
-        if (!signUpBindingModel.getPassword().equals(signUpBindingModel.getConfirmPassword())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Passwords do not match");
-        }
 
         userService.signUp(signUpBindingModel);
 
@@ -90,8 +72,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser() {
-//        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-        return ResponseEntity.ok()
-                .body("You've been signed out!");
+
+        return ResponseEntity.ok().body("You've been signed out!");
     }
 }
