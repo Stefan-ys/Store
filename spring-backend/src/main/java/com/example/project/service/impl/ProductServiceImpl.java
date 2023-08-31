@@ -25,9 +25,18 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CommentRepository commentRepository;
-
     private final ModelMapper modelMapper;
-//    private final GridFSBucket gridFSBucket;
+
+
+    //Create
+
+    @Override
+    public void addProduct(ProductRequest productBindingModel) {
+        ProductEntity productEntity = modelMapper.map(productBindingModel, ProductEntity.class);
+        productRepository.save(productEntity);
+    }
+
+    //Retrieve
 
     @Override
     public ProductResponse getProduct(ObjectId productId) {
@@ -46,25 +55,7 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
     }
 
-    @Override
-    public List<ProductResponse> getAllProducts(String sortBy) {
-        List<ProductEntity> products = productRepository.findAll();
-        return products.stream()
-                .map(product -> {
-                    ProductResponse productStoreResponse = modelMapper
-                            .map(product, ProductResponse.class);
-                    productStoreResponse.setId(product.getId().toString());
-                    return productStoreResponse;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void addProduct(ProductRequest productBindingModel) {
-        ProductEntity productEntity = modelMapper.map(productBindingModel, ProductEntity.class);
-        productRepository.save(productEntity);
-    }
-
+    //Update
 
     @Override
     public void editProduct(ObjectId productId, ProductRequest productBindingModel) {
@@ -87,11 +78,6 @@ public class ProductServiceImpl implements ProductService {
         ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
         productEntity.getStatus().remove(productStatusEnum);
         productRepository.save(productEntity);
-    }
-
-    @Override
-    public void deleteProduct(ObjectId productId) {
-        productRepository.deleteById(productId);
     }
 
     @Override
@@ -121,6 +107,15 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
+    //Delete
+
+    @Override
+    public void deleteProduct(ObjectId productId) {
+        productRepository.deleteById(productId);
+    }
+
+
+    //Helpers
 
     private ProductEntity getProductById(ObjectId productId) {
         return productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("No product found with ID: " + productId));

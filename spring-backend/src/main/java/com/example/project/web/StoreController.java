@@ -1,68 +1,59 @@
 package com.example.project.web;
 
-import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductStoreResponse;
-import com.example.project.service.ProductService;
-import jakarta.validation.Valid;
+import com.example.project.payload.response.ProductResponse;
+import com.example.project.service.StoreService;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/store")
+@RequestMapping("/api/store")
 public class StoreController {
-    private final ProductService productService;
-
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductStoreResponse> getProduct(@PathVariable ObjectId productId) {
-        ProductStoreResponse productViewModel = productService.getProduct(productId);
-        return ResponseEntity.ok(productViewModel);
-    }
-
+    private final StoreService storeService;
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/all-products")
-    public ResponseEntity<List<ProductStoreResponse>> getAllProducts() {
-        List<ProductStoreResponse> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<Map<String, Object>> getProductsPage(
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ) {
+
+        try {
+            List<ProductResponse> products = new ArrayList<>();
+            Pageable paging = PageRequest.of(page, size);
+
+            Page<ProductResponse> productsPage;
+            if (status == null) {
+                productsPage = storeService.getAllProducts(paging);
+            } else {
+                productsPage = storeService.getAllProductsByStatus(status, paging);
+            }
+
+            products = productsPage.getContent();
+            Map<String, Object> response = new HashMap<>();
+            response.put("products", products);
+            response.put("currentPage", productsPage.getNumber());
+            response.put("totalElements", productsPage.getTotalElements());
+            response.put("totalPages", productsPage.getTotalPages());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByCategory(@PathVariable String category) {
-        List<ProductStoreResponse> products = productService.getProductsByCategory(category);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<ProductStoreResponse>> getProductsByStatus(@PathVariable String status) {
-        List<ProductStoreResponse> products = productService.getProductsByStatus(status);
-        return ResponseEntity.ok(products);
-    }
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add-product")
-    public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
-        productService.addProduct(productBindingModel);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/edit-product/{productId}")
-    public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductRequest productBindingModel) {
-        productService.editProduct(productId, productBindingModel);
-        return ResponseEntity.ok().build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete-product/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable ObjectId productId) {
-        productService.deleteProduct(productId);
-        return ResponseEntity.ok().build();
-    }
-
-
-
 }

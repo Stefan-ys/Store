@@ -36,7 +36,6 @@ public class ShoppingCartController {
 
     @PostMapping("/add-product/{productId}")
     public ResponseEntity<String> addProductToCart(@PathVariable("productId") String productId) {
-        System.out.println("xoxox");
         ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         System.out.println("add to cart" + productId + " - " + userId);
         try {

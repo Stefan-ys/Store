@@ -31,14 +31,7 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductResponse>> getAllProducts(String sortBy) {
-        List<ProductResponse> products = productService.getAllProducts(sortBy);
-        if (products == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/review")
