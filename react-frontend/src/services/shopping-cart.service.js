@@ -1,21 +1,22 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 const API_CART_URL = "http://localhost:8080/api/shopping-cart";
 
 
 const getProducts = () => {
     return axios
-        .get(API_CART_URL + "/get-products")
+        .get(API_CART_URL + "/get-products", { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error getting products from cart : ", error);
             throw error;
         });
-}
+};
 const addToCart = (productId) => {
-
+    console.log("xoxoxox" + productId);
     return axios
-        .post(API_CART_URL + "/add-product/" + productId)
+        .post(API_CART_URL + "/add-product/" + productId, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error adding to cart: ", error);
@@ -25,7 +26,7 @@ const addToCart = (productId) => {
 
 const removeFromCart = (productId) => {
     return axios
-        .delete(API_CART_URL + "/remove-product/" + productId)
+        .delete(API_CART_URL + "/remove-product/" + productId, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error removing from cart: ", error);
@@ -35,7 +36,7 @@ const removeFromCart = (productId) => {
 
 const removeAll = () => {
     return axios
-        .delete(API_CART_URL + "/clear-cart")
+        .delete(API_CART_URL + "/clear-cart", { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error remove from cart: ", error);
@@ -45,7 +46,7 @@ const removeAll = () => {
 
 const changeQuantity = (productId, quantity) => {
     return axios
-        .put(API_CART_URL + "/change-quantity/" + productId, {params: {quantity}})
+        .put(API_CART_URL + "/change-quantity/" + productId, { params: { quantity } }, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error changing quantity: ", error);
@@ -57,5 +58,5 @@ const transferToUserCart = (cartItems) => {
 
 };
 
-const ShoppingCartService = {getProducts ,addToCart, removeFromCart, removeAll, changeQuantity, transferToUserCart};
+const ShoppingCartService = { getProducts, addToCart, removeFromCart, removeAll, changeQuantity, transferToUserCart };
 export default ShoppingCartService;
