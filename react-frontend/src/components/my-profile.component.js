@@ -8,11 +8,8 @@ import { withRouter } from "../common/with-router";
 
 const MyProfile = () => {
     const [profileData, setProfileData] = useState({
-        username: "john_doe",
-        email: "john.doe@example.com",
-        firstName: "John",
-        lastName: "Doe",
-        phoneNumber: "123-456-7890",
+        username: "", email: "", firstName: "",
+        lastName: "", phoneNumber: "",
     });
     const [paymentAddressData, setPaymentAddressData] = useState({
         firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",

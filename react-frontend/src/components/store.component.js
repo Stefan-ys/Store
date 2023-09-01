@@ -1,116 +1,170 @@
 import React, { useState, useEffect } from "react";
 import styles from "../css/store.module.css";
 import { withRouter } from "../common/with-router";
-import Pagination from "../utils/paginator.util";
+import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
 import { Link } from "react-router-dom";
 
 const Store = () => {
-    const mockProduct = {
-        name: "ITEM",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        price: 9.99,
-        catalogNumber: 1,
-    };
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const [sortBy, setSortBy] = useState("name");
+
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage, setProductsPerPage] = useState(12);
+    const [totalPages, setTotalPages] = useState(0);
+    const [categoryOption, setCategoryOption] = useState("All");
+    const [sortOption, setSortOption] = useState("name");
+    const [sortOrder, setSortOrder] = useState("asc");
+
 
     useEffect(() => {
         getProducts();
-    }, []);
+    }, [currentPage, productsPerPage, categoryOption, sortOption, sortOrder]);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+        getProducts();
     };
-    const getProducts = () => {
+
+    const handleSortChange = (event) => {
+        const { name, value } = event.target;
+        if (name === "categoryOption") {
+            setCategoryOption(value);
+        } else if (name === "sortOption") {
+            setSortOption(value);
+        } else if (name === "sortOrder") {
+            setSortOrder(value);
+        }
+    };
+
+    const handleProductsPerPageChange = (event) => {
+        setProductsPerPage(Number(event.target.value));
+        setCurrentPage(1);
+    };
+
+    const getProducts = async () => {
         setLoading(true);
-        // setProducts(Array.from({ length: 30 }, (_, index) => ({ ...mockProduct, catalogNumber: index + 1 })));
-        StoreService.getProducts(sortBy)
-            .then((data) => {
-                setProducts(data);
-            })
-            .catch((error) => {
-                console.log("Error fetching products data: ", error);
-                setMessage(error.response ? error.response.data.message : "An error has occurred.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        setMessage("");
+        try {
+
+            const data = await StoreService.getAllProducts(currentPage, productsPerPage, categoryOption, sortOption, sortOrder);
+
+            setProducts(data.products);
+            setTotalPages(data.totalPages);
+
+        } catch (error) {
+            console.log("Error fetching products data: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     const addToShoppingCart = (productId) => {
         setLoading(true);
-        ShoppingCartService.addToCart(productId)
-            .then((data) => {
-                // TODO: show on success message
-                setMessage("Product added to cart successfully.")
-            })
-            .catch((error) => {
-                console.log("Error adding product to cart: ", error);
-                setMessage(error.response ? error.response.data.message : "An error has occurred.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        try {
+            ShoppingCartService.addToCart(productId);
+            setMessage("Product added to cart successfully.");
+        } catch (error) {
+            console.log("Error adding product to cart: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+
+        } finally {
+            setLoading(false);
+        }
     };
 
 
 
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = products.slice(
-        indexOfFirstProduct,
-        indexOfLastProduct
-    );
+
+
+    const renderProducts = () => {
+        return products.map((product) => (
+            <div key={product.catalogNumber} className={styles.productBox}>
+                {/* <img src={product.picture} alt={product.name} /> */}
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <p>Price: {product.price} $</p>
+                <div>
+                    <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
+                        <button className={styles.button}>
+                            View Product
+                        </button>
+                    </Link>
+                    <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
+                </div>
+            </div>
+        ));
+    };
 
     return (
         <div className={styles.storeContainer}>
             <div className={styles.menuBar}>
-                <div className={styles.categoryBar}>
-                    <button>ALL</button>
-                    <button>CAT 1</button>
-                    <button>CAT 2</button>
-                    <button>CAT 3</button>
-                    <button>CAT 4</button>
-                </div>
                 <div className={styles.sortOptions}>
-                    <button onClick={() => getProducts("name")}>Sort by Name</button>
-                    <button onClick={() => getProducts("price")}>Sort by Price</button>
+                    <label>
+                        Select category:
+                        <select
+                            name="categoryOption"
+                            value={categoryOption}
+                            onChange={handleSortChange}
+                        >
+                            <option value="all">All</option>
+                            <option value="CAT 1">CAT 1</option>
+                            <option value="CAT 2">CAT 2</option>
+                            <option value="CAT 3">CAT 3</option>
+                            <option value="CAT 4">CAT 4</option>
+                        </select>
+                    </label>
+                    <label>
+                        Sort by:
+                        <select
+                            name="sortOption"
+                            value={sortOption}
+                            onChange={handleSortChange}
+                        >
+                            <option value="name">Name</option>
+                            <option value="price">Price</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </label>
+                    <label>
+                        Order:
+                        <select
+                            name="sortOrder"
+                            value={sortOrder}
+                            onChange={handleSortChange}
+                        >
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </label>
+                    <button onClick={() => getProducts()}>Apply</button>
+                </div>
+                <div className={styles.productsPerPage}>
+                    <span>Show products per page:</span>
+                    <select value={productsPerPage} onChange={handleProductsPerPageChange}>
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                    </select>
                 </div>
 
             </div>
             <div className={styles.productGrid}>
-                {currentProducts.map((product) => (
-                    <div key={product.catalogNumber} className={styles.productBox}>
-
-                        {/* <img src={product.picture} alt={product.name} /> */}
-                        <h3>{product.name}</h3>
-                        <p>{product.description}</p>
-                        <p>Price: {product.price} $</p>
-                        <div>
-                            <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
-                                <button className={styles.button}>
-                                    View Product
-                                </button>
-                            </Link>
-                            <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to
-                                Cart
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                {products.length > 0 ? (
+                    renderProducts()
+                ) : (
+                    <p>Loading products...</p>
+                )}
             </div>
             <Pagination
-                itemsPerPage={productsPerPage}
-                totalItems={products.length}
                 currentPage={currentPage}
+                totalPages={totalPages}
                 onPageChange={handlePageChange}
             />
         </div>

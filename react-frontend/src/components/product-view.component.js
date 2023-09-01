@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "../css/product-view.module.css";
-import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
 import { withRouter } from "../common/with-router";
-import StoreService from "../services/store.service";
+import ProductService from "../services/product.service";
 import ShoppingCartService from "../services/shopping-cart.service";
 
 
@@ -38,10 +37,11 @@ const ProductView = () => {
         setMessage("");
 
         try {
-            const fetchProduct = await StoreService.getProduct(productId);
-            setProduct(fetchProduct);
+            const fetchedProduct = await ProductService.getProduct(productId);
+            console.log(fetchedProduct);
+            setProduct(fetchedProduct);
         } catch (error) {
-            console.log(error);
+            console.log("Fetch product error:", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
         } finally {
             setLoading(false);
@@ -56,10 +56,10 @@ const ProductView = () => {
         event.preventDefault();
         setLoading(true);
         try {
-            console.log(productId);
-            await StoreService.submitReview(productId, comment, rating);
+            await ProductService.submitReview(productId, comment, rating);
             setComment("");
             setRating(0);
+            window.location.reload();
         } catch (error) {
             console.log(error.message);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
@@ -104,11 +104,16 @@ const ProductView = () => {
 
                     <div className={styles.reviewsSection}>
                         <h3>Product Reviews</h3>
-                        {product.reviews && product.reviews.length > 0 ? (
+                        {product.comments && product.comments.length > 0 ? (
                             <ul className={styles.reviewList}>
-                                {product.reviews.map((review) => (
-                                    <li key={review.id} className={styles.reviewItem}>
-                                        {/* ... */}
+                                {product.comments.map((comment, index) => (
+                                    <li key={index} className={styles.reviewItem}>
+                                        <p className={styles.commentUsername}>{comment.username}</p>
+                                        <p className={styles.commentRating}>Rating: {comment.rating}</p>
+                                        <p className={styles.commentText}>{comment.comment}</p>
+                                        <p className={styles.commentDate}>
+                                            Review Date: {new Date(comment.reviewDate).toLocaleDateString()}
+                                        </p>
                                     </li>
                                 ))}
                             </ul>
