@@ -70,3 +70,41 @@
     background-color: #333;
 }
 
+.productsPerPage {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.productsPerPage select {
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}7
+.sortOptions {
+  display: flex;
+  align-items: center;
+}
+
+.sortOptions label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.sortOptions select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.sortOptions button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
