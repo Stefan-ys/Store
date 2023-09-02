@@ -1,19 +1,20 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.enums.CategoryEnum;
+import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
+import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
+
+
 @Document(collection = "products")
 @Data
 public class ProductEntity extends BaseEntity {
@@ -22,6 +23,7 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     private String catalogNumber;
     @NotNull
+    @Field(targetType = DECIMAL128)
     private BigDecimal price;
 
     //    private List<GridFSFile> pictures;
@@ -29,11 +31,12 @@ public class ProductEntity extends BaseEntity {
     private int quantity;
     private String description;
     private Set<ProductStatusEnum> status = new HashSet<>();
-    private CategoryEnum productCategory;
+    private ProductCategoryEnum productCategory;
     private String manufacturer;
     private double rating;
     private Map<String, Integer> usersRating = new HashMap<>();
     @NotNull
+    @Field(targetType = DECIMAL128)
     private BigDecimal weight;
     private LocalDate expirationDate;
 
