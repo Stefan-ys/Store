@@ -1,5 +1,5 @@
 package com.example.project.model.enums;
 
 public enum ProductCategoryEnum {
-    ITEM_TYPE_1, ITEM_TYPE_2, ITEM_TYPE_3
+    CAT_1, CAT_2, CAT_3
 }

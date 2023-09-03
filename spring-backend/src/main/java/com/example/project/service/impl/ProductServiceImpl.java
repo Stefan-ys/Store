@@ -5,7 +5,7 @@ import com.example.project.payload.request.ProductRequest;
 import com.example.project.payload.response.CommentResponse;
 import com.example.project.payload.response.ProductResponse;
 import com.example.project.model.entity.ProductEntity;
-import com.example.project.model.enums.CategoryEnum;
+import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.repository.CommentRepository;
 import com.example.project.repository.ProductRepository;
@@ -128,8 +128,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElse(null);
     }
 
-    private CategoryEnum getProductCategoryEnum(String category) {
-        return Arrays.stream(CategoryEnum.values())
+    private ProductCategoryEnum getProductCategoryEnum(String category) {
+        return Arrays.stream(ProductCategoryEnum.values())
                 .filter(c -> c.name().equalsIgnoreCase(category))
                 .findFirst()
                 .orElse(null);

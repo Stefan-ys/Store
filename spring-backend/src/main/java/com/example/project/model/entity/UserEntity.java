@@ -39,9 +39,6 @@ public class UserEntity extends BaseEntity {
     private LocalDate lastDateActive = LocalDate.now();
     private Address deliveryAddress = new Address();
     private Address paymentAddress = new Address();
-    @DBRef
-    private ObjectId shoppingCartId;
-
 
 }
 

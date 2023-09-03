@@ -24,7 +24,6 @@ public class ShoppingCartController {
     public ResponseEntity<ShoppingCartResponse> getProductsFromCart() {
 
         ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        System.out.println("Get product");
         try {
             ShoppingCartResponse shoppingCartResponse = shoppingCartService.getShoppingCart(userId);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingCartResponse);
@@ -33,7 +32,7 @@ public class ShoppingCartController {
         }
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add-product/{productId}")
     public ResponseEntity<String> addProductToCart(@PathVariable("productId") String productId) {
         ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();

@@ -1,80 +1,99 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.ShoppingCartProduct;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Document(collection = "shopping_carts")
 @Getter
 @Setter
 public class ShoppingCartEntity extends BaseEntity {
-
     private ObjectId userId;
-    private Set<ProductEntity> products = new HashSet<>();
-
-    private Map<ObjectId, Integer> productQuantityMap = new HashMap<>();
-    private int productsCount;
+    private Map<ObjectId, ProductSummary> productSummaryMap = new HashMap<>();
 
 
-    public BigDecimal getTotalPrice() {
-        BigDecimal sum = new BigDecimal(0);
-        for (ProductEntity product : this.products) {
-            sum = sum.add(product.getPrice().multiply(new BigDecimal(product.getQuantity())));
+    public BigDecimal[] getPriceAndWeightSummary() {
+        BigDecimal[] sumPriceAndWeightArr = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
+        for (ProductSummary product : productSummaryMap.values()) {
+            sumPriceAndWeightArr[0] = sumPriceAndWeightArr[0].add(product.getSumPrice());
+            sumPriceAndWeightArr[1] = sumPriceAndWeightArr[1].add(product.getSumWeight());
         }
-        return sum.setScale(2, RoundingMode.HALF_EVEN);
+        return sumPriceAndWeightArr;
     }
 
-    public BigDecimal getTotalWeight() {
-        BigDecimal sum = new BigDecimal(0);
-        for (ProductEntity product : this.products) {
-            sum = sum.add(product.getWeight().multiply(new BigDecimal(product.getQuantity())));
+    public int getTotalQuantity() {
+        int sum = 0;
+        for (ProductSummary product : productSummaryMap.values()) {
+            sum += product.getQuantity();
         }
-        return sum.setScale(3, RoundingMode.HALF_UP);
+        return sum;
     }
 
-    public ProductEntity getProduct(ObjectId productId) {
-        for (ProductEntity cartProduct : this.products) {
-            if (cartProduct.getId().equals(productId)) {
-                return cartProduct;
-            }
+    public int getQuantityByProduct(ObjectId productId) {
+        if (!containsProduct(productId)) {
+            return 0;
         }
-        return null;
+        return productSummaryMap.get(productId).getQuantity();
+    }
+
+    public BigDecimal getPriceByProduct(ObjectId productId) {
+        if (!containsProduct(productId)) {
+            return BigDecimal.ZERO;
+        }
+        return productSummaryMap.get(productId).getSumPrice();
+    }
+
+    public Boolean containsProduct(ObjectId productId) {
+        return productSummaryMap.containsKey(productId);
     }
 
     public void addProduct(ProductEntity product) {
-        this.productQuantityMap.putIfAbsent(product.getId(), 0);
-        this.productQuantityMap.put(product.getId(), this.productQuantityMap.get(product.getId()) + 1);
-        this.productsCount++;
-        this.products.add(product);
+        ObjectId productId = product.getId();
+        productSummaryMap.putIfAbsent(productId, new ProductSummary());
+        int quantity = productSummaryMap.get(productId).getQuantity() + 1;
+        BigDecimal sumPrice = productSummaryMap.get(productId).getSumPrice().add(product.getPrice());
+        BigDecimal sumWeight = productSummaryMap.get(productId).getSumWeight().add(product.getWeight());
+
+        productSummaryMap.get(productId).setAll(quantity, sumPrice, sumWeight);
     }
 
     public void removeProduct(ObjectId productId) {
-        this.productsCount -= productQuantityMap.get(productId);
-        this.productQuantityMap.remove(productId);
-        this.products.remove(this.getProduct(productId));
+        productSummaryMap.remove(productId);
     }
 
     public void clear() {
-        this.productsCount = 0;
-        this.productQuantityMap = new HashMap<>();
-        this.products = new HashSet<>();
+        productSummaryMap = new HashMap<>();
     }
 
-    public void setProductQuantity(ObjectId productId, int quantity) {
+    public void setProductQuantity(ProductEntity product, int quantity) {
+        ObjectId productId = product.getId();
         if (quantity <= 0) {
             this.removeProduct(productId);
             return;
         }
-        this.productsCount -= this.productQuantityMap.get(productId) + quantity;
-        this.productQuantityMap.put(productId, quantity);
+        BigDecimal sumPrice = product.getPrice().add(BigDecimal.valueOf(quantity));
+        BigDecimal sumWeight = product.getWeight().add(BigDecimal.valueOf(quantity));
+        productSummaryMap.get(productId).setAll(quantity, sumPrice, sumWeight);
+    }
+
+
+    @Getter
+    private static class ProductSummary {
+        private int quantity = 0;
+        private BigDecimal sumPrice = BigDecimal.ZERO;
+        private BigDecimal sumWeight = BigDecimal.ZERO;
+
+
+        private void setAll(int quantity, BigDecimal sumPrice, BigDecimal sumWeight) {
+            this.quantity = quantity;
+            this.sumPrice = sumPrice;
+            this.sumWeight = sumWeight;
+        }
     }
 }

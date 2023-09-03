@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class ShoppingCartProductResponse {
     private String productId;
     private String productName;
-    private BigDecimal price;
+    private String price;
     private int quantity;
     private BigDecimal weight;
 }

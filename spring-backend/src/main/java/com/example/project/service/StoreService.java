@@ -10,4 +10,6 @@ public interface StoreService {
     Page<ProductResponse> getAllProducts(Pageable paging);
 
     Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging);
+
+    Page<ProductResponse> getProductsByCategory(String category, Pageable paging);
 }

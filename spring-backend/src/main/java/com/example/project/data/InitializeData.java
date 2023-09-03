@@ -3,7 +3,7 @@ package com.example.project.data;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.RoleEntity;
 import com.example.project.model.entity.UserEntity;
-import com.example.project.model.enums.CategoryEnum;
+import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.model.enums.RoleEnum;
 import com.example.project.repository.ProductRepository;
@@ -43,7 +43,7 @@ public class InitializeData {
                         BigDecimal.valueOf(Math.round(( 5 + Math.random() * 20) * Math.pow(10, 2)) / Math.pow(10, 2)),
                         10,
                         "Lorem ipsum bla bla bla.......",
-                        i % 2 == 0 ? CategoryEnum.ITEM_TYPE_1 : CategoryEnum.ITEM_TYPE_2,
+                        i % 2 == 0 ? ProductCategoryEnum.CAT_1 : ProductCategoryEnum.CAT_2,
                         i % 3 == 0 ? ProductStatusEnum.NEW : ProductStatusEnum.PROMOTION,
                         BigDecimal.valueOf(Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
                 );
@@ -83,7 +83,7 @@ public class InitializeData {
 
     }
 
-    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
+    private void addProduct(String name, BigDecimal price, int quantity, String description, ProductCategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(name);
         productEntity.setPrice(price);

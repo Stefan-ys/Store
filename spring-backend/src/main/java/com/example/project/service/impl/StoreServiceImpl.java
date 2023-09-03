@@ -1,6 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.model.entity.ProductEntity;
+import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.payload.response.ProductResponse;
 import com.example.project.repository.ProductRepository;
@@ -35,6 +36,16 @@ public class StoreServiceImpl implements StoreService {
     public Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging) {
         ProductStatusEnum statusEnum = ProductStatusEnum.valueOf(status.toUpperCase());
         Page<ProductEntity> products = productRepository.findAllByStatus(statusEnum, paging);
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+        return new PageImpl<>(productResponses, paging, products.getTotalElements());
+    }
+
+    @Override
+    public Page<ProductResponse> getProductsByCategory(String category, Pageable paging) {
+        ProductCategoryEnum categoryEnum = ProductCategoryEnum.valueOf(category.toUpperCase());
+        Page<ProductEntity> products = productRepository.findAllByProductCategory(categoryEnum, paging);
         List<ProductResponse> productResponses = products.getContent().stream()
                 .map(this::convertToProductResponse)
                 .collect(Collectors.toList());
