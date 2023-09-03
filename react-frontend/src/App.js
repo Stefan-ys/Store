@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Header from "./components/header.component";
-// import AdminBoard from "./components/admin-menu.component";
 import Home from "./components/home.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
@@ -9,7 +8,6 @@ import MyProfile from "./components/my-profile.component";
 import Store from "./components/store.component";
 import ProductView from "./components/product-view.component";
 import ShoppingCart from "./components/shopping-cart.component";
-import AllUsers from "./components/all-users.component";
 
 
 import './App.css';

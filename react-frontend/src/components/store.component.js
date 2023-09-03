@@ -107,21 +107,21 @@ const Store = () => {
             <div className={styles.menuBar}>
                 <div className={styles.sortOptions}>
                     <label>
-                        Select category:
+                       <span>Select category: </span> 
                         <select
                             name="categoryOption"
                             value={categoryOption}
                             onChange={handleSortChange}
                         >
                             <option value="all">All</option>
-                            <option value="CAT 1">CAT 1</option>
-                            <option value="CAT 2">CAT 2</option>
-                            <option value="CAT 3">CAT 3</option>
-                            <option value="CAT 4">CAT 4</option>
+                            <option value="CAT_1">CAT 1</option>
+                            <option value="CAT_2">CAT 2</option>
+                            <option value="CAT_3">CAT 3</option>
+                            <option value="CAT_4">CAT 4</option>
                         </select>
                     </label>
                     <label>
-                        Sort by:
+                        <span>Sort by: </span> 
                         <select
                             name="sortOption"
                             value={sortOption}
@@ -129,11 +129,11 @@ const Store = () => {
                         >
                             <option value="name">Name</option>
                             <option value="price">Price</option>
-                            <option value="newest">Newest</option>
+                            <option value="date">Newest</option>
                         </select>
                     </label>
                     <label>
-                        Order:
+                        <span>Order: </span> 
                         <select
                             name="sortOrder"
                             value={sortOrder}
@@ -143,10 +143,9 @@ const Store = () => {
                             <option value="desc">Descending</option>
                         </select>
                     </label>
-                    <button onClick={() => getProducts()}>Apply</button>
                 </div>
                 <div className={styles.productsPerPage}>
-                    <span>Show products per page:</span>
+                    <span>Show products per page: </span>
                     <select value={productsPerPage} onChange={handleProductsPerPageChange}>
                         <option value="12">12</option>
                         <option value="24">24</option>

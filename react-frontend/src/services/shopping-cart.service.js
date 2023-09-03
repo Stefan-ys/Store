@@ -14,9 +14,8 @@ const getProducts = () => {
         });
 };
 const addToCart = (productId) => {
-    console.log("xoxoxox" + productId);
     return axios
-        .post(API_CART_URL + "/add-product/" + productId, { headers: authHeader() })
+        .post(API_CART_URL + "/add-product/" + productId, null, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error adding to cart: ", error);
