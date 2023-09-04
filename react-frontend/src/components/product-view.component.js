@@ -5,8 +5,8 @@ import Form from "react-validation/build/form";
 import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
 import ShoppingCartService from "../services/shopping-cart.service";
-
-
+import { showRating, rateProduct } from "../utils/rating.util";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 const emptyProduct = {
     name: "",
     description: "",
@@ -26,6 +26,7 @@ const ProductView = () => {
     const [reviewExpanded, setReviewExpanded] = useState(false);
     const [comment, setComment] = useState("");
     const [rating, setRating] = useState(0);
+
 
 
     useEffect(() => {
@@ -92,7 +93,7 @@ const ProductView = () => {
                     <p className={styles.productPrice}>Price: ${product.price}</p>
                     <p className={styles.productCategory}>Category: {product.category}</p>
                     <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
-                    <p className={styles.productRating}>Rating: {product.rating}</p>
+                    <p className={styles.productRating}>Rating: {product.rating <= 0 ? "N/A" : showRating(product.rating)}</p>
 
                     <button
                         className={styles.button}
@@ -109,7 +110,7 @@ const ProductView = () => {
                                 {product.comments.map((comment, index) => (
                                     <li key={index} className={styles.reviewItem}>
                                         <p className={styles.commentUsername}>{comment.username}</p>
-                                        <p className={styles.commentRating}>Rating: {comment.rating}</p>
+                                        <p className={styles.commentRating}>Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}  </p>
                                         <p className={styles.commentText}>{comment.comment}</p>
                                         <p className={styles.commentDate}>
                                             Review Date: {new Date(comment.reviewDate).toLocaleDateString()}
@@ -130,18 +131,15 @@ const ProductView = () => {
                                 <Form onSubmit={handleSubmitReview}>
                                     <div className={styles.formGroup}>
                                         <label htmlFor="rating">Rating:</label>
-                                        <select
-                                            id="rating"
-                                            name="rating"
-                                            className={styles.inputField}
-                                            onChange={(event) => setRating(event.target.value)}
-                                        >
-                                            {[1, 2, 3, 4, 5].map((value) => (
+                                
+                                        {rateProduct(rating, setRating)}
+
+                                        {/* {[1, 2, 3, 4, 5].map((value) => (
                                                 <option key={value} value={value}>
                                                     {value} Stars
                                                 </option>
-                                            ))}
-                                        </select>
+                                            ))} */}
+                                        {/* </select> */}
                                     </div>
                                     <div className={styles.formGroup}>
                                         <label htmlFor="comment">Comment:</label>

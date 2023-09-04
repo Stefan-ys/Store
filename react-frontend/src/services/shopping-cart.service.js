@@ -25,7 +25,7 @@ const addToCart = (productId) => {
 
 const removeFromCart = (productId) => {
     return axios
-        .delete(API_CART_URL + "/remove-product/" + productId, { headers: authHeader() })
+        .delete(API_CART_URL + "/remove-product/" + productId, { headers: authHeader() }) 
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error removing from cart: ", error);
@@ -44,8 +44,9 @@ const removeAll = () => {
 };
 
 const changeQuantity = (productId, quantity) => {
+    console.log(productId, "<--->",quantity);
     return axios
-        .put(API_CART_URL + "/change-quantity/" + productId, { params: { quantity } }, { headers: authHeader() })
+        .put(API_CART_URL + "/change-quantity/" + productId + "?quantity=" + quantity, null, { headers: authHeader() }) 
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error changing quantity: ", error);

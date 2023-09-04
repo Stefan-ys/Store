@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart, FaBell } from "react-icons/fa";
 import styles from "../css/header.module.css";
-import AuthUtil from "../utils/auth.uitil";
+import AuthUtil from "../utils/auth.util";
 import AuthService from "../services/auth.service";
-import EventBus from "../common/EventBus";
 import { withRouter } from "../common/with-router";
 
 const HeaderComponent = () => {
