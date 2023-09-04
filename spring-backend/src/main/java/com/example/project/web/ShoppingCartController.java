@@ -19,25 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/get-products")
-    public ResponseEntity<ShoppingCartResponse> getProductsFromCart() {
 
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        try {
-            ShoppingCartResponse shoppingCartResponse = shoppingCartService.getShoppingCart(userId);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingCartResponse);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-    }
+    // Create
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/add-product/{productId}")
     public ResponseEntity<String> addProductToCart(@PathVariable("productId") String productId) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        System.out.println("add to cart" + productId + " - " + userId);
         try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
             shoppingCartService.addProductToCart(new ObjectId(productId), userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Product added to cart successfully");
         } catch (IllegalArgumentException exception) {
@@ -47,16 +36,48 @@ public class ShoppingCartController {
         }
     }
 
+    // Retrieve
+
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/remove-product/{productId}")
-    public ResponseEntity<String> removeProductFromCart(@PathVariable("productId") String productId) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        System.out.println("remove from cart");
+    @GetMapping("/get-products")
+    public ResponseEntity<ShoppingCartResponse> getProductsFromCart() {
         try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            ShoppingCartResponse shoppingCartResponse = shoppingCartService.getShoppingCart(userId);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingCartResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+    // Update
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/change-quantity/{productId}")
+    public ResponseEntity<String> changeProductQuantity(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity) {
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            shoppingCartService.setProductQuantity(new ObjectId(productId), userId, quantity);
+            return ResponseEntity.ok("Product quantity changed successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body("Client error: " + ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().body("Server error: " + ex.getMessage());
+        }
+    }
+
+    // Delete
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/remove-product/{productId}")
+    public ResponseEntity<String> removeProductFromCart(@PathVariable("productId") String productId) {
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
             shoppingCartService.removeProductFromCart(new ObjectId(productId), userId);
             return ResponseEntity.ok().body("Product removed from cart successfully");
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + exception.getMessage());
         }
     }
 
@@ -64,22 +85,9 @@ public class ShoppingCartController {
     @DeleteMapping("/clear-cart")
     public ResponseEntity<String> removeAllProductsFromCart() {
         ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        System.out.println("clean");
+
         shoppingCartService.removeAllProductsFromCart(userId);
         return ResponseEntity.ok().body("Cart cleared successfully");
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PutMapping("/change-quantity/{productId}")
-    public ResponseEntity<String> changeProductQuantityInCart(@PathVariable("productId") String productId, @RequestParam int quantity) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        System.out.println("change quantity");
-        try {
-            shoppingCartService.setProductQuantity(new ObjectId(productId), userId, quantity);
-            return ResponseEntity.ok().body("Product quantity changed successfully");
-        } catch (IllegalArgumentException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + exception.getMessage());
-        }
     }
 
 //    @PostMapping("/transfer-to-user-cart")

@@ -77,8 +77,8 @@ public class ShoppingCartEntity extends BaseEntity {
             this.removeProduct(productId);
             return;
         }
-        BigDecimal sumPrice = product.getPrice().add(BigDecimal.valueOf(quantity));
-        BigDecimal sumWeight = product.getWeight().add(BigDecimal.valueOf(quantity));
+        BigDecimal sumPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        BigDecimal sumWeight = product.getWeight().multiply(BigDecimal.valueOf(quantity));
         productSummaryMap.get(productId).setAll(quantity, sumPrice, sumWeight);
     }
 

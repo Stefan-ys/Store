@@ -96,12 +96,10 @@ public class ProductServiceImpl implements ProductService {
     public void rateProduct(ObjectId productId, String username, int rating) {
         ProductEntity productEntity = getProductById(productId);
         productEntity.getUsersRating().put(username, rating);
-        double sum = 0;
-        for (Integer x : productEntity.getUsersRating().values()) {
-            sum += x;
-        }
-        sum /= productEntity.getUsersRating().size();
-        sum = Math.round(sum * 10.0) / 10.0;
+        double sum = (double) productEntity.getUsersRating().values().stream().reduce(0, Integer::sum)
+                / productEntity.getUsersRating().size();
+
+//        sum = Math.round(sum * 10.0) / 10.0;
         productEntity.setRating(sum);
 
         productRepository.save(productEntity);
