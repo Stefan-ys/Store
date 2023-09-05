@@ -19,6 +19,7 @@ public class ProductResponse {
     private String productCategory;
     private String manufacturer;
     private double rating;
+    private int usersRatingCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<CommentResponse> comments = new ArrayList<>();
 

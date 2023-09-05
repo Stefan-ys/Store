@@ -25,47 +25,63 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-profile")
     public ResponseEntity<ProfileResponse> retrieveProfile() {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        ProfileResponse myProfile = userService.getProfile(userId);
-        if (myProfile == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            ProfileResponse myProfile = userService.getProfile(userId);
+            if (myProfile == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(myProfile, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(myProfile, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-address")
     public ResponseEntity<AddressResponse> retrieveAddress(@RequestParam String address) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
-        AddressResponse addressResponse = userService.getAddress(address, userId);
-        if (addressResponse == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            AddressResponse addressResponse = userService.getAddress(address, userId);
+            if (addressResponse == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(addressResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(addressResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/my-profile")
     public ResponseEntity<ProfileResponse> updateProfile(@Valid @RequestBody ProfileRequest profileRequest) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
-        ProfileResponse myProfile = userService.editProfile(userId, profileRequest);
-        if (myProfile == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            ProfileResponse myProfile = userService.editProfile(userId, profileRequest);
+            if (myProfile == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(myProfile, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(myProfile, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/my-address")
     public ResponseEntity<AddressResponse> updateAddress(@RequestBody AddressWithNoValidationRequest addressRequest, @RequestParam String address) {
-        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
-        AddressResponse addressResponse = userService.editAddress(userId, address, addressRequest);
-        if (addressResponse == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            AddressResponse addressResponse = userService.editAddress(userId, address, addressRequest);
+            if (addressResponse == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(addressResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(addressResponse, HttpStatus.OK);
     }
 }

@@ -1,7 +1,8 @@
-package com.example.project.web;
+package com.example.project.web.admin;
 
 import com.example.project.payload.response.ProductResponse;
-import com.example.project.service.StoreService;
+import com.example.project.payload.response.UserResponse;
+import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,16 +20,15 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/store")
-public class StoreController {
-    private final StoreService storeService;
+@RequestMapping("/api/admin")
+public class AdminUserController {
+    private final UserService userService;
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/all-products")
-    public ResponseEntity<Map<String, Object>> getProductsPage(
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all-users")
+    public ResponseEntity<Map<String, Object>> getUsersPage(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
-            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
@@ -36,25 +36,20 @@ public class StoreController {
             Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             String property = switch (sortBy) {
                 case "price" -> "price";
-                case "name" -> "name";
+                case "username" -> "username";
                 default -> "createdDate";
             };
 
             Pageable paging = PageRequest.of(page, size, direction, property);
 
-            Page<ProductResponse> productsPage;
-            if (category == null || category.equalsIgnoreCase("all")) {
-                productsPage = storeService.getAllProducts(paging);
-            } else {
-                productsPage = storeService.getProductsByCategory(category, paging);
-            }
+            Page<UserResponse> userPage = userService.getAllUsers(paging);
 
-            List<ProductResponse> products = productsPage.getContent();
+            List<UserResponse> users = userPage.getContent();
             Map<String, Object> response = new HashMap<>();
-            response.put("products", products);
-            response.put("currentPage", productsPage.getNumber());
-            response.put("totalElements", productsPage.getTotalElements());
-            response.put("totalPages", productsPage.getTotalPages());
+            response.put("users", users);
+            response.put("currentPage", userPage.getNumber());
+            response.put("totalElements", userPage.getTotalElements());
+            response.put("totalPages", userPage.getTotalPages());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

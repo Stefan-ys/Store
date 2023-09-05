@@ -39,6 +39,7 @@ public class ProductEntity extends BaseEntity {
     @Field(targetType = DECIMAL128)
     private BigDecimal weight;
     private LocalDate expirationDate;
+    private int views;
 
     @Override
     public boolean equals(Object o) {

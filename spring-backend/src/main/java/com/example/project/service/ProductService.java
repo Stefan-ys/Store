@@ -22,7 +22,7 @@ public interface ProductService {
 
     void setProductStatus(ObjectId productId, String status);
 
-    void commentProduct(ObjectId productId, String username, String comment, int rating);
+    void commentProduct(ObjectId productId, String username, String comment);
 
     void rateProduct(ObjectId productId, String username, int rating);
 

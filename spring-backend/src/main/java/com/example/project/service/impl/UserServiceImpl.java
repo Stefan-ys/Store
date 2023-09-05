@@ -6,6 +6,7 @@ import com.example.project.payload.request.AddressWithNoValidationRequest;
 import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.AddressResponse;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.model.entity.UserEntity;
@@ -16,6 +17,9 @@ import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +50,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(this::convertToViewModel).toList();
+    public Page<UserResponse> getAllUsers(Pageable paging) {
+        Page<UserEntity> users = userRepository.findAll(paging);
+        List<UserResponse> productResponses = users.getContent().stream()
+                .map(this::convertToUserResponse)
+                .collect(Collectors.toList());
+        return new PageImpl<>(productResponses, paging, users.getTotalElements());
+    }
+
+    private UserResponse convertToUserResponse(UserEntity userEntity) {
+        UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
+        return userResponse;
     }
 
     @Override

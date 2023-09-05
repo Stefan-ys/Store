@@ -1,6 +1,7 @@
 package com.example.project.service.impl;
 
 import com.example.project.model.entity.CommentEntity;
+import com.example.project.model.entity.UserEntity;
 import com.example.project.payload.request.ProductRequest;
 import com.example.project.payload.response.CommentResponse;
 import com.example.project.payload.response.ProductResponse;
@@ -41,8 +42,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProduct(ObjectId productId) {
         ProductEntity productEntity = getProductById(productId);
+        productEntity.setViews(productEntity.getViews() + 1);
+        productRepository.save(productEntity);
 
         ProductResponse productResponse = modelMapper.map(productEntity, ProductResponse.class);
+        productResponse.setUsersRatingCount(productEntity.getUsersRating().size());
 
         List<CommentResponse> commentResponses = commentRepository
                 .findAllByProductIdOrderByReviewDateAsc(productId)
@@ -81,15 +85,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void commentProduct(ObjectId productId, String username, String comment, int rating) {
+    public void commentProduct(ObjectId productId, String username, String comment) {
+        comment = comment.trim();
+        if (comment.length() == 0) {
+            return;
+        }
+        if (comment.length() > 300) {
+            comment = comment.substring(0, 300);
+        }
+
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setProductId(productId);
         commentEntity.setUsername(username);
         commentEntity.setComment(comment);
         commentEntity.setReviewDate(LocalDate.now());
-        commentEntity.setRating(rating);
+        ProductEntity productEntity = getProductById(productId);
+        commentEntity.setRating(productEntity.getUsersRating().get(username));
         commentRepository.save(commentEntity);
-
     }
 
     @Override
@@ -99,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
         double sum = (double) productEntity.getUsersRating().values().stream().reduce(0, Integer::sum)
                 / productEntity.getUsersRating().size();
 
-//        sum = Math.round(sum * 10.0) / 10.0;
+        sum = Math.round(sum * 10.0) / 10.0;
         productEntity.setRating(sum);
 
         productRepository.save(productEntity);

@@ -13,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -45,30 +44,8 @@ public class ProductController {
             productService.rateProduct(productId, username, rating);
         }
         if (comment != null && comment.length() > 0) {
-            productService.commentProduct(productId, username, comment, rating);
+            productService.commentProduct(productId, username, comment);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add")
-    public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
-        productService.addProduct(productBindingModel);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/edit/{productId}")
-    public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductRequest productBindingModel) {
-        productService.editProduct(productId, productBindingModel);
-        return ResponseEntity.ok().build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable ObjectId productId) {
-        productService.deleteProduct(productId);
-        return ResponseEntity.ok().build();
-    }
-
 }

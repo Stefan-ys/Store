@@ -4,17 +4,18 @@ import com.example.project.payload.request.AddressWithNoValidationRequest;
 import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.AddressResponse;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import org.bson.types.ObjectId;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     void signUp(RegisterRequest signUpBindingModel);
 
-    List<UserResponse> getAllUsers();
+    Page<UserResponse> getAllUsers(Pageable pageable);
 
     UserResponse getUser(ObjectId userId);
 
