@@ -1,0 +1,50 @@
+/* admin-page.module.css */
+
+.admin-page {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    color: white;
+    font: message-box;
+  }
+  
+  .menu {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .menu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .menu-item.active {
+    background-color: #333;
+  }
+  
+  .submenu {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .menu-item:hover .submenu {
+    display: block;
+  }
+  
+  .submenu li {
+    padding: 10px 20px;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  /* Add more styles as needed */
+  

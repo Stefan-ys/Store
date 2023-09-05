@@ -6,7 +6,8 @@ import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
 import ShoppingCartService from "../services/shopping-cart.service";
 import { showRating, rateProduct } from "../utils/rating.util";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+
+
 const emptyProduct = {
     name: "",
     description: "",
@@ -15,8 +16,10 @@ const emptyProduct = {
     manufacturer: "",
     rating: 0,
     reviews: [],
+    pictures: [],
+    status: [],
+    catalogNumber: "",
 }
-
 
 const ProductView = () => {
     const { productId } = useParams();
@@ -25,9 +28,21 @@ const ProductView = () => {
     const [loading, setLoading] = useState(false);
     const [reviewExpanded, setReviewExpanded] = useState(false);
     const [comment, setComment] = useState("");
+    const [commentAlert, setCommentAlert] = useState("");
     const [rating, setRating] = useState(0);
 
+    const maxCharacters = 300;
 
+    const handleCommentChange = (value) => {
+        const inputComment = value;
+        if (inputComment.length > maxCharacters) {
+            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`);
+            setComment(inputComment);
+        } else {
+            setCommentAlert("");
+        }
+
+    };
 
     useEffect(() => {
         fetchProductData();
@@ -93,7 +108,7 @@ const ProductView = () => {
                     <p className={styles.productPrice}>Price: ${product.price}</p>
                     <p className={styles.productCategory}>Category: {product.category}</p>
                     <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
-                    <p className={styles.productRating}>Rating: {product.rating <= 0 ? "N/A" : showRating(product.rating)}</p>
+                    <p className={styles.productRating}>Rating: {product.rating <= 0 ? "N/A" : showRating(product.rating, product.usersRatingCount)} </p>
 
                     <button
                         className={styles.button}
@@ -109,8 +124,12 @@ const ProductView = () => {
                             <ul className={styles.reviewList}>
                                 {product.comments.map((comment, index) => (
                                     <li key={index} className={styles.reviewItem}>
-                                        <p className={styles.commentUsername}>{comment.username}</p>
-                                        <p className={styles.commentRating}>Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}  </p>
+                                        <div className={styles.reviewHeader}>
+                                            <p className={styles.commentUsername}>{comment.username}</p>
+                                            <p className={styles.commentRating}>
+                                                Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}
+                                            </p>
+                                        </div>
                                         <p className={styles.commentText}>{comment.comment}</p>
                                         <p className={styles.commentDate}>
                                             Review Date: {new Date(comment.reviewDate).toLocaleDateString()}
@@ -128,18 +147,11 @@ const ProductView = () => {
                         {reviewExpanded && (
                             <div className={styles.writeReviewSection}>
                                 <h3>Write a Review</h3>
+                                {commentAlert && <p className={styles.errorMessage}>{commentAlert}</p>}
                                 <Form onSubmit={handleSubmitReview}>
                                     <div className={styles.formGroup}>
                                         <label htmlFor="rating">Rating:</label>
-                                
                                         {rateProduct(rating, setRating)}
-
-                                        {/* {[1, 2, 3, 4, 5].map((value) => (
-                                                <option key={value} value={value}>
-                                                    {value} Stars
-                                                </option>
-                                            ))} */}
-                                        {/* </select> */}
                                     </div>
                                     <div className={styles.formGroup}>
                                         <label htmlFor="comment">Comment:</label>
@@ -148,7 +160,7 @@ const ProductView = () => {
                                             name="comment"
                                             rows="4"
                                             className={styles.inputField}
-                                            onChange={(event) => setComment(event.target.value)}
+                                            onChange={(event) => handleCommentChange(event.target.value)}
                                         ></textarea>
                                     </div>
                                     <button type="submit" className={styles.submitReviewButton}>

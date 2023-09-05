@@ -8,26 +8,21 @@ const maxRating = 5;
 const rateProduct = (rating, setRating) => {
     const stars = [];
 
-
     for (let i = 1; i <= maxRating; i++) {
-        if (i > rating) {
-            stars.push(
-                <FaRegStar
-                    key={i}
-                    style={{ color: "black", cursor: "pointer" }}
-                    onClick={() => setRating(i)}
-                // onMouseEnter={() => setStars(i)}
-                // onMouseLeave={() => setRating(0)}
-                />
-            );
-        } else {
+        if (i <= rating) {
             stars.push(
                 <FaStar
                     key={i}
                     style={{ color: "black", cursor: "pointer" }}
                     onClick={() => setRating(i)}
-                // onMouseEnter={() => setStars(i)}
-                // onMouseLeave={() => setRating(0)}
+                />
+            );
+        } else {
+            stars.push(
+                <FaRegStar
+                    key={i}
+                    style={{ color: "black", cursor: "pointer" }}
+                    onClick={() => setRating(i)}
                 />
             );
         }
@@ -35,10 +30,9 @@ const rateProduct = (rating, setRating) => {
 
 
     return stars;
-
 };
 
-const showRating = (rating) => {
+const showRating = (rating, usersCount) => {
     const stars = [];
 
     for (let i = 1; i <= maxRating; i++) {
@@ -66,7 +60,10 @@ const showRating = (rating) => {
             );
         }
     }
-
+    if (usersCount !== undefined) {
+        stars.push("  " + rating);
+        stars.push(" (" + usersCount + ")");
+    }
     return stars;
 };
 

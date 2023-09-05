@@ -59,6 +59,17 @@ const HeaderComponent = () => {
                         </li>
                         {isLoggedIn ? (
                             <>
+                                {isAdmin && (
+                                    <>
+                                        <li>
+                                            <NavLink to="/admin" activeClassName={styles.active} className={styles.navLink}>
+                                                Admin Page
+                                            </NavLink>
+                                        </li>
+                                    </>
+                                )}
+
+
                                 <li>
                                     <NavLink to="/my-profile" activeClassName={styles.active}
                                         className={styles.navLink}>

@@ -8,7 +8,7 @@ import MyProfile from "./components/my-profile.component";
 import Store from "./components/store.component";
 import ProductView from "./components/product-view.component";
 import ShoppingCart from "./components/shopping-cart.component";
-
+import AdminPage from "./components/admin-page.component";
 
 import './App.css';
 
@@ -28,8 +28,8 @@ const App = () => {
                     <Route path="/store" element={<Store />} />
                     <Route path="/product/:productId" component={ProductView} element={<ProductView />} />
                     <Route path="/shopping-cart" element={<ShoppingCart />} />
-                    {/*<Route path="/admin" element={<AdminBoard/>}/>*/}
-                    {/*<Route path="/all-users" element={<AllUsers/>}/>*/}
+                    <Route path="/admin" element={<AdminPage />} />
+
                 </Routes>
             </div>
         </div>
