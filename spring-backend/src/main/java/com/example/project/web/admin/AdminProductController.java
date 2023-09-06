@@ -17,12 +17,19 @@ import org.springframework.web.bind.annotation.*;
 public class AdminProductController {
     private final ProductService productService;
 
+    // Create
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
         productService.addProduct(productBindingModel);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    // Retrieve
+
+
+    // Update
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit/{productId}")
@@ -31,12 +38,12 @@ public class AdminProductController {
         return ResponseEntity.ok().build();
     }
 
+    // Delete
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable ObjectId productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();
     }
-
-
 }

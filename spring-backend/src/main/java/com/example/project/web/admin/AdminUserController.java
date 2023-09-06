@@ -1,6 +1,6 @@
 package com.example.project.web.admin;
 
-import com.example.project.payload.response.ProductResponse;
+
 import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/user")
 public class AdminUserController {
     private final UserService userService;
 
@@ -57,4 +57,25 @@ public class AdminUserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/update-user-authority/{userId}")
+    public ResponseEntity<Void> updateUserAuthority(@PathVariable String userId, @RequestBody List<String> authorities) {
+        try {
+            userService.updateUserAuthorities(userId, authorities);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete-user-account/{userId}")
+    public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId) {
+        try {
+            userService.deleteUserById(userId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

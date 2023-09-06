@@ -37,6 +37,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
+
+
+    // Create
+
     @Override
     public void signUp(RegisterRequest signUpBindingModel) {
         UserEntity userEntity = new UserEntity();
@@ -49,6 +53,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    // Retrieve
+
     @Override
     public Page<UserResponse> getAllUsers(Pageable paging) {
         Page<UserEntity> users = userRepository.findAll(paging);
@@ -58,40 +64,21 @@ public class UserServiceImpl implements UserService {
         return new PageImpl<>(productResponses, paging, users.getTotalElements());
     }
 
-    private UserResponse convertToUserResponse(UserEntity userEntity) {
-        UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
-        return userResponse;
-    }
-
-    @Override
-    public UserResponse getUser(ObjectId userId) {
-        UserEntity userEntity = getUserById(userId);
-        return convertToViewModel(userEntity);
-    }
-
-    @Override
-    public boolean containsUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
-    }
-
-    @Override
-    public boolean containsEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    @Override
-    public void updateUserActivity(ObjectId userId) {
-        UserEntity userEntity = getUserById(userId);
-
-        userEntity.setLastDateActive(LocalDate.now());
-        userRepository.save(userEntity);
-    }
 
     @Override
     public ProfileResponse getProfile(ObjectId userId) {
         UserEntity userEntity = getUserById(userId);
         return modelMapper.map(userEntity, ProfileResponse.class);
 
+    }
+
+    // Update
+    @Override
+    public void updateUserActivity(ObjectId userId) {
+        UserEntity userEntity = getUserById(userId);
+
+        userEntity.setLastDateActive(LocalDate.now());
+        userRepository.save(userEntity);
     }
 
     @Override
@@ -141,6 +128,30 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public void updateUserAuthorities(String userId, List<String> authorities) {
+
+    }
+
+    // Delete
+
+    @Override
+    public void deleteUserById(String userId) {
+
+    }
+
+    private UserResponse convertToUserResponse(UserEntity userEntity) {
+        UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
+        return userResponse;
+    }
+
+
+
+
+    private UserEntity getUserById(ObjectId userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id " + userId));
+    }
 
     private UserResponse convertToViewModel(UserEntity userEntity) {
         UserResponse viewModel = modelMapper.map(userEntity, UserResponse.class);
@@ -159,11 +170,6 @@ public class UserServiceImpl implements UserService {
                 String.format("(%s days since)", ChronoUnit.DAYS.between(activeDate, currentDate)));
 
         return viewModel;
-    }
-
-    private UserEntity getUserById(ObjectId userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id " + userId));
     }
 
 }

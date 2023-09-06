@@ -11,25 +11,35 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserService {
 
+    // Create
+
+
+    // Retrieve
     void signUp(RegisterRequest signUpBindingModel);
 
     Page<UserResponse> getAllUsers(Pageable pageable);
 
-    UserResponse getUser(ObjectId userId);
-
-    boolean containsUsername(String username);
-
-    boolean containsEmail(String email);
-
-    void updateUserActivity(ObjectId userId);
-
     ProfileResponse getProfile(ObjectId userId);
-
-    ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest);
 
     AddressResponse getAddress(String address, ObjectId userId);
 
     AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest);
+
+    void updateUserAuthorities(String userId, List<String> authorities);
+
+
+    // Update
+
+    void updateUserActivity(ObjectId userId);
+
+    ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest);
+
+    // Delete
+
+    void deleteUserById(String userId);
+
 }

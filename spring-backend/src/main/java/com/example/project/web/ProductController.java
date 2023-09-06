@@ -1,10 +1,8 @@
 package com.example.project.web;
 
-import com.example.project.payload.request.ProductRequest;
 import com.example.project.payload.request.ReviewRequest;
 import com.example.project.payload.response.ProductResponse;
 import com.example.project.service.ProductService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
