@@ -1,91 +1,137 @@
 import React, { useState } from 'react';
-import styles from '../css/admin-page.module.css'; 
-import {withRouter} from "../common/with-router";
+import styles from '../css/admin-page.module.css';
+// import { withRouter } from "../common/with-router";
+import Menu from "../utils/menu.util.js";
+import Pagination from "../utils/pagination.util";
+import AdminService  from '../services/admin-page.service';
+
 
 const AdminPage = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleMenuClick = (menu) => {
-    if (activeMenu === menu) {
-      // Toggle submenu if already active
-      setActiveMenu(null);
-    } else {
-      setActiveMenu(menu);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage, setProductsPerPage] = useState(12);
+  const [totalPages, setTotalPages] = useState(0);
+  const [sortOption, setSortOption] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  const getAllUsers = async () => {
+    setLoading(true);
+    setMessage("");
+    try {
+      const data = await AdminService.getAllUsers(currentPage, productsPerPage, sortOption, sortOrder);
+
+      setUsers(data.users);
+      setTotalPages(data.totalPages);
+
+    } catch (error) {
+      console.log("Error fetching products data: ", error);
+      setMessage(error.response ? error.response.data.message : "An error has occurred.");
+
+    } finally {
+      setLoading(false);
     }
   };
 
+  const getAdminUsers = () => {
+
+  };
+
+  const getModeratorUsers = () => {
+
+  };
+
+  const AddProduct = () => {
+
+  };
+
+  const getAllProducts = () => {
+
+  };
+
+  const getAllOrders = () => {
+
+  };
+
+  const getActiveOrders = () => {
+
+  };
+
+  const getCompletedOrders = () => {
+
+  };
+
+  const getCanceledOrders = () => {
+
+  };
+
+  const getAllComments = () => {
+
+  };
+
+  const myNotifications = () => {
+  };
+
+  const sendNotification = () => {
+
+  };
+
+  const getAllNotifications = () => {
+
+  };
+
+
+  const menuItems = [
+    {
+      name: "Users",
+      items: [
+        { label: "All Users", action: getAllUsers },
+        { label: "Admin Users", action: getAdminUsers },
+        { label: "Moderator Users", action: getModeratorUsers },
+      ],
+    },
+    {
+      name: "Products",
+      items: [
+        { label: "Add Product", action: AddProduct },
+        { label: "All Products", action: getAllProducts },
+      ],
+    },
+    {
+      name: "Orders",
+      items: [
+        { label: "All Orders", action: getAllOrders },
+        { label: "Active Orders", action: getActiveOrders },
+        { label: "Completed Orders", action: getCompletedOrders },
+        { label: "Canceled Orders", action: getCanceledOrders },
+      ],
+    },
+    {
+      name: "Comments",
+      items: [
+        { label: "All Comments", action: getAllComments },
+      ],
+    },
+    {
+      name: "Notifications",
+      items: [
+        { label: "My Notifications", action: myNotifications },
+        { label: "Send Notification", action: sendNotification },
+        { label: "All Notifications", action: getAllNotifications },
+      ],
+    },
+  ];
+
+
   return (
-    <div className={styles['admin-page']}>
-      <div className={styles.menu}>
-        <div
-          className={`${styles['menu-item']} ${activeMenu === 'Users' ? styles.active : ''}`}
-          onClick={() => handleMenuClick('Users')}
-        >
-          Users
-          {activeMenu === 'Users' && (
-            <ul className={styles.submenu}>
-              <li>All Users</li>
-            </ul>
-          )}
-        </div>
-        <div
-          className={`${styles['menu-item']} ${activeMenu === 'Products' ? styles.active : ''}`}
-          onClick={() => handleMenuClick('Products')}
-        >
-          Products
-          {activeMenu === 'Products' && (
-            <ul className={styles.submenu}>
-              <li>All Products</li>
-              <li>Add Product</li>
-            </ul>
-          )}
-        </div>
-        <div
-          className={`${styles['menu-item']} ${activeMenu === 'Comments' ? styles.active : ''}`}
-          onClick={() => handleMenuClick('Comments')}
-        >
-          Comments
-          {activeMenu === 'Comments' && (
-            <ul className={styles.submenu}>
-              <li>All Comments</li>
-            </ul>
-          )}
-        </div>
-        <div
-          className={`${styles['menu-item']} ${activeMenu === 'Notifications' ? styles.active : ''}`}
-          onClick={() => handleMenuClick('Notifications')}
-        >
-          Notifications
-          {activeMenu === 'Notifications' && (
-            <ul className={styles.submenu}>
-              <li>All Notifications</li>
-              <li>Received Notifications</li>
-              <li>Send Notification</li>
-            </ul>
-          )}
-        </div>
-        <div
-          className={`${styles['menu-item']} ${activeMenu === 'Orders' ? styles.active : ''}`}
-          onClick={() => handleMenuClick('Orders')}
-        >
-          Orders
-          {activeMenu === 'Orders' && (
-            <ul className={styles.submenu}>
-              <li>All Orders</li>
-            </ul>
-          )}
-        </div>
+    <section>
+      <div className={styles['admin-page']}>
+        <Menu menu={menuItems} />
       </div>
-      <div className={styles.content}>
-        {/* Render content based on the activeMenu */}
-        {activeMenu === 'Users' && <div>Users content here</div>}
-        {activeMenu === 'Products' && <div>Products content here</div>}
-        {activeMenu === 'Comments' && <div>Comments content here</div>}
-        {activeMenu === 'Notifications' && <div>Notifications content here</div>}
-        {activeMenu === 'Orders' && <div>Orders content here</div>}
-      </div>
-    </div>
+    </section>
   );
 };
 
-export default withRouter(AdminPage);
+export default AdminPage;

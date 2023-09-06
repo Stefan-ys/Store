@@ -1,50 +1,104 @@
 /* admin-page.module.css */
 
 .admin-page {
-    display: flex;
-    flex-direction: row;
-    background-color: black;
-    color: white;
-    font: message-box;
-  }
-  
-  .menu {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .menu-item {
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  .menu-item.active {
-    background-color: #333;
-  }
-  
-  .submenu {
-    display: none;
-    position: absolute;
-    background-color: #333;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .menu-item:hover .submenu {
-    display: block;
-  }
-  
-  .submenu li {
-    padding: 10px 20px;
-  }
-  
-  .content {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  /* Add more styles as needed */
-  
+  display: flex;
+  flex-direction: row;
+  background-color: black;
+  color: white;
+  font: message-box;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s; 
+}
+
+.menu-item.active {
+  background-color: #333;
+}
+
+.submenu {
+  position: absolute;
+  background-color: #333;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Hide overflow content */
+  opacity: 0; /* Initially hidden */
+  height: 0; /* Initially collapsed */
+  transition: opacity 0.3s, height 0.3s; /* Add transition for opacity and height */
+}
+
+.menu-item:hover .submenu,
+.menu-item.active .submenu {
+  opacity: 1;
+  height: auto;
+}
+
+.submenu li {
+  padding: 10px 20px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+table th,
+table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #333;
+  color: #fff;
+}
+
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Pagination Styles */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.pagination li {
+  margin: 0 5px;
+  cursor: pointer;
+  color: #333;
+}
+
+.pagination li.active {
+  font-weight: bold;
+  color: #555;
+}

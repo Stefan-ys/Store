@@ -1,0 +1,51 @@
+.menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-width 0.3s; 
+}
+
+.menu-item.active {
+  background-color: #666;
+}
+
+.submenu {
+  position: absolute;
+  background-color: #333;
+  list-style-type: none;
+  margin: 3px;
+  padding: 0;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  opacity: 0;
+  height: 0;
+  transition: opacity 0.3s, height 0.3s;
+  border-width: 0; 
+}
+
+.menu-item:hover .submenu,
+.menu-item.active .submenu {
+  opacity: 1;
+  height: auto;
+  border-width: 1px; 
+}
+
+.submenu li {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submenu li:hover {
+  background-color: #444;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}

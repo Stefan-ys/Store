@@ -79,10 +79,6 @@ const Store = () => {
         }
     };
 
-
-
-
-
     const renderProducts = () => {
         return products.map((product) => (
             <div key={product.catalogNumber} className={styles.productBox}>

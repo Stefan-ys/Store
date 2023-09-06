@@ -13,7 +13,6 @@ const getMyProfile = () => {
 };
 
 const updateMyProfile = (data) => {
-    console.log(data.email + "  " + data.phoneNumber);
     return axios
         .put(API_USERS_URL + "/my-profile", data, { headers: authHeader() })
         .then((response) => response.data)
