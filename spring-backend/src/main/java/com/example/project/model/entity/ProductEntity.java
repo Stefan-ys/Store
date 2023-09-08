@@ -4,12 +4,11 @@ import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
@@ -38,8 +37,10 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal weight;
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDate;
+    private int sells;
     private int views;
+
 
     @Override
     public boolean equals(Object o) {

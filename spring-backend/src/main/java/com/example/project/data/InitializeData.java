@@ -43,7 +43,7 @@ public class InitializeData {
                         BigDecimal.valueOf(Math.round(( 5 + Math.random() * 20) * Math.pow(10, 2)) / Math.pow(10, 2)),
                         10,
                         "Lorem ipsum bla bla bla.......",
-                        i % 2 == 0 ? ProductCategoryEnum.CAT_1 : ProductCategoryEnum.CAT_2,
+                        i % 2 == 0 ? ProductCategoryEnum.RECTANGLES : ProductCategoryEnum.SQUARES,
                         i % 3 == 0 ? ProductStatusEnum.NEW : ProductStatusEnum.PROMOTION,
                         BigDecimal.valueOf(Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
                 );

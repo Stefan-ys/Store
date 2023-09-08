@@ -2,6 +2,7 @@ package com.example.project.web;
 
 import com.example.project.payload.request.ReviewRequest;
 import com.example.project.payload.response.ProductResponse;
+import com.example.project.service.CommentService;
 import com.example.project.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/product")
 public class ProductController {
     private final ProductService productService;
+    private final CommentService commentService;
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable("productId") String productId) {
@@ -29,20 +31,19 @@ public class ProductController {
     }
 
 
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/review")
     public ResponseEntity<Void> reviewProduct(@RequestBody ReviewRequest reviewRequest) {
         ObjectId productId = new ObjectId(reviewRequest.getProductId());
-        String comment = reviewRequest.getComment();
         int rating = reviewRequest.getRating();
+        String comment = reviewRequest.getComment();
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (rating > 0) {
             productService.rateProduct(productId, username, rating);
         }
         if (comment != null && comment.length() > 0) {
-            productService.commentProduct(productId, username, comment);
+            commentService.commentProduct(productId, username, rating ,comment);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }

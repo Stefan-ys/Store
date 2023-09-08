@@ -35,8 +35,11 @@ public class AdminUserController {
         try {
             Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             String property = switch (sortBy) {
-                case "price" -> "price";
+                case "email" -> "email";
+                case "phoneNumber" -> "phoneNumber";
                 case "username" -> "username";
+                case "firstName" -> "firstName";
+                case "lastName" -> "lastName";
                 default -> "createdDate";
             };
 

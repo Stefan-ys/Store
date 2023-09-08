@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 
 @Document(collection = "comments")
 @Getter
@@ -17,5 +16,4 @@ public class CommentEntity extends BaseEntity {
     private ObjectId productId;
     private String username;
     private String comment;
-    private LocalDate reviewDate;
 }

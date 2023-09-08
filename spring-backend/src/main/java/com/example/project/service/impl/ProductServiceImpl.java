@@ -1,7 +1,6 @@
 package com.example.project.service.impl;
 
 import com.example.project.model.entity.CommentEntity;
-import com.example.project.model.entity.UserEntity;
 import com.example.project.payload.request.ProductRequest;
 import com.example.project.payload.response.CommentResponse;
 import com.example.project.payload.response.ProductResponse;
@@ -16,10 +15,13 @@ import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.project.util.DateUtils.formatLocalDateTime;
+import static com.example.project.util.DateUtils.getTimeBetween;
 
 @Service
 @AllArgsConstructor
@@ -49,9 +51,9 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setUsersRatingCount(productEntity.getUsersRating().size());
 
         List<CommentResponse> commentResponses = commentRepository
-                .findAllByProductIdOrderByReviewDateAsc(productId)
+                .findAllByProductIdOrderByCreatedDateAsc(productId)
                 .stream()
-                .map(comment -> modelMapper.map(comment, CommentResponse.class))
+                .map(this::convertToCommentResponse)
                 .collect(Collectors.toList());
 
         productResponse.setComments(commentResponses);
@@ -82,26 +84,6 @@ public class ProductServiceImpl implements ProductService {
         ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
         productEntity.getStatus().remove(productStatusEnum);
         productRepository.save(productEntity);
-    }
-
-    @Override
-    public void commentProduct(ObjectId productId, String username, String comment) {
-        comment = comment.trim();
-        if (comment.length() == 0) {
-            return;
-        }
-        if (comment.length() > 300) {
-            comment = comment.substring(0, 300);
-        }
-
-        CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setProductId(productId);
-        commentEntity.setUsername(username);
-        commentEntity.setComment(comment);
-        commentEntity.setReviewDate(LocalDate.now());
-        ProductEntity productEntity = getProductById(productId);
-        commentEntity.setRating(productEntity.getUsersRating().get(username));
-        commentRepository.save(commentEntity);
     }
 
     @Override
@@ -143,5 +125,11 @@ public class ProductServiceImpl implements ProductService {
                 .filter(c -> c.name().equalsIgnoreCase(category))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private CommentResponse convertToCommentResponse(CommentEntity commentEntity) {
+        CommentResponse commentResponse = modelMapper.map(commentEntity, CommentResponse.class);
+        commentResponse.setReviewDate(String.format("%s (%s ago)", formatLocalDateTime(commentEntity.getCreatedDate()), getTimeBetween(commentEntity.getCreatedDate(), LocalDateTime.now())));
+        return commentResponse;
     }
 }

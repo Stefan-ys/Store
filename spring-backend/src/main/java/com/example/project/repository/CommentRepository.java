@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends MongoRepository<CommentEntity, ObjectId> {
 
-    List<CommentEntity> findAllByProductIdOrderByReviewDateAsc(ObjectId productId);
+    List<CommentEntity> findAllByProductIdOrderByCreatedDateAsc(ObjectId productId);
 }

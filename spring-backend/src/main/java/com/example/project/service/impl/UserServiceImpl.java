@@ -6,7 +6,6 @@ import com.example.project.payload.request.AddressWithNoValidationRequest;
 import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.AddressResponse;
-import com.example.project.payload.response.ProductResponse;
 import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.model.entity.UserEntity;
@@ -23,11 +22,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.project.util.DateUtils.formatLocalDateTime;
+import static com.example.project.util.DateUtils.getTimeBetween;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +37,6 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-
 
 
     // Create
@@ -76,8 +76,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserActivity(ObjectId userId) {
         UserEntity userEntity = getUserById(userId);
-
-        userEntity.setLastDateActive(LocalDate.now());
+        userEntity.setVisits(userEntity.getVisits() + 1);
+        userEntity.setLastDateActive(LocalDateTime.now());
         userRepository.save(userEntity);
     }
 
@@ -142,34 +142,24 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse convertToUserResponse(UserEntity userEntity) {
         UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
+        userResponse.setId(userEntity.getId().toString());
+        userResponse.setRoles(
+                userEntity.getRoles()
+                        .stream()
+                        .map(roleEntity -> roleEntity.getRole().toString())
+                        .collect(Collectors.joining(", "))
+        );
+
+        LocalDateTime currentDate = LocalDateTime.now();
+        userResponse.setCreatedDate(String.format("%s (%s ago)", formatLocalDateTime(userEntity.getCreatedDate()), getTimeBetween(userEntity.getCreatedDate(), currentDate)));
+        userResponse.setLastActiveDate(String.format("%s (%s ago)", formatLocalDateTime(userEntity.getLastDateActive()), getTimeBetween(userEntity.getLastDateActive(), currentDate)));
+
         return userResponse;
     }
-
-
 
 
     private UserEntity getUserById(ObjectId userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id " + userId));
     }
-
-    private UserResponse convertToViewModel(UserEntity userEntity) {
-        UserResponse viewModel = modelMapper.map(userEntity, UserResponse.class);
-        viewModel.setRoles(userEntity
-                .getRoles()
-                .stream()
-                .map(role -> role.getRole().toString())
-                .collect(Collectors.toList()));
-        LocalDate currentDate = LocalDate.now();
-        LocalDate createdDate = userEntity.getCreatedDate();
-        LocalDate activeDate = userEntity.getLastDateActive();
-
-        viewModel.setCreatedAt(createdDate +
-                String.format("(%s days since)", ChronoUnit.DAYS.between(currentDate, currentDate)));
-        viewModel.setLastActiveAt(activeDate +
-                String.format("(%s days since)", ChronoUnit.DAYS.between(activeDate, currentDate)));
-
-        return viewModel;
-    }
-
 }

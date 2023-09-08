@@ -7,12 +7,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,9 +34,11 @@ public class UserEntity extends BaseEntity {
     private String lastName;
     private String phoneNumber;
     private Set<RoleEntity> roles = new HashSet<>();
-    private LocalDate lastDateActive = LocalDate.now();
+    private LocalDateTime lastDateActive = LocalDateTime.now();
     private Address deliveryAddress = new Address();
     private Address paymentAddress = new Address();
+
+    private int visits;
 
 }
 

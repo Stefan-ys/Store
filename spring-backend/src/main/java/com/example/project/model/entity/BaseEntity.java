@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public abstract class BaseEntity {
@@ -16,7 +16,7 @@ public abstract class BaseEntity {
     @Indexed(unique = true, background = true)
     private @MongoId ObjectId id;
     @CreatedDate
-    private LocalDate createdDate = LocalDate.now();
+    private LocalDateTime createdDate = LocalDateTime.now();
     @LastModifiedDate
-    private LocalDate lastModifiedDate = LocalDate.now();
+    private LocalDateTime lastModifiedDate = LocalDateTime.now();
 }
