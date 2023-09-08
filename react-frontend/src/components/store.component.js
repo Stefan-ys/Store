@@ -110,10 +110,10 @@ const Store = () => {
                             onChange={handleSortChange}
                         >
                             <option value="all">All</option>
-                            <option value="CAT_1">CAT 1</option>
-                            <option value="CAT_2">CAT 2</option>
-                            <option value="CAT_3">CAT 3</option>
-                            <option value="CAT_4">CAT 4</option>
+                            <option value="CAT_1">Circles</option>
+                            <option value="CAT_2">Triangles</option>
+                            <option value="CAT_3">Squares</option>
+                            <option value="CAT_4">Rectangles</option>
                         </select>
                     </label>
                     <label>

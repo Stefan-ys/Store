@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
-import styles from '../css/admin-page.module.css';
-// import { withRouter } from "../common/with-router";
+import React, { useState } from "react";
+import styles from "../css/admin-page.module.css";
+import { withRouter } from "../common/with-router";
 import Menu from "../utils/menu.util.js";
+import DataTable from "../utils/data-table.util";
+import AdminUserService from "../services/admin-user.service";
+import AdminProductService from "../services/admin-product.service";
 import Pagination from "../utils/pagination.util";
-import AdminService  from '../services/admin-page.service';
 
 
 const AdminPage = () => {
-  const [users, setUsers] = useState([]);
+  const [data, setData] = useState([{}]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(12);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
-  const [sortOption, setSortOption] = useState("name");
+  const [sortOption, setSortOption] = useState("date");
   const [sortOrder, setSortOrder] = useState("asc");
+
+
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+};
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+
 
   const getAllUsers = async () => {
     setLoading(true);
     setMessage("");
     try {
-      const data = await AdminService.getAllUsers(currentPage, productsPerPage, sortOption, sortOrder);
+      const users = await AdminUserService.getAllUsersService(currentPage, itemsPerPage, sortOption, sortOrder);
 
-      setUsers(data.users);
-      setTotalPages(data.totalPages);
+      setData(users.users);
+      setTotalPages(data.length);
 
     } catch (error) {
       console.log("Error fetching products data: ", error);
@@ -47,7 +61,25 @@ const AdminPage = () => {
 
   };
 
-  const getAllProducts = () => {
+  const getAllProducts = async () => {
+    setLoading(true);
+    setMessage("");
+    try {
+      console.log("check 1")
+      const products = await AdminProductService.getAllProductsService(currentPage, itemsPerPage, sortOption, sortOrder);
+      console.log('check 33');
+      console.log(products)
+      console.log(products.products);
+      setData(products.products);
+      setTotalPages(data.length);
+
+    } catch (error) {
+      console.log("Error fetching products data: ", error);
+      setMessage(error.response ? error.response.data.message : "An error has occurred.");
+
+    } finally {
+      setLoading(false);
+    }
 
   };
 
@@ -95,8 +127,8 @@ const AdminPage = () => {
     {
       name: "Products",
       items: [
-        { label: "Add Product", action: AddProduct },
         { label: "All Products", action: getAllProducts },
+        { label: "Add Product", action: AddProduct },
       ],
     },
     {
@@ -124,14 +156,21 @@ const AdminPage = () => {
     },
   ];
 
-
   return (
     <section>
       <div className={styles['admin-page']}>
         <Menu menu={menuItems} />
       </div>
+      <div>
+        <DataTable data={data} loading={loading} message={message} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </section>
   );
 };
 
-export default AdminPage;
+export default withRouter(AdminPage);

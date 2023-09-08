@@ -36,12 +36,11 @@ const ProductView = () => {
     const handleCommentChange = (value) => {
         const inputComment = value;
         if (inputComment.length > maxCharacters) {
-            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`);
-            setComment(inputComment);
+            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`); 
         } else {
             setCommentAlert("");
         }
-
+        setComment(inputComment);
     };
 
     useEffect(() => {
@@ -54,7 +53,6 @@ const ProductView = () => {
 
         try {
             const fetchedProduct = await ProductService.getProduct(productId);
-            console.log(fetchedProduct);
             setProduct(fetchedProduct);
         } catch (error) {
             console.log("Fetch product error:", error);
@@ -132,7 +130,7 @@ const ProductView = () => {
                                         </div>
                                         <p className={styles.commentText}>{comment.comment}</p>
                                         <p className={styles.commentDate}>
-                                            Review Date: {new Date(comment.reviewDate).toLocaleDateString()}
+                                            Review Date: {comment.reviewDate}
                                         </p>
                                     </li>
                                 ))}
