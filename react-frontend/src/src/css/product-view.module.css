@@ -1,0 +1,121 @@
+.productContainer {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.productName {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.productDescription {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.inputField {
+    height: 200px; 
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.productPrice {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.productCategory,
+.productManufacturer {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+.productRating {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.button {
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.reviewsSection {
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.reviewList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.reviewItem {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: auto; 
+}
+
+.reviewUsername {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.reviewRating {
+    font-style: italic;
+    color: #666;
+}
+
+.reviewText {
+    margin-top: 5px;
+}
+
+.reviewDate {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+.writeReviewSection {
+    margin-top: 30px;
+}
+
+.submitReviewButton {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.errorMessage {
+    color: #ff0000;
+    font-weight: bold;
+    margin-top: 20px;
+}

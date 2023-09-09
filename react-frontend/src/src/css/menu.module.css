@@ -1,0 +1,67 @@
+/* CSS */
+.menu {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  font-weight: 200;
+  text-decoration: none;
+  color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #000;
+  border-top: none;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  position: relative;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-width 0.3s;
+  display: block;
+  border-right: 1px solid #3D3D3D;
+}
+
+.menuItem.active {
+  background-color: #666;
+}
+
+.submenu {
+  color: #000;
+  position: absolute;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  height: 100;
+  transition: opacity 0.3s, height 0.3s, top 0.3s;
+  border:  1px;
+  border-color: #000;
+  z-index: 200;
+  box-shadow: 2px 2px 0 #BEBEBE;
+  background: #fff;
+  top: 100%;
+  width: 135%;
+  left: 0%;
+}
+
+.menuItem:hover .submenu {
+  opacity: 1;
+  height: auto;
+  top: 103%; /* Adjust the distance from the parent menu item */
+}
+
+.submenu li {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submenu li:hover {
+  background-color: #ededed;
+}
+
