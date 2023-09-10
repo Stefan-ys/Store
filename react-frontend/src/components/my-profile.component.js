@@ -3,10 +3,12 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import styles from "../css/my-profile.module.css";
 import UserService from "../services/user.service";
+import Menu from "../utils/menu.util";
 import { withRouter } from "../common/with-router";
 
 
 const MyProfile = () => {
+    const [visibility, setVisibility] = useState({ profile: true, payment: false, delivery: false });
     const [profileData, setProfileData] = useState({
         username: "", email: "", firstName: "",
         lastName: "", phoneNumber: "",
@@ -23,13 +25,16 @@ const MyProfile = () => {
     const [message, setMessage] = useState({ profile: "", payment: "", delivery: "", });
     const [editMode, setEditMode] = useState({ profile: false, payment: false, delivery: false, });
 
+
+
     useEffect(() => {
-        fetchData();
+        fetchMyProfileData();
     }, []);
 
-    const fetchData = async () => {
-        setLoading({ profile: true, payment: true, delivery: true, });
-        setMessage({ profile: "", payment: "", delivery: "", });
+    const fetchMyProfileData = async () => {
+        setVisibility({ profile: true, payment: false, delivery: false, });
+        setLoading({ profile: true });
+        setMessage({ profile: "", });
 
         try {
             const profile = await UserService.getMyProfile();
@@ -39,6 +44,12 @@ const MyProfile = () => {
         } finally {
             setLoading((prevLoading) => ({ ...prevLoading, profile: false }));
         }
+    }
+    const fetchMyPaymentAddress = async () => {
+
+        setVisibility({ profile: false, payment: true, delivery: false, });
+        setLoading({ payment: true, });
+        setMessage({ payment: "", });
 
         try {
             const paymentAddress = await UserService.getMyAddress("payment");
@@ -48,6 +59,11 @@ const MyProfile = () => {
         } finally {
             setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
         }
+    }
+    const fetchMyDeliveryAddress = async () => {
+        setVisibility({ profile: false, payment: false, delivery: true, });
+        setLoading({ delivery: true, });
+        setMessage({ delivery: "", });
 
         try {
             const deliveryAddress = await UserService.getMyAddress("delivery");
@@ -56,6 +72,23 @@ const MyProfile = () => {
             handleErrorMessage("delivery", error);
         } finally {
             setLoading((prevLoading) => ({ ...prevLoading, delivery: false }));
+        }
+    };
+
+    const handleMenuItemClick = (action) => {
+        switch (action) {
+            case "fetchMyProfileData":
+                fetchMyProfileData();
+                break;
+            case "fetchMyPaymentAddress":
+                fetchMyPaymentAddress();
+                break;
+            case "fetchMyDeliveryAddress":
+                fetchMyDeliveryAddress();
+                break;
+            // Handle other menu item actions here
+            default:
+                break;
         }
     };
 
@@ -116,6 +149,31 @@ const MyProfile = () => {
 
         return words.join(' ');
     };
+
+    const menuItems = [
+        {
+            name: "My Profile",
+            items: [
+                { label: "My Profile", action: fetchMyProfileData, }, 
+                { label: "Delivery Address", action: fetchMyDeliveryAddress },
+                { label: "Payment Address", action: fetchMyPaymentAddress },
+            ],
+        },
+        {
+            name: "My Orders",
+            items: [
+                // { label: "All Order", action: "getMyOrders" },
+                // { label: "Current Orders", action: "getMyCurrentOrders" },
+                // { label: "Completed Orders", action: "getMyCompletedOrders" },
+            ],
+        },
+        {
+            name: "Notifications",
+            action: "getMyNotifications",
+        },
+    ];
+
+
 
     const renderButtons = (param, data) => (
         <div className={styles.buttons}>
@@ -208,13 +266,17 @@ const MyProfile = () => {
         </div>
     );
 
-    return (
+    return (<>
+        <div className={styles['menu-page']}>
+            <Menu menu={menuItems} onItemClick={handleMenuItemClick} />
+        </div>
         <section className={styles.section}>
-            {renderProfileContainer()}
-            {renderAddressContainer("payment", paymentAddressData)}
-            {renderAddressContainer("delivery", deliveryAddressData)}
+            {visibility.profile && renderProfileContainer()}
+            {visibility.payment && renderAddressContainer("payment", paymentAddressData)}
+            {visibility.delivery && renderAddressContainer("delivery", deliveryAddressData)}
         </section>
+    </>
     );
 };
-
 export default withRouter(MyProfile);
+

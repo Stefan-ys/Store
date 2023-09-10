@@ -1,5 +1,15 @@
 /* my-profile.module.css */
 
+.menu-page {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    color: white;
+    font: message-box;
+  }
+
+  
+
 .section {
     display: flex;
     justify-content: space-between;

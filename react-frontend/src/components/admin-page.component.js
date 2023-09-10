@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/admin-page.module.css";
 import { withRouter } from "../common/with-router";
 import Menu from "../utils/menu.util.js";
@@ -9,9 +9,10 @@ import Pagination from "../utils/pagination.util";
 
 
 const AdminPage = () => {
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [currentFunction, setCurrentFunction] = useState("() => () => {}");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
@@ -23,22 +24,21 @@ const AdminPage = () => {
   const handleItemsPerPageChange = (event) => {
     setItemsPerPage(Number(event.target.value));
     setCurrentPage(1);
-};
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    eval(currentFunction)();
   };
-
-
 
   const getAllUsers = async () => {
     setLoading(true);
     setMessage("");
     try {
       const users = await AdminUserService.getAllUsersService(currentPage, itemsPerPage, sortOption, sortOrder);
-
+      setCurrentFunction("getAllUsers");
       setData(users.users);
-      setTotalPages(data.length);
+      setTotalPages(users.totalPages);
 
     } catch (error) {
       console.log("Error fetching products data: ", error);
@@ -65,13 +65,10 @@ const AdminPage = () => {
     setLoading(true);
     setMessage("");
     try {
-      console.log("check 1")
       const products = await AdminProductService.getAllProductsService(currentPage, itemsPerPage, sortOption, sortOrder);
-      console.log('check 33');
-      console.log(products)
-      console.log(products.products);
+      setCurrentFunction("getAllProducts");
       setData(products.products);
-      setTotalPages(data.length);
+      setTotalPages(products.totalPages);
 
     } catch (error) {
       console.log("Error fetching products data: ", error);
@@ -158,7 +155,7 @@ const AdminPage = () => {
 
   return (
     <section>
-      <div className={styles['admin-page']}>
+      <div className={styles['menu-page']}>
         <Menu menu={menuItems} />
       </div>
       <div>

@@ -10,23 +10,31 @@ const DataTable = ({ data, loading, message }) => {
     return <div>Error: {message}</div>;
   }
 
+  if (!data || data.length === 0) {
+  
+    return <div>No data available.</div>;
+  }
+  const columnHeaders = Object.keys(data[0]);
+
   return (
     <div>
       <h2>Data Content</h2>
       <table className={styles.dataTable}>
         <thead>
           <tr>
-            {Object.keys(data[0]).map((key) => (
-              <th key={key}>{key}</th>
+            {columnHeaders.map((header) => (
+              <th key={header}>{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((item, index) => (
             <tr key={index}>
-              {Object.values(item).map((value, valueIndex) => (
-                <td key={valueIndex}>
-                  {typeof value === "object" ? JSON.stringify(value) : value}
+              {columnHeaders.map((header) => (
+                <td key={header}>
+                  {typeof item[header] === "object"
+                    ? JSON.stringify(item[header])
+                    : item[header]}
                 </td>
               ))}
             </tr>

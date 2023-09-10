@@ -4,6 +4,7 @@ import { withRouter } from "../common/with-router";
 import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
+import Menu from "../utils/menu.util";
 import { Link } from "react-router-dom";
 
 const Store = () => {
@@ -78,7 +79,42 @@ const Store = () => {
             setLoading(false);
         }
     };
+    const handleMenuItemClick = (action) => {
+        switch (action) {
+            case "fetchMyProfileData":
 
+                break;
+            case "fetchMyPaymentAddress":
+
+                break;
+            case "fetchMyDeliveryAddress":
+
+                break;
+            // Handle other menu item actions here
+            default:
+                break;
+        }
+    };
+
+    const menuItems = [
+        {
+            name: "Categories",
+            items: [
+                { label: "Circles", },
+                { label: "Triangles", },
+                { label: "Squares", },
+                { label: "Rectangles", },
+            ],
+        },
+        {
+            name: "Sort By",
+            items: [
+                { label: "date added", items: [{ label: "newest", }, { label: "oldest", },] },
+                { label: "price", items: [{ label: "lowest", }, { label: "highest", },] },
+                { label: "name", items: [{ label: "ascending," }, { label: "descending", },] },
+            ]
+        },
+    ]
     const renderProducts = () => {
         return products.map((product) => (
             <div key={product.catalogNumber} className={styles.productBox}>
@@ -99,70 +135,75 @@ const Store = () => {
     };
 
     return (
-        <div className={styles.storeContainer}>
-            <div className={styles.menuBar}>
-                <div className={styles.sortOptions}>
-                    <label>
-                       <span>Select category: </span> 
-                        <select
-                            name="categoryOption"
-                            value={categoryOption}
-                            onChange={handleSortChange}
-                        >
-                            <option value="all">All</option>
-                            <option value="CAT_1">Circles</option>
-                            <option value="CAT_2">Triangles</option>
-                            <option value="CAT_3">Squares</option>
-                            <option value="CAT_4">Rectangles</option>
+        <>
+            <div className={styles['menu-page']}>
+                <Menu menu={menuItems} onItemClick={handleMenuItemClick} />
+            </div>
+            <div className={styles.storeContainer}>
+                <div className={styles.menuBar}>
+                    <div className={styles.sortOptions}>
+                        {/* <label>
+                            <span>Select category: </span>
+                            <select
+                                name="categoryOption"
+                                value={categoryOption}
+                                onChange={handleSortChange}
+                            >
+                                <option value="all">All</option>
+                                <option value="CAT_1">Circles</option>
+                                <option value="CAT_2">Triangles</option>
+                                <option value="CAT_3">Squares</option>
+                                <option value="CAT_4">Rectangles</option>
+                            </select>
+                        </label> */}
+                        <label>
+                            <span>Sort by: </span>
+                            <select
+                                name="sortOption"
+                                value={sortOption}
+                                onChange={handleSortChange}
+                            >
+                                <option value="name">Name</option>
+                                <option value="price">Price</option>
+                                <option value="date">Newest</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>Order: </span>
+                            <select
+                                name="sortOrder"
+                                value={sortOrder}
+                                onChange={handleSortChange}
+                            >
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div className={styles.productsPerPage}>
+                        <span>Show products per page: </span>
+                        <select value={productsPerPage} onChange={handleProductsPerPageChange}>
+                            <option value="12">12</option>
+                            <option value="24">24</option>
+                            <option value="48">48</option>
                         </select>
-                    </label>
-                    <label>
-                        <span>Sort by: </span> 
-                        <select
-                            name="sortOption"
-                            value={sortOption}
-                            onChange={handleSortChange}
-                        >
-                            <option value="name">Name</option>
-                            <option value="price">Price</option>
-                            <option value="date">Newest</option>
-                        </select>
-                    </label>
-                    <label>
-                        <span>Order: </span> 
-                        <select
-                            name="sortOrder"
-                            value={sortOrder}
-                            onChange={handleSortChange}
-                        >
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
-                    </label>
-                </div>
-                <div className={styles.productsPerPage}>
-                    <span>Show products per page: </span>
-                    <select value={productsPerPage} onChange={handleProductsPerPageChange}>
-                        <option value="12">12</option>
-                        <option value="24">24</option>
-                        <option value="48">48</option>
-                    </select>
-                </div>
+                    </div>
 
+                </div>
+                <div className={styles.productGrid}>
+                    {products.length > 0 ? (
+                        renderProducts()
+                    ) : (
+                        <p>Loading products...</p>
+                    )}
+                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
             </div>
-            <div className={styles.productGrid}>
-                {products.length > 0 ? (
-                    renderProducts()
-                ) : (
-                    <p>Loading products...</p>
-                )}
-            </div>
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-            />
-        </div>
+        </>
     );
 };
 
