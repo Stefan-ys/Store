@@ -47,7 +47,6 @@ public class AdminProductController {
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
         try {
-            System.out.println("check");
             Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             String property = switch (sortBy) {
                 case "price" -> "price";

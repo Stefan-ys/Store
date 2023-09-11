@@ -13,7 +13,6 @@ import java.util.*;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
-
 @Document(collection = "products")
 @Data
 public class ProductEntity extends BaseEntity {
@@ -24,8 +23,7 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
-
-    //    private List<GridFSFile> pictures;
+    //private List<GridFSFile> pictures;
     @NotNull
     private int quantity;
     private String description;
