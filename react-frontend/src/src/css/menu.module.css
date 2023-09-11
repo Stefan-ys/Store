@@ -1,4 +1,5 @@
-/* CSS */
+/* Add these CSS styles to your existing styles */
+
 .menu {
   font-family: 'Open Sans', sans-serif;
   text-align: center;
@@ -14,6 +15,14 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: row;
+  background-color: black;
+  color: white;
+  font: message-box;
 }
 
 .menuItem {
@@ -37,9 +46,9 @@
   padding: 0;
   overflow: hidden;
   opacity: 0;
-  height: 100;
+  height: 0; /* Change to 0 initially */
   transition: opacity 0.3s, height 0.3s, top 0.3s;
-  border:  1px;
+  border: 1px;
   border-color: #000;
   z-index: 200;
   box-shadow: 2px 2px 0 #BEBEBE;
@@ -47,12 +56,13 @@
   top: 100%;
   width: 135%;
   left: 0%;
+  background-color: #ffffff;
 }
 
 .menuItem:hover .submenu {
   opacity: 1;
   height: auto;
-  top: 103%; /* Adjust the distance from the parent menu item */
+  top: 103%;
 }
 
 .submenu li {
@@ -65,3 +75,8 @@
   background-color: #ededed;
 }
 
+.menu-item:hover .submenu,
+.menu-item.active .submenu {
+  opacity: 1;
+  height: auto;
+}

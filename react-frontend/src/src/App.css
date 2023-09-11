@@ -46,3 +46,10 @@
 }
 
 
+.menu-page {
+  display: flex;
+  flex-direction: row;
+  background-color: black;
+  color: white;
+  font: message-box;
+}

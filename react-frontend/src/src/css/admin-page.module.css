@@ -1,6 +1,6 @@
 /* admin-page.module.css */
 
-.admin-page {
+.menu-page {
   display: flex;
   flex-direction: row;
   background-color: black;
@@ -8,44 +8,7 @@
   font: message-box;
 }
 
-.menu {
-  display: flex;
-  flex-direction: row;
-}
 
-.menu-item {
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s; 
-}
-
-.menu-item.active {
-  background-color: #333;
-}
-
-.submenu {
-  position: absolute;
-  background-color: #333;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden; /* Hide overflow content */
-  opacity: 0; /* Initially hidden */
-  height: 0; /* Initially collapsed */
-  transition: opacity 0.3s, height 0.3s; /* Add transition for opacity and height */
-}
-
-.menu-item:hover .submenu,
-.menu-item.active .submenu {
-  opacity: 1;
-  height: auto;
-}
-
-.submenu li {
-  padding: 10px 20px;
-}
 
 .content {
   flex: 1;
