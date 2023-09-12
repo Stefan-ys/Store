@@ -1,10 +1,11 @@
 package com.example.project.web.admin;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductResponseAdminTable;
 import com.example.project.service.ProductService;
 import com.example.project.service.StoreService;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -32,9 +33,18 @@ public class AdminProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-product")
-    public ResponseEntity<Void> addProduct(@RequestBody @Valid ProductRequest productBindingModel) {
-        productService.addProduct(productBindingModel);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> addProduct( @RequestBody ProductRequest productRequest) {
+        try {
+            productService.addProduct(productRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        } catch (ProductServiceException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // Retrieve
@@ -42,10 +52,12 @@ public class AdminProductController {
     @GetMapping("/all-products")
     public ResponseEntity<Map<String, Object>> getProductsPage(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
+
+        System.out.println("dsad");
         try {
             Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             String property = switch (sortBy) {
@@ -56,9 +68,9 @@ public class AdminProductController {
 
             Pageable paging = PageRequest.of(page, size, direction, property);
 
-            Page<ProductResponse> productsPage = storeService.getAllProducts(paging);
+            Page<ProductResponseAdminTable> productsPage = storeService.getAllProductsAdminTable(paging);
 
-            List<ProductResponse> products = productsPage.getContent();
+            List<ProductResponseAdminTable> products = productsPage.getContent();
             Map<String, Object> response = new HashMap<>();
             response.put("products", products);
             response.put("currentPage", productsPage.getNumber());

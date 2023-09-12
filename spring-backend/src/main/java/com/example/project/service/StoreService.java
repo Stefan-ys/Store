@@ -1,6 +1,7 @@
 package com.example.project.service;
 
 import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductResponseAdminTable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,4 +13,6 @@ public interface StoreService {
     Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging);
 
     Page<ProductResponse> getProductsByCategory(String category, Pageable paging);
+
+    Page<ProductResponseAdminTable> getAllProductsAdminTable(Pageable paging);
 }

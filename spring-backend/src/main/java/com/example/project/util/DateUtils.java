@@ -1,10 +1,14 @@
 package com.example.project.util;
 
+
+import lombok.experimental.UtilityClass;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
+@UtilityClass
 public class DateUtils {
 
     public static String formatLocalDateTime(LocalDateTime localDateTime) {

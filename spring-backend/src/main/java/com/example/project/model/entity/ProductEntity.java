@@ -1,5 +1,6 @@
 package com.example.project.model.entity;
 
+import com.example.project.model.embeddable.ProductDimensions;
 import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,7 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
-    //private List<GridFSFile> pictures;
+    private List<String> pictures;
     @NotNull
     private int quantity;
     private String description;
@@ -35,10 +36,9 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal weight;
-    private LocalDateTime expirationDate;
     private int sells;
     private int views;
-
+    private ProductDimensions dimensions = new ProductDimensions();
 
     @Override
     public boolean equals(Object o) {

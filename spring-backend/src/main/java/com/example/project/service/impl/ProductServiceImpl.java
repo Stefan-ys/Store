@@ -34,8 +34,16 @@ public class ProductServiceImpl implements ProductService {
     //Create
 
     @Override
-    public void addProduct(ProductRequest productBindingModel) {
-        ProductEntity productEntity = modelMapper.map(productBindingModel, ProductEntity.class);
+    public void addProduct(ProductRequest productRequest) {
+        ProductEntity productEntity = modelMapper.map(productRequest, ProductEntity.class);
+
+        productEntity.setProductCategory(ProductCategoryEnum.valueOf(productRequest.getProductCategory().toUpperCase()));
+        productRequest.getStatus().forEach(s -> productEntity.getStatus().add(ProductStatusEnum.valueOf(s.toUpperCase())));
+
+        productEntity.getDimensions().setLength(productRequest.getProductLength());
+        productEntity.getDimensions().setHeight(productRequest.getProductHeight());
+        productEntity.getDimensions().setWidth(productRequest.getProductWidth());
+
         productRepository.save(productEntity);
     }
 
