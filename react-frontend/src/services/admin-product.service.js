@@ -10,8 +10,6 @@ const getAllProductsService = (currentPage, productsPerPage, sortOption, sortOrd
         sortBy: sortOption,
         sortOrder: sortOrder
     };
-    console.log("check2")
-    console.log("|", currentPage ,"|",productsPerPage ,"|", sortOption, "|", sortOrder)
     return axios
         .get(API_ADMIN_PRODUCTS_URL + "/all-products", { params: params, headers: authHeader() })
         .then((response) => response.data)
@@ -22,7 +20,13 @@ const getAllProductsService = (currentPage, productsPerPage, sortOption, sortOrd
 
 const addProductService = (product) => {
     return axios
-        .post(API_ADMIN_PRODUCTS_URL + "/add-product", { params: product, headers: authHeader() })
+        .post(API_ADMIN_PRODUCTS_URL + "/add-product", { 
+            name: product.name, catalogNumber: product.catalogNumber, 
+            price: product.price, pictures: product.pictures, quantity: product.quantity, 
+            description: product.description, status: product.status, productCategory: product.productCategory,
+             manufacturer: product.manufacturer, weight: product.weight, expirationDate: product.expirationDate, 
+             productHeight: product.productHeight, productLength: product.productLength, 
+             productWidth: product.productWidth} , {headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             throw error;
