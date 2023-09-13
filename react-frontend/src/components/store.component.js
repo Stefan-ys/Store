@@ -5,6 +5,7 @@ import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
 import ShoppingCartService from "../services/shopping-cart.service";
 import Menu from "../utils/menu.util";
+import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
 
 const Store = () => {
@@ -90,7 +91,6 @@ const Store = () => {
             case "fetchMyDeliveryAddress":
 
                 break;
-            // Handle other menu item actions here
             default:
                 break;
         }
@@ -115,24 +115,32 @@ const Store = () => {
             ]
         },
     ]
-    const renderProducts = () => {
+
+   
+    
+      const renderProducts = () => {
         return products.map((product) => (
-            <div key={product.catalogNumber} className={styles.productBox}>
-                {/* <img src={product.picture} alt={product.name} /> */}
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <p>Price: {product.price} $</p>
-                <div>
-                    <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
-                        <button className={styles.button}>
-                            View Product
-                        </button>
-                    </Link>
-                    <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
-                </div>
+          <div key={product.catalogNumber} className={styles.productBox}>
+            <Carousel images={product.pictures} />
+            <h3>{product.name}</h3>
+            <p>{product.description}</p>
+            <p>Price: {product.price} $</p>
+            {/* Add more elements to display other data */}
+            <p>Category: {product.productCategory}</p>
+            <p>Manufacturer: {product.manufacturer}</p>
+            <div>
+              <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
+                <button className={styles.button}>
+                  View Product
+                </button>
+              </Link>
+              <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
             </div>
+          </div>
         ));
-    };
+      };
+    
+    
 
     return (
         <>

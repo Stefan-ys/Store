@@ -1,8 +1,15 @@
+.menu-page {
+  display: flex;
+  flex-direction: row;
+  background-color: black;
+  color: white;
+  font: message-box;
+}
+
 .storeContainer {
     max-width: 1750px;
     margin: 0 auto;
     padding: 20px;
-
 }
 
 .menuBar {
@@ -31,7 +38,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-
 }
 
 .productBox {
@@ -42,9 +48,12 @@
     margin-right: auto;
     width: 400px;
     background-color: #fff;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
+    /* Add a border */
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    /* Hide overflowing content */
 }
 
 .buttonGroup {
@@ -82,37 +91,4 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
-}
-
-7 .sortOptions {
-    display: flex;
-    align-items: center;
-}
-
-.sortOptions label {
-    margin-right: 10px;
-    font-weight: bold;
-}
-
-.sortOptions select {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.sortOptions button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.menu-page {
-    display: flex;
-    flex-direction: row;
-    background-color: black;
-    color: white;
-    font: message-box;
 }
