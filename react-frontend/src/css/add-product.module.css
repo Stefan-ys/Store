@@ -84,7 +84,7 @@ button[type="submit"]:disabled {
         border: none;
     }
 }
-/* add-product.module.css */
+
 .uploaded-images {
     display: flex;
     flex-wrap: wrap;

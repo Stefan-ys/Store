@@ -9,52 +9,31 @@ import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
 
 const Store = () => {
-
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage, setProductsPerPage] = useState(12);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState();
     const [categoryOption, setCategoryOption] = useState("All");
-    const [sortOption, setSortOption] = useState("name");
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [sortOrder, setSortOrder] = useState(["date", "asc"]);
 
 
     useEffect(() => {
         getProducts();
-    }, [currentPage, productsPerPage, categoryOption, sortOption, sortOrder]);
+    }, [currentPage, productsPerPage, categoryOption, sortOrder[0], sortOrder[1]]);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
         getProducts();
     };
 
-    const handleSortChange = (event) => {
-        const { name, value } = event.target;
-        if (name === "categoryOption") {
-            setCategoryOption(value);
-        } else if (name === "sortOption") {
-            setSortOption(value);
-        } else if (name === "sortOrder") {
-            setSortOrder(value);
-        }
-    };
-
-    const handleProductsPerPageChange = (event) => {
-        setProductsPerPage(Number(event.target.value));
-        setCurrentPage(1);
-    };
-
     const getProducts = async () => {
         setLoading(true);
         setMessage("");
         try {
-
-            const data = await StoreService.getAllProducts(currentPage, productsPerPage, categoryOption, sortOption, sortOrder);
-
+            const data = await StoreService.getAllProducts(currentPage, productsPerPage, categoryOption, sortOrder[0], sortOrder[1]);
             setProducts(data.products);
             setTotalPages(data.totalPages);
 
@@ -80,137 +59,89 @@ const Store = () => {
             setLoading(false);
         }
     };
-    const handleMenuItemClick = (action) => {
-        switch (action) {
-            case "fetchMyProfileData":
 
-                break;
-            case "fetchMyPaymentAddress":
-
-                break;
-            case "fetchMyDeliveryAddress":
-
-                break;
-            default:
-                break;
-        }
-    };
 
     const menuItems = [
         {
             name: "Categories",
             items: [
-                { label: "Circles", },
-                { label: "Triangles", },
-                { label: "Squares", },
-                { label: "Rectangles", },
+                { label: "All", action: () => setCategoryOption("All") },
+                { label: "Circles", action: () => setCategoryOption("Circles") },
+                { label: "Triangles", action: () => setCategoryOption("Triangles") },
+                { label: "Squares", action: () => setCategoryOption("Squares") },
+                { label: "Rectangles", action: () => setCategoryOption("Rectangles") },
             ],
         },
         {
-            name: "Sort By",
+            name: "Sort Products By",
             items: [
-                { label: "date added", items: [{ label: "newest", }, { label: "oldest", },] },
-                { label: "price", items: [{ label: "lowest", }, { label: "highest", },] },
-                { label: "name", items: [{ label: "ascending," }, { label: "descending", },] },
+                {
+                    label: "date added",
+                    items: [
+                        { label: "newest", action: () => setSortOrder(["date", "asc"]) },
+                        { label: "oldest", action: () => setSortOrder(["date", "desc"]) },
+                    ],
+                },
+                {
+                    label: "price",
+                    items: [
+                        { label: "highest", action: () => setSortOrder(["price", "desc"]) },
+                        { label: "lowest", action: () => setSortOrder(["price", "asc"]) },
+                    ],
+                },
+                {
+                    label: "name",
+                    items: [
+                        { label: "ascending", action: () => setSortOrder(["name", "asc"]) },
+                        { label: "descending", action: () => setSortOrder(["name", "desc"]) },
+                    ],
+                },
             ]
         },
-    ]
+        {
+            name: "Per Page",
+            items: [
+                { label: "12", action: () => setProductsPerPage(12) },
+                { label: "24", action: () => setProductsPerPage(24) },
+                { label: "48", action: () => setProductsPerPage(48) },
+                { label: "Show All", action: () => setProductsPerPage(1000) },
+            ],
+        },
+    ];
 
-   
-    
-      const renderProducts = () => {
+    const renderProducts = () => {
         return products.map((product) => (
-          <div key={product.catalogNumber} className={styles.productBox}>
-            <Carousel images={product.pictures} />
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <p>Price: {product.price} $</p>
-            {/* Add more elements to display other data */}
-            <p>Category: {product.productCategory}</p>
-            <p>Manufacturer: {product.manufacturer}</p>
-            <div>
-              <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
-                <button className={styles.button}>
-                  View Product
-                </button>
-              </Link>
-              <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
+            <div key={product.catalogNumber} className={styles.productBox}>
+                <Carousel images={product.pictures} />
+                <h3>{product.name}</h3>
+                <p>Price: {product.price} $</p>
+                <p>Category: {product.productCategory}</p>
+                <p>Manufacturer: {product.manufacturer}</p>
+                <div>
+                    <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
+                        <button className={styles.button}>
+                            View Product
+                        </button>
+                    </Link>
+                    <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
+                </div>
             </div>
-          </div>
         ));
-      };
-    
-    
+    };
 
     return (
         <>
             <div className={styles['menu-page']}>
-                <Menu menu={menuItems} onItemClick={handleMenuItemClick} />
+                <Menu menuItems={menuItems} />
             </div>
-            <div className={styles.storeContainer}>
-                <div className={styles.menuBar}>
-                    <div className={styles.sortOptions}>
-                        {/* <label>
-                            <span>Select category: </span>
-                            <select
-                                name="categoryOption"
-                                value={categoryOption}
-                                onChange={handleSortChange}
-                            >
-                                <option value="all">All</option>
-                                <option value="CAT_1">Circles</option>
-                                <option value="CAT_2">Triangles</option>
-                                <option value="CAT_3">Squares</option>
-                                <option value="CAT_4">Rectangles</option>
-                            </select>
-                        </label> */}
-                        <label>
-                            <span>Sort by: </span>
-                            <select
-                                name="sortOption"
-                                value={sortOption}
-                                onChange={handleSortChange}
-                            >
-                                <option value="name">Name</option>
-                                <option value="price">Price</option>
-                                <option value="date">Newest</option>
-                            </select>
-                        </label>
-                        <label>
-                            <span>Order: </span>
-                            <select
-                                name="sortOrder"
-                                value={sortOrder}
-                                onChange={handleSortChange}
-                            >
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className={styles.productsPerPage}>
-                        <span>Show products per page: </span>
-                        <select value={productsPerPage} onChange={handleProductsPerPageChange}>
-                            <option value="12">12</option>
-                            <option value="24">24</option>
-                            <option value="48">48</option>
-                        </select>
-                    </div>
-
-                </div>
-                <div className={styles.productGrid}>
-                    {products.length > 0 ? (
-                        renderProducts()
-                    ) : (
-                        <p>Loading products...</p>
-                    )}
-                </div>
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                />
-            </div>
+            < div className={styles.productGrid} >
+                {products.length > 0 ? (renderProducts()) : (<p>Loading products...</p>)}
+            </div >
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
         </>
     );
 };

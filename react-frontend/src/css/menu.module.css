@@ -1,6 +1,13 @@
-/* Add these CSS styles to your existing styles */
+.navMenu {
+  display: flex;
+  flex-direction: row;
+  background-color: #212121; 
+  color: #ffffff; 
+  font-family: Arial, sans-serif;
+  
+}
 
-.menu {
+.mainMenu {
   font-family: 'Open Sans', sans-serif;
   text-align: center;
   font-weight: 200;
@@ -15,38 +22,36 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
-}
-
-.navMenu {
-  display: flex;
-  flex-direction: row;
-  background-color: black;
-  color: white;
-  font: message-box;
+ 
 }
 
 .menuItem {
   position: relative;
-  padding: 10px 20px;
+  padding: 15px 20px; 
   cursor: pointer;
-  transition: background-color 0.3s, border-width 0.3s;
+  transition: background-color 0.3s, border-width 0.3s, box-shadow 0.3s; 
   display: block;
   border-right: 1px solid #3D3D3D;
+  font-weight: bold; 
 }
 
-.menuItem.active {
-  background-color: #666;
+.menuItem:hover {
+  background-color: #333; 
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.active {
+  background-color: #333;
 }
 
 .submenu {
+  display: none;
   color: #000;
   position: absolute;
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  opacity: 0;
-  height: 0; /* Change to 0 initially */
+  border-top: 1px solid #ccc; 
   transition: opacity 0.3s, height 0.3s, top 0.3s;
   border: 1px;
   border-color: #000;
@@ -54,29 +59,93 @@
   box-shadow: 2px 2px 0 #BEBEBE;
   background: #fff;
   top: 100%;
-  width: 135%;
+  width: 125%;
   left: 0%;
   background-color: #ffffff;
 }
 
 .menuItem:hover .submenu {
-  opacity: 1;
-  height: auto;
-  top: 103%;
+  display: block;
 }
 
-.submenu li {
-  padding: 10px 20px;
+.submenuItem {
+  padding: 15px 20px; 
   cursor: pointer;
-  transition: background-color 0.3s;
+  color: #000;
+  background-color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold; 
 }
 
-.submenu li:hover {
-  background-color: #ededed;
+.submenuItem:hover {
+  background-color: #ccc;
+  color: #000;
 }
 
-.menu-item:hover .submenu,
-.menu-item.active .submenu {
-  opacity: 1;
-  height: auto;
+.activeSubmenu {
+  background-color: #666;
+}
+
+.subSubmenu {
+  list-style-type: none;
+  padding: 0;
+  position: absolute;
+  left: 100%;
+  display: none;
+  transition: opacity 0.3s, height 0.3s, top 0.3s;
+  border-top: 1px solid #ccc; 
+  border-bottom: 1px solid #ccc; 
+  z-index: 200;
+  box-shadow: 2px 2px 0 #BEBEBE;
+  background: #fff;
+  width: 100%;
+  background-color: #ffffff;
+  transform: translateY(-32px);
+}
+.submenuItem:hover .subSubmenu {
+  display: block;
+}
+
+.subSubmenuItem {
+  padding: 15px 20px;
+  cursor: pointer;
+  color: #000;
+  background-color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold; 
+}
+
+.subSubmenuItem:hover {
+  background-color: #ccc;
+  color: #000;
+}
+
+
+.activeSubSubmenu {
+  background-color: #777;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.arrowRight {
+  border: solid black;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.arrowDown {
+  border: solid white;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg); 
 }

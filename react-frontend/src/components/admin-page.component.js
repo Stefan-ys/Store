@@ -175,7 +175,7 @@ const AdminPage = () => {
     return (
         <section>
             <div className={styles['menu-page']}>
-                <Menu menu={menuItems}  />
+                <Menu menuItems={menuItems}  />
             </div>
             {showAddProduct && (
                 <AddProductComponent />

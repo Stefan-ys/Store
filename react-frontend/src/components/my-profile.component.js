@@ -268,7 +268,7 @@ const MyProfile = () => {
 
     return (<>
         <div className={styles['menu-page']}>
-            <Menu menu={menuItems} onItemClick={handleMenuItemClick} />
+            <Menu menuItems={menuItems} onItemClick={handleMenuItemClick} />
         </div>
         <section className={styles.section}>
             {visibility.profile && renderProfileContainer()}

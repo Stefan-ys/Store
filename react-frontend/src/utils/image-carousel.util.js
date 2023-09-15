@@ -22,29 +22,31 @@ const Carousel = ({ images }) => {
                 duration: 1,
             },
         },
-        exit: {
-            opacity: 0,
-            scale: 0.8,
-            transition: {
-                duration: 0.5,
-            },
-        },
+        // exit: {
+        //     opacity: 0,
+        //     scale: 0.8,
+        //     transition: {
+        //         duration: 0.5,
+        //     },
+        // },
     };
+
+
     const slidersVariants = {
         hover: {
             scale: 1.2,
-            backgroundColor: "#ff00008e",
+            // backgroundColor: "#cfcfcf",
         },
     };
     const dotsVariants = {
         initial: {
             y: 0,
         },
-        animate: {
-            y: -10,
-            scale: 1.2,
-            transition: { type: "spring", stiffness: 1000, damping: "10" },
-        },
+        // animate: {
+        //     y: -10,
+        //     scale: 1.2,
+        //     transition: { type: "spring", stiffness: 1000, damping: "10" },
+        // },
         hover: {
             scale: 1.1,
             transition: { duration: 0.2 },
@@ -52,11 +54,13 @@ const Carousel = ({ images }) => {
     };
 
     const handleNext = () => {
+        setDirection("right");
         setCurrentIndex((prevIndex) =>
             prevIndex + 1 === images.length ? 0 : prevIndex + 1
         );
     };
     const handlePrevious = () => {
+        setDirection("left");
         setCurrentIndex((prevIndex) =>
             prevIndex - 1 < 0 ? images.length - 1 : prevIndex - 1
         );
@@ -67,7 +71,7 @@ const Carousel = ({ images }) => {
 
     return (
         <div className={styles.carousel}>
-            <div className={styles["carousel-images"]}> 
+            <div className={styles["carousel-images"]}>
                 <AnimatePresence>
                     <motion.img
                         key={currentIndex}
@@ -98,7 +102,7 @@ const Carousel = ({ images }) => {
                     <motion.div
                         variants={slidersVariants}
                         whileHover="hover"
-                        className={styles.right} 
+                        className={styles.right}
                         onClick={handleNext}
                     >
                         <svg
@@ -112,7 +116,7 @@ const Carousel = ({ images }) => {
                     </motion.div>
                 </div>
             </div>
-            <div className={styles["carousel-indicator"]}> 
+            <div className={styles["carousel-indicator"]}>
                 {images.map((_, index) => (
                     <motion.div
                         key={index}
