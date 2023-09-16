@@ -9,15 +9,16 @@ import Store from "./components/store.component";
 import ProductView from "./components/product-view.component";
 import ShoppingCart from "./components/shopping-cart.component";
 import AdminPage from "./components/admin-page.component";
-
 import './App.css';
+import { ShoppingCartProvider } from "./utils/shopping-cart-data.util";
 
 const App = () => {
 
     return (
-
-        <div>
-            <Header path="/header" element={<Header />} />
+        <ShoppingCartProvider>
+            <div>
+                <Header path="/header" element={<Header />} />
+            </div>
             <div className="container mt-3">
                 <Routes>
                     <Route path="/home" element={<Home />} />
@@ -28,10 +29,9 @@ const App = () => {
                     <Route path="/product/:productId" component={ProductView} element={<ProductView />} />
                     <Route path="/shopping-cart" element={<ShoppingCart />} />
                     <Route path="/admin" element={<AdminPage />} />
-
                 </Routes>
             </div>
-        </div>
+        </ShoppingCartProvider>
     );
 }
 

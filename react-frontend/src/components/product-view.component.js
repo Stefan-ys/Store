@@ -6,6 +6,7 @@ import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
 import ShoppingCartService from "../services/shopping-cart.service";
 import { showRating, rateProduct } from "../utils/rating.util";
+import { useShoppingCart } from "../utils/shopping-cart-data.util";
 
 
 const emptyProduct = {
@@ -30,6 +31,8 @@ const ProductView = () => {
     const [comment, setComment] = useState("");
     const [commentAlert, setCommentAlert] = useState("");
     const [rating, setRating] = useState(0);
+
+    const { updateShoppingCart } = useShoppingCart();
 
     const maxCharacters = 300;
 
@@ -87,6 +90,7 @@ const ProductView = () => {
         setMessage("");
         try {
             await ShoppingCartService.addToCart(productId);
+            updateShoppingCart();
         } catch (error) {
             console.log(error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");

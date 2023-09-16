@@ -125,27 +125,14 @@
   background-color: #777;
 }
 
-.arrow {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
-
 .arrowRight {
   border: solid black;
   border-width: 0 1px 1px 0;
-  display: inline-block;
+  display: inline-flex;
   padding: 3px;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
+  justify-content: right;
+  
 }
 
-.arrowDown {
-  border: solid white;
-  border-width: 0 1px 1px 0;
-  display: inline-block;
-  padding: 3px;
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg); 
-}

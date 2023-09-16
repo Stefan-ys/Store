@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "../css/menu.module.css";
 
-function Menu({ menuItems }) {
+const Menu = ({ menuItems }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeSubSubmenu, setActiveSubSubmenu] = useState(null);

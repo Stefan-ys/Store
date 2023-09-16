@@ -7,6 +7,7 @@ import ShoppingCartService from "../services/shopping-cart.service";
 import Menu from "../utils/menu.util";
 import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
+import { useShoppingCart } from "../utils/shopping-cart-data.util";
 
 const Store = () => {
     const [products, setProducts] = useState([]);
@@ -19,6 +20,7 @@ const Store = () => {
     const [categoryOption, setCategoryOption] = useState("All");
     const [sortOrder, setSortOrder] = useState(["date", "asc"]);
 
+    const { updateShoppingCart } = useShoppingCart();
 
     useEffect(() => {
         getProducts();
@@ -50,6 +52,7 @@ const Store = () => {
         setLoading(true);
         try {
             ShoppingCartService.addToCart(productId);
+            updateShoppingCart();
             setMessage("Product added to cart successfully.");
         } catch (error) {
             console.log("Error adding product to cart: ", error);
@@ -112,7 +115,7 @@ const Store = () => {
     const renderProducts = () => {
         return products.map((product) => (
             <div key={product.catalogNumber} className={styles.productBox}>
-                <Carousel images={product.pictures} />
+                <Carousel images={product.images} />
                 <h3>{product.name}</h3>
                 <p>Price: {product.price} $</p>
                 <p>Category: {product.productCategory}</p>

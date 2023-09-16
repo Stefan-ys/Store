@@ -4,41 +4,19 @@ import { withRouter } from "../common/with-router";
 import { FaTrash } from "react-icons/fa";
 import ShoppingCartService from "../services/shopping-cart.service";
 import { Link } from "react-router-dom";
+import { useShoppingCart } from "../utils/shopping-cart-data.util";
 
 const ShoppingCart = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [totalWeight, setTotalWeight] = useState(0);
-    const [totalProducts, setTotalProducts] = useState(0);
-    const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-        getProducts();
-    }, []);
+    const { shoppingCart, updateShoppingCart } = useShoppingCart();
 
-    const getProducts = async () => {
-        setLoading(true);
-        setMessage("");
-        try {
-            const data = await ShoppingCartService.getProducts();
-
-            setProducts(data.products);
-            setTotalPrice(data.totalPrice);
-            setTotalWeight(data.totalWeight);
-            setTotalProducts(data.totalProducts);
-        } catch (error) {
-            console.log("Error fetching products data: ", error);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const removeFromCart = async (productId) => {
         try {
             await ShoppingCartService.removeFromCart(productId);
-            getProducts();
+            updateShoppingCart();
         } catch (error) {
             console.error("Error removing from cart: ", error);
         }
@@ -47,7 +25,7 @@ const ShoppingCart = () => {
     const changeQuantity = async (productId, newQuantity) => {
         try {
             await ShoppingCartService.changeQuantity(productId, newQuantity);
-            getProducts();
+            updateShoppingCart();
         } catch (error) {
             console.error("Error changing quantity: ", error);
         }
@@ -56,7 +34,7 @@ const ShoppingCart = () => {
     const clearCart = async () => {
         try {
             await ShoppingCartService.removeAll();
-            getProducts();
+            updateShoppingCart();
         } catch (error) {
             console.error("Error clearing the cart: ", error);
         }
@@ -66,9 +44,11 @@ const ShoppingCart = () => {
         // TODO: Implement checkout logic
     };
 
-    return (
+  return (
         <div className={styles.shoppingCartContainer}>
-            {products.length === 0 ? (
+            {loading && <div className={styles.loading}>Loading...</div>}
+            {message && <div className={styles.errorMessage}>{message}</div>}
+            {shoppingCart.products.length === 0 ? (
                 <p className={styles.emptyCartMessage}>Your shopping cart is empty</p>
             ) : (
                 <div className={styles.shoppingCartContent}>
@@ -76,6 +56,7 @@ const ShoppingCart = () => {
                     <table className={styles.cartTable}>
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
@@ -83,21 +64,23 @@ const ShoppingCart = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products.map((product, index) => (
+                            {shoppingCart.products.map((product, index) => (
                                 <tr key={index}>
-                                    <Link to={`/product/${product.productId}`} state={product} style={{ textDecoration: 'none' }}>
-                                        <td>{product.productName}</td>
-                                    </Link>
-
+                                    <td><img src={product.image} className={styles.productImage} /></td>
+                                    <td>
+                                        <Link to={`/product/${product.productId}`} state={product} style={{ textDecoration: 'none' }}>
+                                            {product.productName}
+                                        </Link>
+                                    </td>
                                     <td>
                                         <div className={styles.quantityAdjust}>
                                             <button onClick={() => changeQuantity(product.productId, product.quantity - 1)}>-</button>
-                                            <input
+                                            <p
                                                 type="number"
                                                 min="1"
                                                 value={product.quantity}
                                                 onChange={(e) => changeQuantity(product.productId, e.target.value)}
-                                            />
+                                            >  {"  "  + product.quantity +  "  "}  </p>
                                             <button onClick={() => changeQuantity(product.productId, product.quantity + 1)}>+</button>
                                         </div>
                                     </td>
@@ -110,8 +93,8 @@ const ShoppingCart = () => {
                         </tbody>
                     </table>
                     <div className={styles.cartSummary}>
-                        <p>Total Products: {totalProducts}</p>
-                        <p>Total Price: ${totalPrice}</p>
+                        <p>Total Products: {shoppingCart.totalProducts}</p>
+                        <p>Total Price: ${shoppingCart.totalPrice}</p>
                     </div>
                     <div className={styles.cartActions}>
                         <button className={styles.clearCartButton} onClick={clearCart}>
@@ -129,3 +112,4 @@ const ShoppingCart = () => {
 };
 
 export default withRouter(ShoppingCart);
+

@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart, FaBell } from "react-icons/fa";
 import styles from "../css/header.module.css";
 import AuthUtil from "../utils/auth.util";
 import AuthService from "../services/auth.service";
 import { withRouter } from "../common/with-router";
+import { useShoppingCart } from "../utils/shopping-cart-data.util";
 
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+    const { shoppingCart } = useShoppingCart();
 
     const isLoggedIn = AuthUtil.isLoggedIn();
     const isAdmin = AuthUtil.isAdmin();
@@ -123,11 +125,11 @@ const HeaderComponent = () => {
                         <NavLink to="/shopping-cart">
                             <FaShoppingCart />
                         </NavLink>
-                        <span className={styles.cartCount}>5</span>
+                        <span className={styles.cartCount}>{shoppingCart.totalProducts}</span>
                     </div>
                     <div className={styles.iconContainer}>
                         <FaBell />
-                        <span className={styles.notificationCount}>2</span>
+                        <span className={styles.notificationCount}>0</span>
                     </div>
                 </div>
             </div>

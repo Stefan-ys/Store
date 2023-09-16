@@ -1,29 +1,30 @@
-/* shopping-cart.module.css */
-
 .shoppingCartContainer {
     margin: 20px;
     padding: 20px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
+    border-radius: 10px;
+    background-color: #f8f9fa;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.cartTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
 }
 
 .cartTable th,
 .cartTable td {
-    padding: 10px;
+    padding: 15px;
     border-bottom: 1px solid #ddd;
-    text-align: left;
+    font-size: 16px;
 }
 
 .cartTable th {
-    background-color: #f5f5f5;
+    background-color: hwb(201 29% 23% / 0.674);
+    font-weight: bold;
+    text-align: center;
+}
+
+.cartTable td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 16px;
 }
 
 .cartTable tbody tr:nth-child(odd) {
@@ -34,39 +35,47 @@
     background-color: #fff;
 }
 
+.productImage {
+    max-height: 100px;
+    width: auto;
+}
+
 .cartSummary {
     text-align: right;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .quantityAdjust {
     display: flex;
     align-items: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
 }
 
 .quantityAdjust button {
-    background-color: transparent;
-    border: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
     cursor: pointer;
+    font-size: 18px;
+    border-radius: 30px;
+    padding: 5px 10px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
-.quantityAdjust input {
-    width: 40px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    margin: 0 5px;
-}
 
 .checkoutButton,
 .clearCartButton {
-    padding: 10px 15px;
+    padding: 15px 20px;
     background-color: #007bff;
     border: none;
     color: #fff;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: background-color 0.2s ease;
 }
 
@@ -77,32 +86,34 @@
 
 .errorMessage {
     color: #ff0000;
-    margin-top: 10px;
+    margin-top: 15px;
+    font-size: 16px;
 }
 
 .emptyCartMessage {
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     padding: 20px;
     background-color: #f5f5f5;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 20px;
 }
+
 .cartActions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .clearCartButton {
-    padding: 10px 15px;
-    background-color: #ff0000; 
+    padding: 15px 20px;
+    background-color: #ff0000;
     border: none;
     color: #fff;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: background-color 0.2s ease;
 }
 
@@ -110,6 +121,26 @@
     background-color: #dd0000;
 }
 
-.removeItem:hover {    
+.removeItem:hover {
     cursor: pointer;
+    color: #ff0000;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+}
+
+.errorMessage {
+    color: #ff0000;
+    margin-top: 15px;
+    font-size: 16px;
+    background-color: #ffe5e5;
+    border: 1px solid #ff0000;
+    padding: 10px;
+    border-radius: 5px;
 }
