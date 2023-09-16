@@ -78,14 +78,13 @@ public class StoreServiceImpl implements StoreService {
         productResponse.setQuantity(product.getQuantity());
         productResponse.setManufacturer(product.getManufacturer());
         productResponse.setComments(commentRepository.findAllByProductId(product.getId()).size());
-        productResponse.setPictures(product.getPictures().size());
+        productResponse.setImages(product.getImages().size());
         productResponse.setViews(product.getViews());
         productResponse.setDateAdded(formatLocalDateTime(product.getCreatedDate()) + " (" + getTimeBetween(product.getCreatedDate(), LocalDateTime.now())+ " ago)") ;
-        productResponse.setStatus(product.getStatus().toString());
+        productResponse.setStatus(product.getStatus().toString().replaceAll("[\\[\\]\"]", ""));
         productResponse.setEditedDate(formatLocalDateTime(product.getLastModifiedDate()) + " (" + getTimeBetween(product.getLastModifiedDate(), LocalDateTime.now()) + " ago)");
         productResponse.setDimensions(String.format("%d/%d/%d", product.getDimensions().getLength(), product.getDimensions().getHeight(), product.getDimensions().getWidth()));
-        productResponse.setRating(product.getRating());
-        productResponse.setUsersRatingCount(product.getUsersRating().size());
+        productResponse.setRating(product.getRating() + " (" + product.getUsersRating().size() + ")");
         productResponse.setDescription(product.getDescription().length() <= 10 ? productResponse.getDescription() :  product.getDescription().substring(0, 10) + "...");
         productResponse.setSells(product.getSells());
         return productResponse;

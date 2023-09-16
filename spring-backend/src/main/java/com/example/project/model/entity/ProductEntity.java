@@ -24,7 +24,7 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
-    private List<String> pictures;
+    private List<String> images = new ArrayList<>();
     @NotNull
     private int quantity;
     private String description;

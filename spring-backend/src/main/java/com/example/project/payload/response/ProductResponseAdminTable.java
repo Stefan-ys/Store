@@ -15,13 +15,12 @@ public class ProductResponseAdminTable {
     private BigDecimal price;
     private BigDecimal weight;
     private int quantity;
-    private int pictures;
+    private int images;
     private String description;
     private String status;
     private String productCategory;
     private String manufacturer;
-    private double rating;
-    private int usersRatingCount;
+    private String rating;
     private int comments;
     private int sells;
     private int views;

@@ -16,8 +16,6 @@ import java.util.Map;
 public class ShoppingCartEntity extends BaseEntity {
     private ObjectId userId;
     private Map<ObjectId, ProductSummary> productSummaryMap = new HashMap<>();
-
-
     public BigDecimal[] getPriceAndWeightSummary() {
         BigDecimal[] sumPriceAndWeightArr = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
         for (ProductSummary product : productSummaryMap.values()) {

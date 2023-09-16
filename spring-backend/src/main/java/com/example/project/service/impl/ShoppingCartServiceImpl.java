@@ -39,6 +39,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             ProductEntity product = getProductById(productId);
 
             ShoppingCartProductResponse cartProductResponse = modelMapper.map(product, ShoppingCartProductResponse.class);
+            if (product.getImages().size() > 0) {
+                cartProductResponse.setImage(product.getImages().get(0));
+            }
             cartProductResponse.setProductId(product.getId().toString());
             cartProductResponse.setQuantity(shoppingCartEntity.getQuantityByProduct(productId));
 

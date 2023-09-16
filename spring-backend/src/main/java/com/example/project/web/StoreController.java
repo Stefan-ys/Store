@@ -29,7 +29,7 @@ public class StoreController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(defaultValue = "all") String category,
-            @RequestParam(defaultValue = "date") String sortBy,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
         try {
