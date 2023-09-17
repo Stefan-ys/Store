@@ -60,7 +60,7 @@ const showRating = (rating, usersCount) => {
             );
         }
     }
-    if (usersCount !== undefined) {
+    if (usersCount !== undefined && usersCount > 0) {
         stars.push("  " + rating);
         stars.push(" (" + usersCount + ")");
     }

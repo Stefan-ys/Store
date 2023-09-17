@@ -75,6 +75,7 @@
   background-color: #fff;
   transition: background-color 0.3s, color 0.3s;
   font-weight: bold; 
+  justify-content: right;
 }
 
 .submenuItem:hover {
@@ -100,7 +101,7 @@
   background: #fff;
   width: 100%;
   background-color: #ffffff;
-  transform: translateY(-32px);
+  transform: translateY(-52px);
 }
 .submenuItem:hover .subSubmenu {
   display: block;
@@ -128,11 +129,9 @@
 .arrowRight {
   border: solid black;
   border-width: 0 1px 1px 0;
-  display: inline-flex;
+  display: inline-block;
   padding: 3px;
   transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  justify-content: right;
-  
+
 }
 

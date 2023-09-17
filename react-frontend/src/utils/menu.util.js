@@ -45,9 +45,8 @@ const Menu = ({ menuItems }) => {
             onMouseEnter={() => handleMenuEnter(menuItem.name)}
             onMouseLeave={handleMenuLeave}
           >
-            <span onClick={menuItem.action ? () => handleMenuClick(menuItem.action) : ""}>{menuItem.name}
-
-              {/* {menuItem.items ? <i className={styles.arrowDown}></i> : ""} */}
+            <span onClick={menuItem.action ? () => handleMenuClick(menuItem.action) : () => { }}>
+              {menuItem.name}
             </span>
             {menuItem.items && (
               <menu className={styles.submenu}>

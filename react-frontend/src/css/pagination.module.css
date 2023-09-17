@@ -3,9 +3,8 @@
   justify-content: center;
   align-items: center;
   background-color: black;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 20px;
+  padding: 5px;
+  margin-top: 5px;
 }
 
 .pagination {
@@ -14,24 +13,6 @@
   align-items: center;
   gap: 5px;
 }
-
-
-.pagination li:first-child {
-  background-color: white;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-.pagination li:last-child {
-  background-color: white;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-
-
 
 .pagination li {
   display: flex;
@@ -42,29 +23,6 @@
   background-color: transparent;
   transition: background-color 0.3s ease;
   cursor: pointer;
-  position: relative;
-}
-
-.pagination li::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-style: solid;
-}
-
-.pagination li.previous::before {
-  border-width: 5px 8px 5px 0;
-  border-color: transparent white transparent transparent;
-  left: 0;
-}
-
-.pagination li.next::before {
-  border-width: 5px 0 5px 8px;
-  border-color: transparent transparent transparent white;
-  right: 0;
 }
 
 .pagination li button {
@@ -82,6 +40,21 @@
   padding: 8px 12px;
   border-radius: 8px;
 }
+
+.pagination li:first-child {
+  background-color: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.pagination li:last-child {
+  background-color: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
 
 .pagination li:not(.active) {
   background-color: rgba(255, 255, 255, 0.1);

@@ -8,7 +8,6 @@ import ShoppingCartService from "../services/shopping-cart.service";
 import { showRating, rateProduct } from "../utils/rating.util";
 import { useShoppingCart } from "../utils/shopping-cart-data.util";
 
-
 const emptyProduct = {
     name: "",
     description: "",
@@ -16,11 +15,12 @@ const emptyProduct = {
     category: "",
     manufacturer: "",
     rating: 0,
-    reviews: [],
-    pictures: [],
+    usersRatingCount: 0,
+    images: [],
     status: [],
     catalogNumber: "",
-}
+    comments: [],
+};
 
 const ProductView = () => {
     const { productId } = useParams();
@@ -31,6 +31,8 @@ const ProductView = () => {
     const [comment, setComment] = useState("");
     const [commentAlert, setCommentAlert] = useState("");
     const [rating, setRating] = useState(0);
+    const [selectedImage, setSelectedImage] = useState("");
+    const [isEnlarged, setIsEnlarged] = useState(false);
 
     const { updateShoppingCart } = useShoppingCart();
 
@@ -39,7 +41,7 @@ const ProductView = () => {
     const handleCommentChange = (value) => {
         const inputComment = value;
         if (inputComment.length > maxCharacters) {
-            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`); 
+            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`);
         } else {
             setCommentAlert("");
         }
@@ -57,6 +59,7 @@ const ProductView = () => {
         try {
             const fetchedProduct = await ProductService.getProduct(productId);
             setProduct(fetchedProduct);
+            setSelectedImage(fetchedProduct.images[0]);
         } catch (error) {
             console.log("Fetch product error:", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
@@ -98,6 +101,16 @@ const ProductView = () => {
             setLoading(false);
         }
     };
+   
+
+    const toggleEnlargedView = () => {
+        setIsEnlarged(!isEnlarged);
+    };
+
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+    };
+
 
     return (
         <div className={styles.productContainer}>
@@ -106,17 +119,35 @@ const ProductView = () => {
             ) : (
                 <>
                     <h2 className={styles.productName}>{product.name}</h2>
+
+                    {selectedImage && (
+                        <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
+                            <img
+                                src={selectedImage}
+                                alt="Selected Product"
+                                className={isEnlarged ? styles.enlargedImageEnlarged : styles.enlargedImage}
+                            />
+                        </div>
+                    )}
+
+                    <div className={styles.carousel}>
+                        {product.images.map((image, index) => (
+                            <div
+                                key={index}
+                                className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
+                                onClick={() => handleImageClick(image)}
+                            >
+                                <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage} />
+                            </div>
+                        ))}
+                    </div>
                     <p className={styles.productDescription}>{product.description}</p>
                     <p className={styles.productPrice}>Price: ${product.price}</p>
-                    <p className={styles.productCategory}>Category: {product.category}</p>
+                    <p className={styles.productCategory}>Category: {product.productCategory}</p>
                     <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
-                    <p className={styles.productRating}>Rating: {product.rating <= 0 ? "N/A" : showRating(product.rating, product.usersRatingCount)} </p>
+                    <p className={styles.productRating}>Rating: {showRating(product.rating, product.usersRatingCount)}</p>
 
-                    <button
-                        className={styles.button}
-                        onClick={addToShoppingCart}
-                        disabled={loading}
-                    >
+                    <button className={styles.button} onClick={addToShoppingCart} disabled={loading}>
                         {loading ? "Adding to Cart..." : "Add to Cart"}
                     </button>
 
@@ -128,14 +159,10 @@ const ProductView = () => {
                                     <li key={index} className={styles.reviewItem}>
                                         <div className={styles.reviewHeader}>
                                             <p className={styles.commentUsername}>{comment.username}</p>
-                                            <p className={styles.commentRating}>
-                                                Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}
-                                            </p>
+                                            <p className={styles.commentRating}>Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}</p>
                                         </div>
                                         <p className={styles.commentText}>{comment.comment}</p>
-                                        <p className={styles.commentDate}>
-                                            Review Date: {comment.reviewDate}
-                                        </p>
+                                        <p className={styles.commentDate}>Review Date: {comment.reviewDate}</p>
                                     </li>
                                 ))}
                             </ul>
