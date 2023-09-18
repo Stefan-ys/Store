@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "./components/header.component";
 import Home from "./components/home.component";
 import Register from "./components/register.component";
@@ -12,8 +12,9 @@ import AdminPage from "./components/admin-page.component";
 import './App.css';
 import { ShoppingCartProvider } from "./utils/shopping-cart-data.util";
 
-const App = () => {
+import AuthUtil from "./utils/auth.util";
 
+const App = () => {
     return (
         <ShoppingCartProvider>
             <div>
@@ -24,15 +25,17 @@ const App = () => {
                     <Route path="/home" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/my-profile" element={<MyProfile />} />
                     <Route path="/store" element={<Store />} />
-                    <Route path="/product/:productId" component={ProductView} element={<ProductView />} />
+                    <Route path="/product/:productId" element={<ProductView />} />
                     <Route path="/shopping-cart" element={<ShoppingCart />} />
-                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/my-profile"
+                        element={AuthUtil.isLoggedIn() ? <MyProfile /> : <Login />} />
+                    <Route path="/admin"
+                        element={AuthUtil.isLoggedIn() && AuthUtil.isAdmin() ? <AdminPage /> : <Home />} />
                 </Routes>
             </div>
         </ShoppingCartProvider>
     );
-}
+};
 
 export default App;
