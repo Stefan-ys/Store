@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart, FaBell } from "react-icons/fa";
 import styles from "../css/header.module.css";
-import AuthUtil from "../utils/auth.util";
 import AuthService from "../services/auth.service";
 import { withRouter } from "../common/with-router";
-import { useShoppingCart } from "../utils/shopping-cart-data.util";
+import { useShoppingCart } from "../hooks/shopping-cart.hook";
+import useAuth from "../hooks/auth.hook";
 
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
     const { shoppingCart } = useShoppingCart();
 
-    const isLoggedIn = AuthUtil.isLoggedIn();
-    const isAdmin = AuthUtil.isAdmin();
-    const isModerator = AuthUtil.isModerator();
-    const getUsername = AuthUtil.getUsername();
+    const { isLoggedIn, getUsername, isAdmin, isModerator } = useAuth();
+
     const handleLogout = () => {
         try {
             AuthService.logout();
@@ -59,6 +57,12 @@ const HeaderComponent = () => {
                                 Store
                             </NavLink>
                         </li>
+                        <li>
+                            <NavLink to="/shopping-cart" activeClassName={styles.active}
+                                className={styles.navLink}>
+                                Shopping Cart
+                            </NavLink>
+                        </li>
                         {isLoggedIn ? (
                             <>
                                 {isAdmin && (
@@ -70,20 +74,13 @@ const HeaderComponent = () => {
                                         </li>
                                     </>
                                 )}
-
-
                                 <li>
                                     <NavLink to="/my-profile" activeClassName={styles.active}
                                         className={styles.navLink}>
                                         My Profile
                                     </NavLink>
                                 </li>
-                                <li>
-                                    <NavLink to="/shopping-cart" activeClassName={styles.active}
-                                        className={styles.navLink}>
-                                        Shopping Cart
-                                    </NavLink>
-                                </li>
+
                                 {showLogoutConfirmation && (
                                     <div className={styles.logoutConfirmation}>
                                         <p className={styles.logoutConfirmationTextArea}>Are you sure you want to log

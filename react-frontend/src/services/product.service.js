@@ -6,7 +6,7 @@ const API_STORE_URL = "http://localhost:8080/api/product";
 
 const getProduct = (productId) => {
     return axios
-        .get(API_STORE_URL + "/" + productId, { headers: authHeader() })
+        .get(API_STORE_URL + "/get-product/" + productId, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);

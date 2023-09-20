@@ -10,11 +10,12 @@ import ProductView from "./components/product-view.component";
 import ShoppingCart from "./components/shopping-cart.component";
 import AdminPage from "./components/admin-page.component";
 import './App.css';
-import { ShoppingCartProvider } from "./utils/shopping-cart-data.util";
-
-import AuthUtil from "./utils/auth.util";
+import { ShoppingCartProvider } from "./hooks/shopping-cart.hook";
+import useAuth from "./hooks/auth.hook";
 
 const App = () => {
+    const { isLoggedIn, isAdmin } = useAuth();
+
     return (
         <ShoppingCartProvider>
             <div>
@@ -29,9 +30,9 @@ const App = () => {
                     <Route path="/product/:productId" element={<ProductView />} />
                     <Route path="/shopping-cart" element={<ShoppingCart />} />
                     <Route path="/my-profile"
-                        element={AuthUtil.isLoggedIn() ? <MyProfile /> : <Login />} />
+                        element={isLoggedIn ? <MyProfile /> : <Login />} />
                     <Route path="/admin"
-                        element={AuthUtil.isLoggedIn() && AuthUtil.isAdmin() ? <AdminPage /> : <Home />} />
+                        element={isLoggedIn && isAdmin ? <AdminPage /> : <Home />} />
                 </Routes>
             </div>
         </ShoppingCartProvider>

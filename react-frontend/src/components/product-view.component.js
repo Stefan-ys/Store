@@ -4,9 +4,8 @@ import styles from "../css/product-view.module.css";
 import Form from "react-validation/build/form";
 import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
-import ShoppingCartService from "../services/shopping-cart.service";
 import { showRating, rateProduct } from "../utils/rating.util";
-import { useShoppingCart } from "../utils/shopping-cart-data.util";
+import { useShoppingCart } from "../hooks/shopping-cart.hook";
 
 const emptyProduct = {
     name: "",
@@ -34,7 +33,7 @@ const ProductView = () => {
     const [selectedImage, setSelectedImage] = useState("");
     const [isEnlarged, setIsEnlarged] = useState(false);
 
-    const { updateShoppingCart } = useShoppingCart();
+    const { addToShoppingCart } = useShoppingCart();
 
     const maxCharacters = 300;
 
@@ -88,20 +87,10 @@ const ProductView = () => {
         }
     };
 
-    const addToShoppingCart = async () => {
-        setLoading(true);
-        setMessage("");
-        try {
-            await ShoppingCartService.addToCart(productId);
-            updateShoppingCart();
-        } catch (error) {
-            console.log(error);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-        } finally {
-            setLoading(false);
-        }
+    const addToCart = () => {
+        addToShoppingCart(productId);
     };
-   
+
 
     const toggleEnlargedView = () => {
         setIsEnlarged(!isEnlarged);
@@ -147,7 +136,7 @@ const ProductView = () => {
                     <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
                     <p className={styles.productRating}>Rating: {showRating(product.rating, product.usersRatingCount)}</p>
 
-                    <button className={styles.button} onClick={addToShoppingCart} disabled={loading}>
+                    <button className={styles.button} onClick={addToCart} disabled={loading}>
                         {loading ? "Adding to Cart..." : "Add to Cart"}
                     </button>
 

@@ -1,50 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "../css/shopping-cart.module.css";
 import { withRouter } from "../common/with-router";
 import { FaTrash } from "react-icons/fa";
-import ShoppingCartService from "../services/shopping-cart.service";
 import { Link } from "react-router-dom";
-import { useShoppingCart } from "../utils/shopping-cart-data.util";
+import { useShoppingCart } from "../hooks/shopping-cart.hook";
 
 const ShoppingCart = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { shoppingCart, updateShoppingCart } = useShoppingCart();
+    const { shoppingCart, changeProductQuantity,
+        removeFromShoppingCart, clearShoppingCart } = useShoppingCart();
 
-
-    const removeFromCart = async (productId) => {
-        try {
-            await ShoppingCartService.removeFromCart(productId);
-            updateShoppingCart();
-        } catch (error) {
-            console.error("Error removing from cart: ", error);
-        }
+    const removeFromCart = (productId) => {
+        removeFromShoppingCart(productId);
     };
 
-    const changeQuantity = async (productId, newQuantity) => {
-        try {
-            await ShoppingCartService.changeQuantity(productId, newQuantity);
-            updateShoppingCart();
-        } catch (error) {
-            console.error("Error changing quantity: ", error);
-        }
+    const changeQuantity = (productId, newQuantity) => {
+        changeProductQuantity(productId, newQuantity);
     };
 
-    const clearCart = async () => {
-        try {
-            await ShoppingCartService.removeAll();
-            updateShoppingCart();
-        } catch (error) {
-            console.error("Error clearing the cart: ", error);
-        }
+    const clearCart = () => {
+        clearShoppingCart();
     };
 
     const handleCheckoutClick = () => {
         // TODO: Implement checkout logic
     };
 
-  return (
+    return (
         <div className={styles.shoppingCartContainer}>
             {loading && <div className={styles.loading}>Loading...</div>}
             {message && <div className={styles.errorMessage}>{message}</div>}
@@ -80,7 +64,7 @@ const ShoppingCart = () => {
                                                 min="1"
                                                 value={product.quantity}
                                                 onChange={(e) => changeQuantity(product.productId, e.target.value)}
-                                            >  {"  "  + product.quantity +  "  "}  </p>
+                                            >  {"  " + product.quantity + "  "}  </p>
                                             <button onClick={() => changeQuantity(product.productId, product.quantity + 1)}>+</button>
                                         </div>
                                     </td>

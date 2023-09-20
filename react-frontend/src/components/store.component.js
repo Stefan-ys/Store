@@ -3,11 +3,10 @@ import styles from "../css/store.module.css";
 import { withRouter } from "../common/with-router";
 import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
-import ShoppingCartService from "../services/shopping-cart.service";
 import Menu from "../utils/menu.util";
 import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
-import { useShoppingCart } from "../utils/shopping-cart-data.util";
+import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import { showRating } from "../utils/rating.util";
 
 const Store = () => {
@@ -21,7 +20,7 @@ const Store = () => {
     const [categoryOption, setCategoryOption] = useState("All");
     const [sortOrder, setSortOrder] = useState(["date", "asc"]);
 
-    const { updateShoppingCart } = useShoppingCart();
+    const { addToShoppingCart } = useShoppingCart();
 
     useEffect(() => {
         getProducts();
@@ -49,19 +48,8 @@ const Store = () => {
         }
     };
 
-    const addToShoppingCart = (productId) => {
-        setLoading(true);
-        try {
-            ShoppingCartService.addToCart(productId);
-            updateShoppingCart();
-            setMessage("Product added to cart successfully.");
-        } catch (error) {
-            console.log("Error adding product to cart: ", error);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-
-        } finally {
-            setLoading(false);
-        }
+    const addToCart = (productId) => {
+        addToShoppingCart(productId);
     };
 
 
@@ -121,14 +109,14 @@ const Store = () => {
                 <p>Price: {product.price} $</p>
                 <p>Category: {product.productCategory}</p>
                 <p>Manufacturer: {product.manufacturer}</p>
-                <p>{ showRating(product.rating) }</p>
+                <p>{showRating(product.rating)}</p>
                 <div>
                     <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
                         <button className={styles.button}>
                             View Product
                         </button>
                     </Link>
-                    <button className={styles.button} onClick={() => addToShoppingCart(product.id)}>Add to Cart</button>
+                    <button className={styles.button} onClick={() => addToCart(product.id)}>Add to Cart</button>
                 </div>
             </div>
         ));

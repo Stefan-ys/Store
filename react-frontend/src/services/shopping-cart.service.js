@@ -9,7 +9,17 @@ const getProducts = () => {
         .get(API_CART_URL + "/get-products", { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
-            console.error("Error getting products from cart : ", error);
+            console.error("Error getting products from cart: ", error);
+            throw error;
+        });
+};
+
+const getTmpProducts = (products) => {
+    return axios
+        .post(API_CART_URL + "/get-tmp-products", products, { headers: authHeader() })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error("Error getting products from cart: ", error);
             throw error;
         });
 };
@@ -25,7 +35,7 @@ const addToCart = (productId) => {
 
 const removeFromCart = (productId) => {
     return axios
-        .delete(API_CART_URL + "/remove-product/" + productId, { headers: authHeader() }) 
+        .delete(API_CART_URL + "/remove-product/" + productId, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error removing from cart: ", error);
@@ -44,9 +54,8 @@ const removeAll = () => {
 };
 
 const changeQuantity = (productId, quantity) => {
-    console.log(productId, "<--->",quantity);
     return axios
-        .put(API_CART_URL + "/change-quantity/" + productId + "?quantity=" + quantity, null, { headers: authHeader() }) 
+        .put(API_CART_URL + "/change-quantity/" + productId + "?quantity=" + quantity, null, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Error changing quantity: ", error);
@@ -58,5 +67,9 @@ const transferToUserCart = (cartItems) => {
 
 };
 
-const ShoppingCartService = { getProducts, addToCart, removeFromCart, removeAll, changeQuantity, transferToUserCart };
+const ShoppingCartService = {
+    getProducts, getTmpProducts, addToCart, removeFromCart,
+    removeAll, changeQuantity, transferToUserCart
+};
+
 export default ShoppingCartService;
