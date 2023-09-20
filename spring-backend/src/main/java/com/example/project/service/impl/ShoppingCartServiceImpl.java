@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -46,7 +47,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             cartProductResponse.setQuantity(shoppingCartEntity.getQuantityByProduct(productId));
 
             BigDecimal totalPriceByProduct = shoppingCartEntity.getPriceByProduct(productId);
-            cartProductResponse.setPrice(product.getPrice().equals(totalPriceByProduct)
+            cartProductResponse.setPrice(product.getQuantity() <= 1
                     ? totalPriceByProduct.toString()
                     : String.format("%s (%s)", product.getPrice(), totalPriceByProduct.toString()));
 
@@ -54,6 +55,48 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         return shoppingCartResponse;
     }
+
+
+    @Override
+    public ShoppingCartResponse getTempShoppingCart(Map<String, Integer> productsIds) {
+        ShoppingCartResponse shoppingCartResponse = new ShoppingCartResponse();
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal totalWeight = BigDecimal.ZERO;
+        int totalProducts = 0;
+
+        for (String productId : productsIds.keySet()) {
+            ProductEntity product = getProductById(new ObjectId(productId));
+            int quantity = productsIds.get(productId);
+
+            ShoppingCartProductResponse cartProductResponse = modelMapper.map(product, ShoppingCartProductResponse.class);
+
+            if (product.getImages().size() > 0) {
+                cartProductResponse.setImage(product.getImages().get(0));
+            }
+            cartProductResponse.setProductId(productId);
+            cartProductResponse.setQuantity(quantity);
+
+            BigDecimal totalPriceByProduct = product.getPrice().multiply(BigDecimal.valueOf(productsIds.get(productId)));
+
+            cartProductResponse.setPrice(quantity <= 1
+                    ? product.getPrice().toString()
+                    : String.format("%s (%s)", product.getPrice(), totalPriceByProduct));
+
+            totalPrice = totalPrice.add(totalPriceByProduct);
+            totalWeight = totalWeight.add(product.getWeight().multiply(BigDecimal.valueOf(productsIds.get(productId))));
+            totalProducts += productsIds.get(productId);
+
+            shoppingCartResponse.getProducts().add(cartProductResponse);
+        }
+
+        shoppingCartResponse.setTotalPrice(totalPrice);
+        shoppingCartResponse.setTotalWeight(totalWeight);
+        shoppingCartResponse.setTotalProducts(totalProducts);
+
+        return shoppingCartResponse;
+    }
+
 
     @Override
     public void addProductToCart(ObjectId productId, ObjectId userId) {

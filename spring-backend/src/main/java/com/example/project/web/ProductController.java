@@ -21,7 +21,7 @@ public class ProductController {
     private final ProductService productService;
     private final CommentService commentService;
 
-    @GetMapping("/{productId}")
+    @GetMapping("/get-product/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable("productId") String productId) {
         ProductResponse productResponse = productService.getProduct(new ObjectId(productId));
         if (productResponse == null) {

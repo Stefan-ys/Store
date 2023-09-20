@@ -70,6 +70,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/home").permitAll()
                                 .requestMatchers("/api/store/**").permitAll()
+                                .requestMatchers("api/product/get-product/**").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/moderator/**").hasAuthority("MODERATOR")
 //                        .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()

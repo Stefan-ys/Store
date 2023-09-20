@@ -11,6 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -49,6 +52,17 @@ public class ShoppingCartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @PostMapping("/get-tmp-products")
+    public ResponseEntity<ShoppingCartResponse> getTemporaryProducts(@RequestBody Map<String, Integer> products) {
+        try {
+            ShoppingCartResponse shoppingCartResponse = shoppingCartService.getTempShoppingCart(products);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingCartResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
     // Update
 
     @PreAuthorize("isAuthenticated()")

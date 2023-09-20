@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import java.util.Map;
 public class StoreController {
     private final StoreService storeService;
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/all-products")
     public ResponseEntity<Map<String, Object>> getProductsPage(
             @RequestParam(defaultValue = "0") int page,
