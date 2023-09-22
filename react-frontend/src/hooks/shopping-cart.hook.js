@@ -22,25 +22,35 @@ export function ShoppingCartProvider({ children }) {
 
     useEffect(() => {
         getShoppingCart();
-    }, []);
+    }, [isLoggedIn]);
+
 
     const getShoppingCart = async () => {
         try {
-            let cartData;
             if (isLoggedIn) {
-                cartData = await ShoppingCartService.getProducts();
+                if (JSON.parse(localStorage.getItem(TEMP_CART_KEY)).products.length > 0) {
+                    const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: [] };
+
+                    const tempCartObject = tempCart.products.reduce((acc, product) => {
+                        acc[product.productId] = product.quantity;
+                        return acc;
+                    }, {});
+
+                    await ShoppingCartService.transferProducts(tempCartObject);
+                }
+
+                localStorage.setItem(TEMP_CART_KEY, JSON.stringify({ products: [] }));
+                setShoppingCart(await ShoppingCartService.getProducts());
             } else {
                 const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: {} };
 
-                const tempCartMap = new Map();
-                Object.entries(tempCart.products).forEach(([index, product]) => {
-                  tempCartMap.set(product.productId, product.quantity);
-                });
-                const tempCartObject = Object.fromEntries(tempCartMap);
-                
-                cartData = await ShoppingCartService.getTmpProducts(tempCartObject);
+                const tempCartObject = tempCart.products.reduce((acc, product) => {
+                    acc[product.productId] = product.quantity;
+                    return acc;
+                }, {});
 
-            } setShoppingCart(cartData);
+                setShoppingCart(await ShoppingCartService.getTmpProducts(tempCartObject));
+            }
         } catch (error) {
             console.log("Error fetching shopping cart data: ", error);
         }
@@ -138,6 +148,7 @@ export function ShoppingCartProvider({ children }) {
 
     const value = {
         shoppingCart,
+        getShoppingCart,
         addToShoppingCart,
         changeProductQuantity,
         removeFromShoppingCart,

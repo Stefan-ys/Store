@@ -1,0 +1,48 @@
+.tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .tag {
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .new {
+    background-color: rgb(0, 200, 255);
+    color: white;
+  }
+  
+  .promotion {
+    background-color: rgba(255, 0, 0, 0.911);
+    color: white;
+  }
+  
+  .comingSoon {
+    background-color: rgb(15, 215, 15);
+    color: white;
+  }
+  
+  .outOfStock {
+    background-color: rgba(169, 169, 169, 0.927);
+    color: white;
+  }
+  
+  .limitedStock {
+    background-color: purple;
+    color: white;
+  }
+  
+  .sale {
+    background-color: red;
+    color: white;
+  }
+  
+  .default {
+    background-color: black;
+    color: white;
+  }
+  

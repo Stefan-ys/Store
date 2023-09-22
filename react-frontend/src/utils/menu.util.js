@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "../css/menu.module.css";
 
-const Menu = ({ menuItems }) => {
+const Menu = ({ menuItems, selectedOption }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeSubSubmenu, setActiveSubSubmenu] = useState(null);
@@ -27,7 +27,6 @@ const Menu = ({ menuItems }) => {
     setActiveSubSubmenu(menuName);
   };
 
-
   const handleMenuLeave = () => {
     setActiveMenu(null);
     setActiveSubmenu(null);
@@ -47,6 +46,7 @@ const Menu = ({ menuItems }) => {
           >
             <span onClick={menuItem.action ? () => handleMenuClick(menuItem.action) : () => { }}>
               {menuItem.name}
+              {menuItem.name === selectedOption ? ' •' : ''}
             </span>
             {menuItem.items && (
               <menu className={styles.submenu}>
@@ -57,7 +57,9 @@ const Menu = ({ menuItems }) => {
                       }`}
                     onMouseEnter={() => handleSubmenuEnter(submenuItem.label)}
                   >
-                    <span onClick={submenuItem.action ? () => handleMenuClick(submenuItem.action) : ""}>{submenuItem.label}  {submenuItem.items ? <i className={styles.arrowRight}></i> : ""}</span>
+                    <span onClick={submenuItem.action ? () => handleMenuClick(submenuItem.action) : ""}>{submenuItem.label}  {submenuItem.items ? <i className={styles.arrowRight}></i> : ""}
+                      {submenuItem.label === selectedOption ? ' •' : ''}
+                    </span>
                     {submenuItem.items && (
                       <menu className={styles.subSubmenu}>
                         {submenuItem.items.map((subSubmenuItem, subSubIndex) => (
@@ -71,7 +73,9 @@ const Menu = ({ menuItems }) => {
                               handleSubSubmenuEnter(subSubmenuItem.label)
                             }
                           >
-                            <span onClick={subSubmenuItem.action ? () => handleMenuClick(subSubmenuItem.action) : ""}>{subSubmenuItem.label}</span>
+                            <span onClick={subSubmenuItem.action ? () => handleMenuClick(subSubmenuItem.action) : ""}>{subSubmenuItem.label}
+                              {subSubmenuItem.label === selectedOption ? ' •' : ''}
+                            </span>
                           </li>
                         ))}
                       </menu>

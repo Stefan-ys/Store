@@ -34,6 +34,7 @@ const Login = (props) => {
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
     };
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -47,15 +48,14 @@ const Login = (props) => {
 
         try {
             const data = await AuthService.login(username, password);
-            setMessage("Welcome " + data.username + "!");
-
+            setMessage("Welcome " + data.username + "!"); 
             props.router.navigate("/home");
             window.location.reload();
-
         } catch (error) {
-            const responseMessage = error.response.data.errors != undefined  ? error.response.data.errors.join("\n") : 
-             error.response?.data?.message || error.message || error.toString();
-            setMessage(responseMessage);
+            console.log(error);
+            // const responseMessage = error.response.data.errors != undefined  ? error.response.data.errors.join("\n") : 
+            //  error.response?.data?.message || error.message || error.toString();
+            setMessage(error.message);
 
         } finally {
             setLoading(false);

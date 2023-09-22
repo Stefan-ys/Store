@@ -8,6 +8,7 @@ import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import { showRating } from "../utils/rating.util";
+import ProductTag from "../utils/product-tag,util";
 
 const Store = () => {
     const [products, setProducts] = useState([]);
@@ -104,6 +105,7 @@ const Store = () => {
     const renderProducts = () => {
         return products.map((product) => (
             <div key={product.catalogNumber} className={styles.productBox}>
+                <ProductTag tags={product.status || []}/> 
                 <Carousel images={product.images} />
                 <h3>{product.name}</h3>
                 <p>Price: {product.price} $</p>

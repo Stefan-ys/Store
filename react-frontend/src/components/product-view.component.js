@@ -6,6 +6,7 @@ import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
 import { showRating, rateProduct } from "../utils/rating.util";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
+import ProductTag from "../utils/product-tag,util";
 
 const emptyProduct = {
     name: "",
@@ -108,7 +109,7 @@ const ProductView = () => {
             ) : (
                 <>
                     <h2 className={styles.productName}>{product.name}</h2>
-
+                    <ProductTag tags={product.status || []}/> 
                     {selectedImage && (
                         <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
                             <img

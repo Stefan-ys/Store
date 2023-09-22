@@ -63,13 +63,19 @@ const changeQuantity = (productId, quantity) => {
         });
 };
 
-const transferToUserCart = (cartItems) => {
-
+const transferProducts = (products) => {
+    return axios
+        .post(API_CART_URL + "/transfer-to-cart", products, { headers: authHeader() })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error("Error products transfer to logged user cart: ", error);
+            throw error;
+        });
 };
 
 const ShoppingCartService = {
     getProducts, getTmpProducts, addToCart, removeFromCart,
-    removeAll, changeQuantity, transferToUserCart
+    removeAll, changeQuantity, transferProducts
 };
 
 export default ShoppingCartService;

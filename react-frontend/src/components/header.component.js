@@ -18,6 +18,7 @@ const HeaderComponent = () => {
             AuthService.logout();
             window.location.href = "/home";
             setShowLogoutConfirmation(false);
+            window.location.reload();
         } catch (error) {
             console.log("Error occurred during logout: ", error);
         }
@@ -66,13 +67,11 @@ const HeaderComponent = () => {
                         {isLoggedIn ? (
                             <>
                                 {isAdmin && (
-                                    <>
-                                        <li>
-                                            <NavLink to="/admin" activeClassName={styles.active} className={styles.navLink}>
-                                                Admin Page
-                                            </NavLink>
-                                        </li>
-                                    </>
+                                    <li>
+                                        <NavLink to="/admin" activeClassName={styles.active} className={styles.navLink}>
+                                            Admin Page
+                                        </NavLink>
+                                    </li>
                                 )}
                                 <li>
                                     <NavLink to="/my-profile" activeClassName={styles.active}
