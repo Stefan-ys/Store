@@ -101,9 +101,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void addProductToCart(ObjectId productId, ObjectId userId) {
         ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
-
         ProductEntity productEntity = getProductById(productId);
-
         shoppingCartEntity.addProduct(productEntity);
 
         shoppingCartRepository.save(shoppingCartEntity);
@@ -155,5 +153,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartEntity;
     }
 
+    @Override
+    public void transferProductsToCart(Map<String, Integer> products, ObjectId userId) {
+        ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
+        for (String productId : products.keySet()) {
+            ProductEntity productEntity = getProductById(new ObjectId(productId));
 
+            for (int i = 0; i < products.get(productId); i++) {
+                shoppingCartEntity.addProduct(productEntity);
+            }
+        }
+
+        shoppingCartRepository.save(shoppingCartEntity);
+    }
 }

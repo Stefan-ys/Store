@@ -19,4 +19,6 @@ public interface ShoppingCartService {
     void setProductQuantity(ObjectId productId, ObjectId userId, int quantity);
 
     ShoppingCartResponse getTempShoppingCart(Map<String, Integer> productsIds);
+
+    void transferProductsToCart(Map<String, Integer> products, ObjectId userId);
 }

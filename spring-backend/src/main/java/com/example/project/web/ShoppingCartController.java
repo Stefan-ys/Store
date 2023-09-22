@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 import java.util.Map;
 
 
@@ -104,16 +104,17 @@ public class ShoppingCartController {
         return ResponseEntity.ok().body("Cart cleared successfully");
     }
 
-//    @PostMapping("/transfer-to-user-cart")
-//    public ResponseEntity<String> transferProductsToCart() {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        try {
-//            shoppingCartService.transferProductsToCart(username);
-//            return ResponseEntity.ok().body("Products transferred to user's cart successfully");
-//        } catch (Exception exception) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + exception.getMessage());
-//        }
-//    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/transfer-to-cart")
+    public ResponseEntity<String> transferProductsToCart(@RequestBody Map<String, Integer> products) {
+        try {
+            ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+            shoppingCartService.transferProductsToCart(products, userId);
+            return ResponseEntity.ok().body("Products transferred to user's cart successfully");
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + exception.getMessage());
+        }
+    }
 }
 
