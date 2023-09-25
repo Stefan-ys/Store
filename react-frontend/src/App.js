@@ -13,6 +13,31 @@ import './App.css';
 import { ShoppingCartProvider } from "./hooks/shopping-cart.hook";
 import useAuth from "./hooks/auth.hook";
 
+
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error("ErrorBoundary caught an error:", error, errorInfo);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <div>Something went wrong. Please try again later.</div>;
+        }
+
+        return this.props.children;
+    }
+}
+
+
 const App = () => {
     const { isLoggedIn, isAdmin } = useAuth();
 
@@ -22,21 +47,22 @@ const App = () => {
                 <Header path="/header" element={<Header />} />
             </div>
             <div className="container mt-3">
-                <Routes>
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/store" element={<Store />} />
-                    <Route path="/product/:productId" element={<ProductView />} />
-                    <Route path="/shopping-cart" element={<ShoppingCart />} />
-                    <Route path="/my-profile"
-                        element={isLoggedIn ? <MyProfile /> : <Login />} />
-                    <Route path="/admin"
-                        element={isLoggedIn && isAdmin ? <AdminPage /> : <Home />} />
-                </Routes>
+                <ErrorBoundary> {/* Wrap each route's content */}
+                    <Routes>
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/store" element={<Store />} />
+                        <Route path="/product/:productId" element={<ProductView />} />
+                        <Route path="/shopping-cart" element={<ShoppingCart />} />
+                        <Route path="/my-profile" element={isLoggedIn ? <MyProfile /> : <Login />} />
+                        <Route path="/admin" element={isLoggedIn && isAdmin ? <AdminPage /> : <Home />} />
+                    </Routes>
+                </ErrorBoundary>
             </div>
         </ShoppingCartProvider>
-    );
-};
+    )
+}
+
 
 export default App;

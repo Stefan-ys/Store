@@ -3,12 +3,13 @@ import styles from "../css/store.module.css";
 import { withRouter } from "../common/with-router";
 import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
-import Menu from "../utils/menu.util";
 import Carousel from "../utils/image-carousel.util";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import { showRating } from "../utils/rating.util";
 import ProductTag from "../utils/product-tag,util";
+import Menu from "../utils/menu.util";
+
 
 const Store = () => {
     const [products, setProducts] = useState([]);
@@ -22,6 +23,7 @@ const Store = () => {
     const [sortOrder, setSortOrder] = useState(["date", "asc"]);
 
     const { addToShoppingCart } = useShoppingCart();
+
 
     useEffect(() => {
         getProducts();
@@ -54,58 +56,61 @@ const Store = () => {
     };
 
 
-    const menuItems = [
-        {
-            name: "Categories",
-            items: [
-                { label: "All", action: () => setCategoryOption("All") },
-                { label: "Circles", action: () => setCategoryOption("Circles") },
-                { label: "Triangles", action: () => setCategoryOption("Triangles") },
-                { label: "Squares", action: () => setCategoryOption("Squares") },
-                { label: "Rectangles", action: () => setCategoryOption("Rectangles") },
-            ],
-        },
-        {
-            name: "Sort Products By",
-            items: [
-                {
-                    label: "date added",
-                    items: [
-                        { label: "newest", action: () => setSortOrder(["date", "asc"]) },
-                        { label: "oldest", action: () => setSortOrder(["date", "desc"]) },
-                    ],
-                },
-                {
-                    label: "price",
-                    items: [
-                        { label: "highest", action: () => setSortOrder(["price", "desc"]) },
-                        { label: "lowest", action: () => setSortOrder(["price", "asc"]) },
-                    ],
-                },
-                {
-                    label: "name",
-                    items: [
-                        { label: "ascending", action: () => setSortOrder(["name", "asc"]) },
-                        { label: "descending", action: () => setSortOrder(["name", "desc"]) },
-                    ],
-                },
-            ]
-        },
-        {
-            name: "Per Page",
-            items: [
-                { label: "12", action: () => setProductsPerPage(12) },
-                { label: "24", action: () => setProductsPerPage(24) },
-                { label: "48", action: () => setProductsPerPage(48) },
-                { label: "Show All", action: () => setProductsPerPage(1000) },
-            ],
-        },
-    ];
+
+    const menuItems = (
+        [
+            {
+                name: "Categories",
+                items: [
+                    { label: "All", action: () => setCategoryOption("All") },
+                    { label: "Circles", action: () => setCategoryOption("Circles") },
+                    { label: "Triangles", action: () => setCategoryOption("Triangles") },
+                    { label: "Squares", action: () => setCategoryOption("Squares") },
+                    { label: "Rectangles", action: () => setCategoryOption("Rectangles") },
+                ],
+            },
+            {
+                name: "Sort Products By",
+                items: [
+                    {
+                        label: "date added",
+                        items: [
+                            { label: "newest", action: () => setSortOrder(["date", "asc"]) },
+                            { label: "oldest", action: () => setSortOrder(["date", "desc"]) },
+                        ],
+                    },
+                    {
+                        label: "price",
+                        items: [
+                            { label: "highest", action: () => setSortOrder(["price", "desc"]) },
+                            { label: "lowest", action: () => setSortOrder(["price", "asc"]) },
+                        ],
+                    },
+                    {
+                        label: "name",
+                        items: [
+                            { label: "ascending", action: () => setSortOrder(["name", "asc"]) },
+                            { label: "descending", action: () => setSortOrder(["name", "desc"]) },
+                        ],
+                    },
+                ]
+            },
+            {
+                name: "Per Page",
+                items: [
+                    { label: "12", action: () => setProductsPerPage(12) },
+                    { label: "24", action: () => setProductsPerPage(24) },
+                    { label: "48", action: () => setProductsPerPage(48) },
+                    { label: "Show All", action: () => setProductsPerPage(1000) },
+                ],
+            },
+        ]
+    );
 
     const renderProducts = () => {
         return products.map((product) => (
             <div key={product.catalogNumber} className={styles.productBox}>
-                <ProductTag tags={product.status || []}/> 
+                <ProductTag tags={product.status || []} />
                 <Carousel images={product.images} />
                 <h3>{product.name}</h3>
                 <p>Price: {product.price} $</p>
@@ -124,11 +129,10 @@ const Store = () => {
         ));
     };
 
+
     return (
         <>
-            <div className={styles['menu-page']}>
-                <Menu menuItems={menuItems} />
-            </div>
+        <Menu menuItems = {menuItems}/>
             < div className={styles.productGrid} >
                 {products.length > 0 ? (renderProducts()) : (<p>Loading products...</p>)}
             </div >
@@ -138,6 +142,7 @@ const Store = () => {
                 onPageChange={handlePageChange}
             />
         </>
+
     );
 };
 

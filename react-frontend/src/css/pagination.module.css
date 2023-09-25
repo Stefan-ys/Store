@@ -2,9 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black;
-  padding: 5px;
-  margin-top: 5px;
+  /* background-color: black; */
+  /* padding: 5px; */
+  /* margin-top: 5px; */
 }
 
 .pagination {

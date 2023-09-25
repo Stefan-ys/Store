@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import styles from "../css/menu.module.css";
 
-const Menu = ({ menuItems, selectedOption }) => {
+
+const Menu = ({ menuItems }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeSubSubmenu, setActiveSubSubmenu] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
 
   const handleMenuClick = (action) => {
     if (action) {
@@ -32,11 +34,10 @@ const Menu = ({ menuItems, selectedOption }) => {
     setActiveSubmenu(null);
     setActiveSubSubmenu(null);
   };
-
   return (
     <nav className={styles.navMenu}>
       <menu className={styles.mainMenu}>
-        {menuItems.map((menuItem, index) => (
+        {menuItems && menuItems.map((menuItem, index) => (
           <li
             key={index}
             className={`${styles.menuItem} ${activeMenu === menuItem.name ? styles.active : ""
