@@ -4,7 +4,6 @@
       padding: 20px;
     }
     .productGrid {
-      margin-top: 200px;
       padding: 10px;
       display: grid;
       grid-template-columns: repeat(4, 4fr);

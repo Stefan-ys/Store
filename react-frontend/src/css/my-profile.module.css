@@ -4,7 +4,6 @@
 }
 
 .container {
-    margin-top: 300px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -17,7 +16,6 @@
 }
 
 .profileContainer {
-    margin-top: 300px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -30,7 +28,6 @@
 }
 
 .paymentAddressContainer {
-    margin-top: 300px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -43,7 +40,6 @@
 }
 
 .deliveryAddressContainer {
-    margin-top: 300px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;

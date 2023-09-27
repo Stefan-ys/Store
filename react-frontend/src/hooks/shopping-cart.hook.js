@@ -16,6 +16,15 @@ export function ShoppingCartProvider({ children }) {
         totalProducts: 0,
         totalWeight: 0,
     });
+    const [showNotification, setShowNotification] = useState(false);
+    const [notificationContent, setNotificationContent] = useState({
+        image: "",
+        productName: "",
+        quantity: 0,
+        price: 0,
+
+    });
+
     const TEMP_CART_KEY = 'tempCart';
 
     const { isLoggedIn } = useAuth();
@@ -23,10 +32,18 @@ export function ShoppingCartProvider({ children }) {
     useEffect(() => {
         getShoppingCart();
     }, [isLoggedIn]);
-
+    useEffect(() => {
+        if (showNotification) {
+            const timeout = setTimeout(() => {
+                setShowNotification(false);
+            }, 3000); 
+            return () => clearTimeout(timeout);
+        }
+    }, [showNotification, shoppingCart]);
 
     const getShoppingCart = async () => {
         try {
+            let cart;
             if (isLoggedIn) {
                 if (JSON.parse(localStorage.getItem(TEMP_CART_KEY)).products.length > 0) {
                     const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: [] };
@@ -40,7 +57,7 @@ export function ShoppingCartProvider({ children }) {
                 }
 
                 localStorage.setItem(TEMP_CART_KEY, JSON.stringify({ products: [] }));
-                setShoppingCart(await ShoppingCartService.getProducts());
+                cart = (await ShoppingCartService.getProducts());
             } else {
                 const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: {} };
 
@@ -49,8 +66,11 @@ export function ShoppingCartProvider({ children }) {
                     return acc;
                 }, {});
 
-                setShoppingCart(await ShoppingCartService.getTmpProducts(tempCartObject));
+                cart = (await ShoppingCartService.getTmpProducts(tempCartObject));
             }
+        
+            setShoppingCart(cart);
+            return cart;
         } catch (error) {
             console.log("Error fetching shopping cart data: ", error);
         }
@@ -73,11 +93,22 @@ export function ShoppingCartProvider({ children }) {
                 }
                 localStorage.setItem(TEMP_CART_KEY, JSON.stringify(updatedCart));
             }
-            getShoppingCart();
+            const cart = await getShoppingCart();
+            
+            const productDetails = cart.products.find(product => product.productId === productId);
+
+            setNotificationContent({
+                image: productDetails.image,
+                productName: productDetails.productName,
+                quantity: productDetails.quantity,
+                price: productDetails.price,
+            });
+            setShowNotification(true);
         } catch (error) {
             console.log(error);
         }
     }
+
 
     const removeFromShoppingCart = async (productId) => {
         try {
@@ -158,6 +189,18 @@ export function ShoppingCartProvider({ children }) {
     return (
         <ShoppingCartContext.Provider value={value}>
             {children}
+
+            <div className={`notification-container ${showNotification ? "show" : "hide"}`}>
+                <img src={notificationContent.image} alt={notificationContent.name} />
+                <div>
+                    <p>{notificationContent.productName}</p>
+                    <p>Quantity: {notificationContent.quantity}</p>
+                    <p>Price: ${notificationContent.price}</p>
+                </div>
+                <button onClick={() => setShowNotification(false)}>Continue Shopping</button>
+                <button onClick={() => setShowNotification(false)}>Show Shopping Cart</button>
+            </div>
+
         </ShoppingCartContext.Provider>
-    )
+    );
 }

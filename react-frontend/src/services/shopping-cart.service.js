@@ -4,6 +4,16 @@ import authHeader from "./auth-header";
 const API_CART_URL = "http://localhost:8080/api/shopping-cart";
 
 
+const getProduct = (productId) => {
+    return axios
+        .get(API_CART_URL + "/get-product" + { productId }, { headers: authHeader() })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.log("Error getting product: ", error);
+            throw error;
+        });
+};
+
 const getProducts = () => {
     return axios
         .get(API_CART_URL + "/get-products", { headers: authHeader() })
@@ -75,7 +85,7 @@ const transferProducts = (products) => {
 
 const ShoppingCartService = {
     getProducts, getTmpProducts, addToCart, removeFromCart,
-    removeAll, changeQuantity, transferProducts
+    removeAll, changeQuantity, transferProducts, getProduct
 };
 
 export default ShoppingCartService;
