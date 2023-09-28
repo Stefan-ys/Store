@@ -12,7 +12,8 @@ import AdminPage from "./components/admin-page.component";
 import './App.css';
 import { ShoppingCartProvider } from "./hooks/shopping-cart.hook";
 import useAuth from "./hooks/auth.hook";
-
+import AuthVerify from './common/auth-verify';
+import AuthService from "./services/auth.service";
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -37,30 +38,36 @@ class ErrorBoundary extends React.Component {
     }
 }
 
+const handleLogout = () => {
+    AuthService.logout();
+  };
 
 const App = () => {
     const { isLoggedIn, isAdmin } = useAuth();
 
     return (
-        <ShoppingCartProvider>
-            <div>
-                <Header path="/header" element={<Header />} />
-            </div>
-            <div className="container mt-3">
-                <ErrorBoundary> {/* Wrap each route's content */}
-                    <Routes>
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/store" element={<Store />} />
-                        <Route path="/product/:productId" element={<ProductView />} />
-                        <Route path="/shopping-cart" element={<ShoppingCart />} />
-                        <Route path="/my-profile" element={isLoggedIn ? <MyProfile /> : <Login />} />
-                        <Route path="/admin" element={isLoggedIn && isAdmin ? <AdminPage /> : <Home />} />
-                    </Routes>
-                </ErrorBoundary>
-            </div>
-        </ShoppingCartProvider>
+        <div className="App">
+            <ShoppingCartProvider>
+                <div>
+                    <Header path="/header" element={<Header />} />
+                </div>
+                <div className="container mt-3">
+                    <ErrorBoundary> 
+                        <Routes>
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/store" element={<Store />} />
+                            <Route path="/product/:productId" element={<ProductView />} />
+                            <Route path="/shopping-cart" element={<ShoppingCart />} />
+                            <Route path="/my-profile" element={isLoggedIn ? <MyProfile /> : <Login />} />
+                            <Route path="/admin" element={isLoggedIn && isAdmin ? <AdminPage /> : <Home />} />
+                        </Routes>
+                    </ErrorBoundary>
+                </div>
+            </ShoppingCartProvider>
+            <AuthVerify logOut={handleLogout} />
+        </div>
     )
 }
 

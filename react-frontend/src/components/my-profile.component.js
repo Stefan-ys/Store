@@ -6,34 +6,33 @@ import UserService from "../services/user.service";
 import Menu from "../utils/menu.util";
 import { withRouter } from "../common/with-router";
 
+const emptyProfile = {
+    username: "", email: "", firstName: "",
+    lastName: "", phoneNumber: "",
+};
+const emptyAddress = {
+    firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
+    town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
+};
+
+const initialState = { profile: false, payment: false, delivery: false };
 
 const MyProfile = () => {
-    const [visibility, setVisibility] = useState({ profile: true, payment: false, delivery: false });
-    const [profileData, setProfileData] = useState({
-        username: "", email: "", firstName: "",
-        lastName: "", phoneNumber: "",
-    });
-    const [paymentAddressData, setPaymentAddressData] = useState({
-        firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
-        town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
-    });
-    const [deliveryAddressData, setDeliveryAddressData] = useState({
-        firstName: "", lastName: "", phoneNumber: "", email: "", country: "", state: "",
-        town: "", postcode: "", street: "", number: "", floor: "", additionalInfo: "",
-    });
-    const [loading, setLoading] = useState({ profile: false, payment: false, delivery: false, });
-    const [message, setMessage] = useState({ profile: "", payment: "", delivery: "", });
-    const [editMode, setEditMode] = useState({ profile: false, payment: false, delivery: false, });
-
-
+    const [profileData, setProfileData] = useState(emptyProfile);
+    const [paymentAddressData, setPaymentAddressData] = useState(emptyAddress);
+    const [deliveryAddressData, setDeliveryAddressData] = useState(emptyAddress);
+    const [visibility, setVisibility] = useState({ ...initialState, profile: true });
+    const [loading, setLoading] = useState(initialState);
+    const [message, setMessage] = useState(initialState);
+    const [editMode, setEditMode] = useState(initialState);
 
     useEffect(() => {
         fetchMyProfileData();
     }, []);
 
     const fetchMyProfileData = async () => {
-        setVisibility({ profile: true, payment: false, delivery: false, });
-        setLoading({ profile: true });
+        setVisibility({ ...initialState, profile: true });
+        setLoading({ profile: true, });
         setMessage({ profile: "", });
 
         try {
@@ -45,9 +44,9 @@ const MyProfile = () => {
             setLoading((prevLoading) => ({ ...prevLoading, profile: false }));
         }
     }
-    const fetchMyPaymentAddress = async () => {
 
-        setVisibility({ profile: false, payment: true, delivery: false, });
+    const fetchMyPaymentAddress = async () => {
+        setVisibility({ ...initialState, payment: true });
         setLoading({ payment: true, });
         setMessage({ payment: "", });
 
@@ -60,8 +59,9 @@ const MyProfile = () => {
             setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
         }
     }
+
     const fetchMyDeliveryAddress = async () => {
-        setVisibility({ profile: false, payment: false, delivery: true, });
+        setVisibility({ ...initialState, delivery: true });
         setLoading({ delivery: true, });
         setMessage({ delivery: "", });
 
@@ -73,40 +73,21 @@ const MyProfile = () => {
         } finally {
             setLoading((prevLoading) => ({ ...prevLoading, delivery: false }));
         }
-    };
-
-    const handleMenuItemClick = (action) => {
-        switch (action) {
-            case "fetchMyProfileData":
-                fetchMyProfileData();
-                break;
-            case "fetchMyPaymentAddress":
-                fetchMyPaymentAddress();
-                break;
-            case "fetchMyDeliveryAddress":
-                fetchMyDeliveryAddress();
-                break;
-            // Handle other menu item actions here
-            default:
-                break;
-        }
-    };
+    }
 
     const handleErrorMessage = (type, error) => {
         const responseMessage = error.response?.data?.message || error.message || error.toString();
         setMessage((prevMessage) => ({ ...prevMessage, [type]: responseMessage }));
-    };
+    }
 
-    function handleEditClick(param) {
+    const handleEditClick = (param) => {
         setEditMode((prevEditMode) => ({ ...prevEditMode, [param]: !prevEditMode[param] }));
         setMessage((prevMessage) => ({ ...prevMessage, [param]: "" }));
-
     }
 
     const handleSaveClick = async (param, data) => {
         setLoading((prevLoading) => ({ ...prevLoading, [param]: true }));
         try {
-
             if (param === "profile") {
                 await UserService.updateMyProfile(data);
             } else {
@@ -119,7 +100,7 @@ const MyProfile = () => {
         } finally {
             setLoading((prevLoading) => ({ ...prevLoading, [param]: false }));
         }
-    };
+    }
 
     const handleProfileChange = (event) => {
         event.preventDefault();
@@ -138,8 +119,7 @@ const MyProfile = () => {
         } else if (type === "delivery") {
             setDeliveryAddressData(updatedAddress);
         }
-    };
-
+    }
 
     const camelCaseToNormal = (fieldName) => {
         const words = fieldName
@@ -147,14 +127,14 @@ const MyProfile = () => {
             .split(/[_\s]+/)
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 
-        return words.join(' ');
-    };
+        return words.join(" ");
+    }
 
     const menuItems = [
         {
             name: "My Profile",
             items: [
-                { label: "My Profile", action: fetchMyProfileData, }, 
+                { label: "My Profile", action: fetchMyProfileData, },
                 { label: "Delivery Address", action: fetchMyDeliveryAddress },
                 { label: "Payment Address", action: fetchMyPaymentAddress },
             ],
@@ -172,8 +152,6 @@ const MyProfile = () => {
             action: "getMyNotifications",
         },
     ];
-
-
 
     const renderButtons = (param, data) => (
         <div className={styles.buttons}>
@@ -268,7 +246,7 @@ const MyProfile = () => {
 
     return (<>
         <div className={styles['menu-page']}>
-            <Menu menuItems={menuItems} onItemClick={handleMenuItemClick} />
+            <Menu menuItems={menuItems} />
         </div>
         <section className={styles.section}>
             {visibility.profile && renderProfileContainer()}
@@ -277,6 +255,7 @@ const MyProfile = () => {
         </section>
     </>
     );
-};
+}
+
 export default withRouter(MyProfile);
 

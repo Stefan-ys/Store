@@ -7,6 +7,7 @@ import ProductService from "../services/product.service";
 import { showRating, rateProduct } from "../utils/rating.util";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import ProductTag from "../utils/product-tag,util";
+import useAuth from "../hooks/auth.hook";
 
 const emptyProduct = {
     name: "",
@@ -35,6 +36,7 @@ const ProductView = () => {
     const [isEnlarged, setIsEnlarged] = useState(false);
 
     const { addToShoppingCart } = useShoppingCart();
+    const { isLoggedIn } = useAuth();
 
     const maxCharacters = 300;
 
@@ -109,7 +111,7 @@ const ProductView = () => {
             ) : (
                 <>
                     <h2 className={styles.productName}>{product.name}</h2>
-                    <ProductTag tags={product.status || []}/> 
+                    <ProductTag tags={product.status || []} />
                     {selectedImage && (
                         <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
                             <img
@@ -159,11 +161,19 @@ const ProductView = () => {
                         ) : (
                             <p>No reviews available.</p>
                         )}
-                        <button className={styles.button} onClick={handleReviewClick}>
-                            Leave Review
-                        </button>
 
-                        {reviewExpanded && (
+
+                        <div>
+                            {isLoggedIn ? (
+                                <button className={styles.button} onClick={handleReviewClick}>
+                                    Leave Review
+                                </button>
+                            ) : (
+                                <p>You must be logged in to leave a review.</p>
+                            )}
+                        </div>
+
+                        {reviewExpanded && isLoggedIn && (
                             <div className={styles.writeReviewSection}>
                                 <h3>Write a Review</h3>
                                 {commentAlert && <p className={styles.errorMessage}>{commentAlert}</p>}

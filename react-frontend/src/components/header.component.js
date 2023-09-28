@@ -6,6 +6,8 @@ import AuthService from "../services/auth.service";
 import { withRouter } from "../common/with-router";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import useAuth from "../hooks/auth.hook";
+
+
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
     const { shoppingCart } = useShoppingCart();

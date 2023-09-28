@@ -29,7 +29,7 @@ const RegisterComponent = () => {
     const [success, setSuccess] = useState(false);
     const [hidePassword, setHidePassword] = useState(true);
     const [focusedField, setFocusedField] = useState(null);
-    
+
 
 
     const validation = {
@@ -149,7 +149,7 @@ const RegisterComponent = () => {
                         {/* EMAIL */}
                         <label htmlFor="email" className={styles.label}>
                             Email address:
-                            {validation.validEmail  === true ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validEmail === true ? <FaCheck className={styles.validIcon} /> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -222,8 +222,7 @@ const RegisterComponent = () => {
 
                         <div className={styles.buttonGroup}>
                             <button className={styles.button}>
-                                <span>Register</span>
-                                {loading && (<span className={styles.spinner}></span>)}
+                                {loading ? (<span className={styles.spinner}></span>) : <span>Register</span>}
                             </button>
                         </div>
                     </Form>

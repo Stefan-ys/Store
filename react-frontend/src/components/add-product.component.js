@@ -1,29 +1,44 @@
 import React, { useState } from "react";
 import styles from "../css/add-product.module.css";
 import AdminProductService from "../services/admin-product.service";
+import { withRouter } from "../common/with-router";
+import { showRating } from "../utils/rating.util";
+import ProductTag from "../utils/product-tag,util";
+
+const emptyProduct = {
+    name: "",
+    catalogNumber: "",
+    price: "",
+    quantity: "",
+    description: "",
+    productCategory: "",
+    manufacturer: "",
+    weight: "",
+    expirationDate: "",
+    status: [],
+    pictures: [],
+    productLength: "",
+    productHeight: "",
+    productWidth: "",
+};
 
 const AddProductComponent = () => {
-    const [product, setProduct] = useState({
-        name: "",
-        catalogNumber: "",
-        price: "",
-        quantity: "",
-        description: "",
-        productCategory: "",
-        manufacturer: "",
-        weight: "",
-        expirationDate: "",
-        status: [],
-        pictures: [],
-        productLength: "",
-        productHeight: "",
-        productWidth: "",
-
-    });
+    const [product, setProduct] = useState(emptyProduct);
     const [picture, setPicture] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [selectedImage, setSelectedImage] = useState("");
+    const [isEnlarged, setIsEnlarged] = useState(false);
+
+    const toggleEnlargedView = () => {
+        setIsEnlarged(!isEnlarged);
+    };
+
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+    };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,9 +63,6 @@ const AddProductComponent = () => {
         }
     };
 
-
-
-
     const handleAddPicture = () => {
         if (picture.trim() !== "") {
             setProduct({
@@ -71,27 +83,27 @@ const AddProductComponent = () => {
         setUploadedImages(uploadedImages.filter((pic) => pic !== url));
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage("");
+        try {
+            console.log(product);
+            AdminProductService.addProductService(product);
+            setMessage("Product added successfully");
+        } catch (error) {
+            console.log(error);
+            setMessage(
+                error.response ? error.response.data.message : "An error has occurred."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            setMessage("");
-            try {
-                console.log(product);
-                AdminProductService.addProductService(product);
-                setMessage("Product added successfully");
-            } catch (error) {
-                console.log(error);
-                setMessage(
-                    error.response ? error.response.data.message : "An error has occurred."
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        return (
-            <div className={styles["add-product-container"]}>
+    return (
+        <section className={styles.mainContainer}>
+            <div className={styles.addProductContainer}>
                 <h2>Add Product</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -332,7 +344,40 @@ const AddProductComponent = () => {
                     {message && <div className="alert alert-info">{message}</div>}
                 </form>
             </div>
-        );
-    };
+            
+            
+            <div className={styles.previewContainer}>
+                <h2 className={styles.productName}>{product.name}</h2>
+                <ProductTag tags={product.status || []} />
+                {selectedImage && (
+                    <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
+                        <img
+                            src={selectedImage}
+                            alt="Selected Product"
+                            className={isEnlarged ? styles.enlargedImageEnlarged : styles.enlargedImage}
+                        />
+                    </div>
+                )}
 
-export default AddProductComponent;
+                <div className={styles.carousel}>
+                    {product.image && product.images.map((image, index) => (
+                        <div
+                            key={index}
+                            className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
+                            onClick={() => handleImageClick(image)}
+                        >
+                            <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage} />
+                        </div>
+                    ))}
+                </div>
+                <p className={styles.productDescription}>{product.description}</p>
+                <p className={styles.productPrice}>Price: ${product.price}</p>
+                <p className={styles.productCategory}>Category: {product.productCategory}</p>
+                <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
+                <p className={styles.productRating}>Rating: {showRating(0, 0)}</p>
+            </div>
+        </section>
+    );
+};
+
+export default withRouter(AddProductComponent);

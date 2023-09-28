@@ -170,7 +170,7 @@
 
 .enlargedImage {
     cursor: pointer;
-    justify-content: centesr;
+    justify-content: center;
     max-width: 100%;
     max-height: 400px;
     border: 1px solid #ddd;

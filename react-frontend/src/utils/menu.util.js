@@ -34,6 +34,7 @@ const Menu = ({ menuItems }) => {
     setActiveSubmenu(null);
     setActiveSubSubmenu(null);
   };
+  
   return (
     <nav className={styles.navMenu}>
       <menu className={styles.mainMenu}>

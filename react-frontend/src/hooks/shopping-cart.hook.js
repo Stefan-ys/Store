@@ -198,7 +198,7 @@ export function ShoppingCartProvider({ children }) {
                     <p>Price: ${notificationContent.price}</p>
                 </div>
                 <button onClick={() => setShowNotification(false)}>Continue Shopping</button>
-                <button onClick={() => setShowNotification(false)}>Show Shopping Cart</button>
+                <button onClick={() => setShowNotification(false)}>Proceed to Check Out</button>
             </div>
 
         </ShoppingCartContext.Provider>

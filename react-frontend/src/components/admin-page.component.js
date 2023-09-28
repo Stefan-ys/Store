@@ -5,7 +5,7 @@ import Menu from "../utils/menu.util.js";
 import DataTable from "../utils/data-table.util";
 import AdminUserService from "../services/admin-user.service";
 import AdminProductService from "../services/admin-product.service";
-import Pagination from "../utils/pagination.util";
+// import Pagination from "../utils/pagination.util";
 import AddProductComponent from "./add-product.component";
 
 
@@ -16,7 +16,7 @@ const AdminPage = () => {
     const [currentFunction, setCurrentFunction] = useState("() => () => {}");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(12);
+    const [itemsPerPage, setItemsPerPage] = useState(10000);
     const [totalPages, setTotalPages] = useState(0);
     const [sortOption, setSortOption] = useState("date");
     const [sortOrder, setSortOrder] = useState("asc");
@@ -183,11 +183,11 @@ const AdminPage = () => {
             {showTableData && (
                 <div>
                     <DataTable data={data} loading={loading} message={message} />
-                    <Pagination
+                    {/* <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </div>
             )}
 

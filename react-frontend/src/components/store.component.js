@@ -132,9 +132,10 @@ const Store = () => {
 
     return (
         <>
-        <Menu menuItems = {menuItems}/>
+            <Menu menuItems={menuItems} />
             < div className={styles.productGrid} >
-                {products.length > 0 ? (renderProducts()) : (<p>Loading products...</p>)}
+                {loading ? <> <p>Loading... </p> <span className={styles.spinner}></span> </> :
+                    products.length > 0 ? renderProducts() : <p>No products found from this selection.</p>}
             </div >
             <Pagination
                 currentPage={currentPage}

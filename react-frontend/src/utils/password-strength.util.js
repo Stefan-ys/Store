@@ -48,9 +48,7 @@ const getActiveColor = (strength) => {
 
 
 const PasswordStrengthIndicator = ({password}) => {
-    // if (!password) {
-    //     return null;
-    // }
+
     let stats = handlePasswordStrength(password)
 
     const element = (color) =>
