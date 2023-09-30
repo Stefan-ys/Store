@@ -1,6 +1,7 @@
 package com.example.project.web.admin;
 
 import com.example.project.payload.request.ProductRequest;
+import com.example.project.payload.response.ProductResponse;
 import com.example.project.payload.response.ProductResponseAdminTable;
 import com.example.project.service.ProductService;
 import com.example.project.service.StoreService;
@@ -33,7 +34,7 @@ public class AdminProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-product")
-    public ResponseEntity<String> addProduct( @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<String> addProduct(@RequestBody ProductRequest productRequest) {
         try {
             productService.addProduct(productRequest);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -50,34 +51,10 @@ public class AdminProductController {
     // Retrieve
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/all-products")
-    public ResponseEntity<Map<String, Object>> getProductsPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "date") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortOrder
-    ) {
-
-
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         try {
-            Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            String property = switch (sortBy) {
-                case "price" -> "price";
-                case "name" -> "name";
-                default -> "createdDate";
-            };
-
-            Pageable paging = PageRequest.of(page, size, direction, property);
-
-            Page<ProductResponseAdminTable> productsPage = storeService.getAllProductsAdminTable(paging);
-
-            List<ProductResponseAdminTable> products = productsPage.getContent();
-            Map<String, Object> response = new HashMap<>();
-            response.put("products", products);
-            response.put("currentPage", productsPage.getNumber());
-            response.put("totalElements", productsPage.getTotalElements());
-            response.put("totalPages", productsPage.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            List<ProductResponse> products = productService.getAllProducts();
+            return new ResponseEntity<>(products, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

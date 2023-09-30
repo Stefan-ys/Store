@@ -55,18 +55,16 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setViews(productEntity.getViews() + 1);
         productRepository.save(productEntity);
 
-        ProductResponse productResponse = modelMapper.map(productEntity, ProductResponse.class);
-        productResponse.setUsersRatingCount(productEntity.getUsersRating().size());
+        return convertToProductResponse(productEntity);
+    }
 
-        List<CommentResponse> commentResponses = commentRepository
-                .findAllByProductIdOrderByCreatedDateAsc(productId)
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        return productRepository
+                .findAll()
                 .stream()
-                .map(this::convertToCommentResponse)
+                .map(this::convertToProductResponse)
                 .collect(Collectors.toList());
-
-        productResponse.setComments(commentResponses);
-
-        return productResponse;
     }
 
     //Update
@@ -100,7 +98,6 @@ public class ProductServiceImpl implements ProductService {
         productEntity.getUsersRating().put(username, rating);
         double sum = (double) productEntity.getUsersRating().values().stream().reduce(0, Integer::sum)
                 / productEntity.getUsersRating().size();
-
         sum = Math.round(sum * 10.0) / 10.0;
         productEntity.setRating(sum);
 
@@ -139,5 +136,19 @@ public class ProductServiceImpl implements ProductService {
         CommentResponse commentResponse = modelMapper.map(commentEntity, CommentResponse.class);
         commentResponse.setReviewDate(String.format("%s (%s ago)", formatLocalDateTime(commentEntity.getCreatedDate()), getTimeBetween(commentEntity.getCreatedDate(), LocalDateTime.now())));
         return commentResponse;
+    }
+
+    private ProductResponse convertToProductResponse(ProductEntity productEntity) {
+        ProductResponse productResponse = modelMapper.map(productEntity, ProductResponse.class);
+        productResponse.setUsersRatingCount(productEntity.getUsersRating().size());
+
+        List<CommentResponse> commentResponses = commentRepository
+                .findAllByProductIdOrderByCreatedDateAsc(productEntity.getId())
+                .stream()
+                .map(this::convertToCommentResponse)
+                .collect(Collectors.toList());
+
+        productResponse.setComments(commentResponses);
+        return productResponse;
     }
 }

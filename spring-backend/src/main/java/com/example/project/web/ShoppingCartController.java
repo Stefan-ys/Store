@@ -1,6 +1,7 @@
 package com.example.project.web;
 
 import com.example.project.configuration.security.services.UserDetailsImpl;
+import com.example.project.payload.response.ShoppingCartProductResponse;
 import com.example.project.payload.response.ShoppingCartResponse;
 import com.example.project.service.ShoppingCartService;
 import lombok.AllArgsConstructor;

@@ -16,6 +16,8 @@ public interface ProductService {
 
     ProductResponse getProduct(ObjectId productId);
 
+    List<ProductResponse> getAllProducts();
+
     //Update
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
@@ -29,4 +31,5 @@ public interface ProductService {
     void deleteProduct(ObjectId productId);
 
     void removeProductStatus(ObjectId productId, String status);
-}
+
+    }
