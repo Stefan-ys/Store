@@ -40,7 +40,7 @@ class ErrorBoundary extends React.Component {
 
 const handleLogout = () => {
     AuthService.logout();
-  };
+};
 
 const App = () => {
     const { isLoggedIn, isAdmin } = useAuth();
@@ -52,7 +52,7 @@ const App = () => {
                     <Header path="/header" element={<Header />} />
                 </div>
                 <div className="container mt-3">
-                    <ErrorBoundary> 
+                    <ErrorBoundary>
                         <Routes>
                             <Route path="/home" element={<Home />} />
                             <Route path="/login" element={<Login />} />

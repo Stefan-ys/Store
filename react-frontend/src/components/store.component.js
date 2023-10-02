@@ -9,7 +9,7 @@ import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import { showRating } from "../utils/rating.util";
 import ProductTag from "../utils/product-tag,util";
 import Menu from "../utils/menu.util";
-
+import ProductBox from "../utils/product-box.util";
 
 const Store = () => {
     const [products, setProducts] = useState([]);
@@ -21,8 +21,6 @@ const Store = () => {
     const [totalPages, setTotalPages] = useState();
     const [categoryOption, setCategoryOption] = useState("All");
     const [sortOrder, setSortOrder] = useState(["date", "asc"]);
-
-    const { addToShoppingCart } = useShoppingCart();
 
 
     useEffect(() => {
@@ -50,11 +48,6 @@ const Store = () => {
             setLoading(false);
         }
     };
-
-    const addToCart = (productId) => {
-        addToShoppingCart(productId);
-    };
-
 
 
     const menuItems = (
@@ -108,24 +101,7 @@ const Store = () => {
     );
 
     const renderProducts = () => {
-        return products.map((product) => (
-            <div key={product.catalogNumber} className={styles.productBox}>
-                <ProductTag tags={product.status || []} />
-                <Carousel images={product.images} />
-                <h3>{product.name}</h3>
-                <p>Price: {product.price} $</p>
-                <p>Category: {product.productCategory}</p>
-                <p>Manufacturer: {product.manufacturer}</p>
-                <p>{showRating(product.rating)}</p>
-                <div>
-                    <Link to={`/product/${product.id}`} state={product} style={{ textDecoration: 'none' }}>
-                        <button className={styles.button}>
-                            View Product
-                        </button>
-                    </Link>
-                    <button className={styles.button} onClick={() => addToCart(product.id)}>Add to Cart</button>
-                </div>
-            </div>
+        return products.map((product) => ( ProductBox(product) 
         ));
     };
 

@@ -16,7 +16,7 @@ const emptyProduct = {
     weight: "",
     expirationDate: "",
     status: [],
-    pictures: [],
+    images: [],
     productLength: "",
     productHeight: "",
     productWidth: "",
@@ -24,7 +24,7 @@ const emptyProduct = {
 
 const AddProductComponent = () => {
     const [product, setProduct] = useState(emptyProduct);
-    const [picture, setPicture] = useState([]);
+    const [image, setImage] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [uploadedImages, setUploadedImages] = useState([]);
@@ -63,24 +63,24 @@ const AddProductComponent = () => {
         }
     };
 
-    const handleAddPicture = () => {
-        if (picture.trim() !== "") {
+    const handleAddImage = () => {
+        if (image.trim() !== "") {
             setProduct({
                 ...product,
-                pictures: [...product.pictures, picture],
+                images: [...product.images, image],
             });
-            setUploadedImages([...uploadedImages, picture]);
-            setPicture("");
+            setUploadedImages([...uploadedImages, image]);
+            setImage("");
         }
     };
 
     const handleRemovePicture = (url) => {
-        const updatedPictures = product.pictures.filter((pic) => pic !== url);
+        const updatedPictures = product.images.filter((img) => img !== url);
         setProduct({
             ...product,
-            pictures: updatedPictures,
+            images: updatedPictures,
         });
-        setUploadedImages(uploadedImages.filter((pic) => pic !== url));
+        setUploadedImages(uploadedImages.filter((img) => img !== url));
     };
 
     const handleSubmit = async (e) => {
@@ -88,7 +88,6 @@ const AddProductComponent = () => {
         setLoading(true);
         setMessage("");
         try {
-            console.log(product);
             AdminProductService.addProductService(product);
             setMessage("Product added successfully");
         } catch (error) {
@@ -102,7 +101,7 @@ const AddProductComponent = () => {
     };
 
     return (
-        <section className={styles.mainContainer}>
+        <div className={styles.mainContainer}>
             <div className={styles.addProductContainer}>
                 <h2>Add Product</h2>
                 <form onSubmit={handleSubmit}>
@@ -310,9 +309,9 @@ const AddProductComponent = () => {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="pictures">Product Pictures:</label>
+                        <label htmlFor="images">Product Images:</label>
                         <div>
-                            {product.pictures.map((url, index) => (
+                            {product.images.map((url, index) => (
                                 <div key={index}>
                                     <a href={url} target="_blank" rel="noopener noreferrer">
                                         {url}
@@ -322,15 +321,15 @@ const AddProductComponent = () => {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="picture">Add Picture URL:</label>
+                        <label htmlFor="image">Add Image URL:</label>
                         <input
                             type="url"
-                            id="picture"
-                            name="picture"
-                            value={picture}
-                            onChange={(e) => setPicture(e.target.value)}
+                            id="image"
+                            name="image"
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
                         />
-                        <button type="button" onClick={handleAddPicture}>
+                        <button type="button" onClick={handleAddImage}>
                             Add Picture
                         </button>
                     </div>
@@ -360,7 +359,7 @@ const AddProductComponent = () => {
                 )}
 
                 <div className={styles.carousel}>
-                    {product.image && product.images.map((image, index) => (
+                    {product.images && product.images.map((image, index) => (
                         <div
                             key={index}
                             className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
@@ -376,7 +375,7 @@ const AddProductComponent = () => {
                 <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
                 <p className={styles.productRating}>Rating: {showRating(0, 0)}</p>
             </div>
-        </section>
+        </div>
     );
 };
 

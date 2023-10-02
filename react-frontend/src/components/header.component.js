@@ -27,7 +27,7 @@ const HeaderComponent = () => {
     return (
         <header className={styles.header}>
             <div className={styles.logoContainer}>
-                <NavLink to="/" className={styles.logoLink}>
+                <NavLink to="/home" className={styles.logoLink}>
                     Your Logo Here
                 </NavLink>
             </div>
@@ -44,7 +44,7 @@ const HeaderComponent = () => {
                 <nav>
                     <ul className={styles.navLinks}>
                         <li>
-                            <NavLink exact to="/" activeClassName={styles.active} className={styles.navLink}>
+                            <NavLink exact to="/home" activeClassName={styles.active} className={styles.navLink}>
                                 Home
                             </NavLink>
                         </li>
