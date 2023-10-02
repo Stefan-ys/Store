@@ -13,6 +13,7 @@ import com.example.project.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -90,6 +91,15 @@ public class ProductServiceImpl implements ProductService {
         ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
         productEntity.getStatus().remove(productStatusEnum);
         productRepository.save(productEntity);
+    }
+
+    @Override
+    public List<ProductResponse> getHomePageProductsByStatus(ProductStatusEnum statusEnum, Pageable pageable) {
+        return productRepository
+                .findAllByStatus(statusEnum, pageable)
+                .stream()
+                .map(this::convertToProductResponse)
+                .toList();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.example.project.service;
 
+import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.payload.request.ProductRequest;
 import com.example.project.payload.response.ProductResponse;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ public interface ProductService {
 
     List<ProductResponse> getAllProducts();
 
+    List<ProductResponse> getHomePageProductsByStatus(ProductStatusEnum statusEnum, Pageable pageable);
+
     //Update
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
@@ -32,4 +36,5 @@ public interface ProductService {
 
     void removeProductStatus(ObjectId productId, String status);
 
-    }
+
+}
