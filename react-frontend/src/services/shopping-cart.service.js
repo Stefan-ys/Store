@@ -33,6 +33,7 @@ const getTmpProducts = (products) => {
             throw error;
         });
 };
+
 const addToCart = (productId) => {
     return axios
         .post(API_CART_URL + "/add-product/" + productId, null, { headers: authHeader() })

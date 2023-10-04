@@ -36,12 +36,13 @@ export function ShoppingCartProvider({ children }) {
         if (showNotification) {
             const timeout = setTimeout(() => {
                 setShowNotification(false);
-            }, 3000); 
+            }, 3000);
             return () => clearTimeout(timeout);
         }
     }, [showNotification, shoppingCart]);
 
     const getShoppingCart = async () => {
+        console.log(1)
         try {
             let cart;
             if (isLoggedIn) {
@@ -52,10 +53,13 @@ export function ShoppingCartProvider({ children }) {
                         acc[product.productId] = product.quantity;
                         return acc;
                     }, {});
-
-                    await ShoppingCartService.transferProducts(tempCartObject);
+                    try {
+                        await ShoppingCartService.transferProducts(tempCartObject);
+                    } catch (error) {
+                        console.log(error);
+                        localStorage.removeItem(TEMP_CART_KEY);
+                    }
                 }
-
                 localStorage.setItem(TEMP_CART_KEY, JSON.stringify({ products: [] }));
                 cart = (await ShoppingCartService.getProducts());
             } else {
@@ -68,7 +72,7 @@ export function ShoppingCartProvider({ children }) {
 
                 cart = (await ShoppingCartService.getTmpProducts(tempCartObject));
             }
-        
+            console.log(5)
             setShoppingCart(cart);
             return cart;
         } catch (error) {
@@ -94,7 +98,7 @@ export function ShoppingCartProvider({ children }) {
                 localStorage.setItem(TEMP_CART_KEY, JSON.stringify(updatedCart));
             }
             const cart = await getShoppingCart();
-            
+
             const productDetails = cart.products.find(product => product.productId === productId);
 
             setNotificationContent({
@@ -103,7 +107,9 @@ export function ShoppingCartProvider({ children }) {
                 quantity: productDetails.quantity,
                 price: productDetails.price,
             });
+
             setShowNotification(true);
+
         } catch (error) {
             console.log(error);
         }

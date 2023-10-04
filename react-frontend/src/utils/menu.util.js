@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import styles from "../css/menu.module.css";
 
-
 const Menu = ({ menuItems }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeSubSubmenu, setActiveSubSubmenu] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("");
 
   const handleMenuClick = (action) => {
     if (action) {
       action();
-    }
+    } 
   };
 
   const handleMenuEnter = (menuName) => {
@@ -34,63 +32,92 @@ const Menu = ({ menuItems }) => {
     setActiveSubmenu(null);
     setActiveSubSubmenu(null);
   };
-  
+
   return (
     <nav className={styles.navMenu}>
       <menu className={styles.mainMenu}>
-        {menuItems && menuItems.map((menuItem, index) => (
-          <li
-            key={index}
-            className={`${styles.menuItem} ${activeMenu === menuItem.name ? styles.active : ""
+        {menuItems &&
+          menuItems.map((menuItem, index) => (
+            <li
+              key={index}
+              className={`${styles.menuItem} ${
+                activeMenu === menuItem.name ? styles.active : ""
               }`}
-            onMouseEnter={() => handleMenuEnter(menuItem.name)}
-            onMouseLeave={handleMenuLeave}
-          >
-            <span onClick={menuItem.action ? () => handleMenuClick(menuItem.action) : () => { }}>
-              {menuItem.name}
-              {menuItem.name === selectedOption ? ' •' : ''}
-            </span>
-            {menuItem.items && (
-              <menu className={styles.submenu}>
-                {menuItem.items.map((submenuItem, subIndex) => (
-                  <li
-                    key={subIndex}
-                    className={`${styles.submenuItem} ${activeSubmenu === submenuItem.label ? styles.activeSubmenu : ""
+              onMouseEnter={() => handleMenuEnter(menuItem.name)}
+              onMouseLeave={handleMenuLeave}
+            >
+              <span
+                onClick={
+                  menuItem.action
+                    ? () => handleMenuClick(menuItem.action)
+                    : () => handleMenuClick(null) 
+                }
+              >
+                {menuItem.name}
+              </span>
+              {menuItem.items && (
+                <menu className={styles.submenu}>
+                  {menuItem.items.map((submenuItem, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className={`${styles.submenuItem} ${
+                        activeSubmenu === submenuItem.label
+                          ? styles.activeSubmenu
+                          : ""
                       }`}
-                    onMouseEnter={() => handleSubmenuEnter(submenuItem.label)}
-                  >
-                    <span onClick={submenuItem.action ? () => handleMenuClick(submenuItem.action) : ""}>{submenuItem.label}  {submenuItem.items ? <i className={styles.arrowRight}></i> : ""}
-                      {submenuItem.label === selectedOption ? ' •' : ''}
-                    </span>
-                    {submenuItem.items && (
-                      <menu className={styles.subSubmenu}>
-                        {submenuItem.items.map((subSubmenuItem, subSubIndex) => (
-                          <li
-                            key={subSubIndex}
-                            className={`${styles.subSubmenuItem} ${activeSubSubmenu === subSubmenuItem.label
-                              ? styles.activeSubSubmenu
-                              : ""
+                      onMouseEnter={() => handleSubmenuEnter(submenuItem.label)}
+                    >
+                      <span
+                        onClick={
+                          submenuItem.action
+                            ? () => handleMenuClick(submenuItem.action)
+                            : () => handleMenuClick(null)
+                        }
+                      >
+                        {submenuItem.label}{" "}
+                        {submenuItem.items ? (
+                          <i className={styles.arrowRight}></i>
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                      {submenuItem.items && (
+                        <menu className={styles.subSubmenu}>
+                          {submenuItem.items.map((subSubmenuItem, subSubIndex) => (
+                            <li
+                              key={subSubIndex}
+                              className={`${styles.subSubmenuItem} ${
+                                activeSubSubmenu === subSubmenuItem.label
+                                  ? styles.activeSubSubmenu
+                                  : ""
                               }`}
-                            onMouseEnter={() =>
-                              handleSubSubmenuEnter(subSubmenuItem.label)
-                            }
-                          >
-                            <span onClick={subSubmenuItem.action ? () => handleMenuClick(subSubmenuItem.action) : ""}>{subSubmenuItem.label}
-                              {subSubmenuItem.label === selectedOption ? ' •' : ''}
-                            </span>
-                          </li>
-                        ))}
-                      </menu>
-                    )}
-                  </li>
-                ))}
-              </menu>
-            )}
-          </li>
-        ))}
+                              onMouseEnter={() =>
+                                handleSubSubmenuEnter(subSubmenuItem.label)
+                              }
+                            >
+                              <span
+                                onClick={
+                                  subSubmenuItem.action
+                                    ? () =>
+                                        handleMenuClick(subSubmenuItem.action)
+                                    : () => handleMenuClick(null) 
+                                }
+                              >
+                                {subSubmenuItem.label}
+                              </span>
+                            </li>
+                          ))}
+                        </menu>
+                      )}
+                    </li>
+                  ))}
+                </menu>
+              )}
+            </li>
+          ))}
       </menu>
     </nav>
   );
-}
+};
 
 export default Menu;

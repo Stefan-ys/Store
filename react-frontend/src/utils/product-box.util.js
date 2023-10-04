@@ -6,13 +6,15 @@ import { Link } from "react-router-dom";
 import Carousel from "./image-carousel.util";
 
 const ProductBox = (product) => {
+    
+    product = product.product;
 
     const { addToShoppingCart } = useShoppingCart();
 
     return (
-        <div key={product.catalogNumber} className={styles.productBox}>
+        <div key={product.id} className={styles.productBox}>
             <ProductTag tags={product.status || []} />
-              {product.images && product.images.length > 0 && <Carousel images={product.images} />}
+            {product.images && product.images.length > 0 && <Carousel images={product.images} />}
             <h3>{product.name}</h3>
             <p>Price: {product.price} $</p>
             <p>Category: {product.productCategory}</p>
