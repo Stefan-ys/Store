@@ -3,11 +3,16 @@ import { withRouter } from "../common/with-router";
 import styles from "../css/home.module.css";
 import HomeService from "../services/home.service";
 import Slider from "../utils/slider-util";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState({
+        NEW: [],
+        PROMOTION: [],
+        COMING_SOON: []
+    });
 
     useEffect(() => {
         getProducts();
@@ -15,40 +20,49 @@ const Home = () => {
 
     const getProducts = async () => {
         setLoading(true);
-        setMessage("");
+        setMessage(""); 
         try {
-            const data = await HomeService.getProducts();
-            console.log(data);
-            setProducts(data);
-
-
+            const fetchedProducts = await HomeService.getProducts();
+            setProducts(fetchedProducts);
+            console.log(products);
         } catch (error) {
             console.log("Error fetching products data: ", error);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-
+            setMessage(
+                error.response ? error.response.data.message : "An error has occurred."
+            );
         } finally {
-            setLoading(false);
-        }
+            setLoading(false);          }
     };
-
 
     return (
         <div className={styles.container}>
-            <div className={styles["carousel-section"]}>
-                <h2>New Products</h2>
-                <Slider items={products.NEW} itemsPerSlide={4} />
-            </div>
-            <div className={styles["carousel-section"]}>
-                <h2>Promotions</h2>
-                <Slider items={products.PROMOTION} itemsPerSlide={4} />
-            </div>
-            <div className={styles["carousel-section"]}>
-                <h2>Coming Soon</h2>
-                <Slider items={products.COMING_SOON} itemsPerSlide={4} />
-            </div>
+            {!loading && (  
+                <>
+                    <div className={styles.carouselSection}>
+                        <h2>New Products</h2>
+                        <Slider products={products.NEW} itemsPerSlide={4} />
+                        <Link to="/all-new-products" style={{ textDecoration: "none" }}>
+                            <button className={styles.button}>Show All</button>
+                        </Link>
+                    </div>
+                    <div className={styles.carouselSection}>
+                        <h2>Promotions</h2>
+                        <Slider products={products.PROMOTION} itemsPerSlide={4} />
+                        <Link to="/all-promotions" style={{ textDecoration: "none" }}>
+                            <button className={styles.button}>Show All</button>
+                        </Link>
+                    </div>
+                    <div className={styles.carouselSection}>
+                        <h2>Coming Soon</h2>
+                        <Slider products={products.COMING_SOON} itemsPerSlide={4} />
+                        <Link to="/all-coming-soon" style={{ textDecoration: "none" }}>
+                            <button className={styles.button}>Show All</button>
+                        </Link>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
-
 
 export default withRouter(Home);

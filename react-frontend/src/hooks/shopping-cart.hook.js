@@ -1,5 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import ShoppingCartService from "../services/shopping-cart.service";
+
+
 import useAuth from "./auth.hook";
 
 const ShoppingCartContext = createContext();
@@ -42,7 +44,6 @@ export function ShoppingCartProvider({ children }) {
     }, [showNotification, shoppingCart]);
 
     const getShoppingCart = async () => {
-        console.log(1)
         try {
             let cart;
             if (isLoggedIn) {
@@ -72,7 +73,6 @@ export function ShoppingCartProvider({ children }) {
 
                 cart = (await ShoppingCartService.getTmpProducts(tempCartObject));
             }
-            console.log(5)
             setShoppingCart(cart);
             return cart;
         } catch (error) {
