@@ -3,7 +3,7 @@ import { useSpring, animated } from 'react-spring';
 import { FaInfoCircle } from 'react-icons/fa';
 import styles from '../css/info-button.module.css';
 
-const InfoButton = ({ text }) => {
+function InfoButton({ text }) {
     const ref = useRef(null);
     const [toggle, setToggle] = useState(true);
     const [style, animate] = useSpring(() => ({ height: "0px" }));

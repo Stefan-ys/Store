@@ -1,11 +1,10 @@
 import axios from "axios";
-import authHeader from "./auth-header";
 
 const HOME_URL = "http://localhost:8080/api/home";
 
-const getProducts = () => {
+const HomeService = () => {
     return axios
-        .get(HOME_URL + "/products", { headers: authHeader() })
+        .get(HOME_URL)
         .then(response => {
             return response.data;
         })
@@ -15,6 +14,4 @@ const getProducts = () => {
         });
 };
 
-
-const HomeService = { getProducts };
 export default HomeService;

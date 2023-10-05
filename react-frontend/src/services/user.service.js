@@ -4,7 +4,6 @@ import authHeader from "./auth-header";
 const API_USERS_URL = "http://localhost:8080/api/user";
 
 const getMyProfile = () => {
-    console.log(localStorage);
     return axios
         .get(API_USERS_URL + "/my-profile", { headers: authHeader() })
         .then((response) => response.data)
@@ -33,7 +32,7 @@ const getMyAddress = (address) => {
 
 const updateMyAddress = (data, address) => {
     return axios
-        .put(API_USERS_URL + "/my-address", data, { params: { address }, headers: authHeader() })
+        .put(API_USERS_URL + "/my-address", { data, address }, { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             throw error;

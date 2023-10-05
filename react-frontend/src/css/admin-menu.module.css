@@ -1,0 +1,46 @@
+.adminMenu {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    background-color: black;
+    color: white;
+    padding: 20px;
+    font: message-box;
+    position: fixed;
+    top: 130px;
+    bottom: 0;
+    z-index: 1;
+}
+
+.adminMenuHeader {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.adminMenuLinks {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.adminMenuLinks li {
+    margin-bottom: 10px;
+}
+
+.adminMenuLinks li a {
+    display: block;
+    padding: 8px 16px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.adminMenuLinks li a:hover {
+    background-color: #333;
+}
+
+.adminMenuContainer {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+}

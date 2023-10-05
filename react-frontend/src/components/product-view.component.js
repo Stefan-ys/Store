@@ -1,210 +1,195 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import styles from "../css/product-view.module.css";
-import Form from "react-validation/build/form";
-import { withRouter } from "../common/with-router";
-import ProductService from "../services/product.service";
-import { showRating, rateProduct } from "../utils/rating.util";
-import { useShoppingCart } from "../hooks/shopping-cart.hook";
-import ProductTag from "../utils/product-tag,util";
-import useAuth from "../hooks/auth.hook";
+import {withRouter} from "../common/with-router";
+import StoreService from "../services/store.service";
+import ShoppingCartService from "../services/shopping-cart.service";
+import {useParams, useLocation} from "react-router-dom";
 
-const emptyProduct = {
-    name: "",
-    description: "",
-    price: 0,
-    category: "",
-    manufacturer: "",
-    rating: 0,
-    usersRatingCount: 0,
-    images: [],
-    status: [],
-    catalogNumber: "",
-    comments: [],
-};
 
 const ProductView = () => {
-    const { productId } = useParams();
-    const [product, setProduct] = useState(emptyProduct);
+    const {productId} = useParams();
+    const location = useLocation();
+
+    const mockProduct = {
+        name: "ITEM",
+        description: "Lorem ipsum dolor sit amet...",
+        price: 9.99,
+        catalogNumber: 1,
+        productCategory: "Category",
+        manufacturer: "Manufacturer",
+        rating: 4,
+        reviews: [
+            {
+                username: "User1",
+                comment: "Great product!",
+                rating: 5,
+                reviewDate: "2023-06-16",
+            },
+            {
+                username: "User2",
+                comment: "Nice quality.",
+                rating: 4,
+                reviewDate: "2023-06-15",
+            },
+        ],
+    };
+
+    const [product, setProduct] = useState(mockProduct);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [reviewExpanded, setReviewExpanded] = useState(false);
-    const [comment, setComment] = useState("");
-    const [commentAlert, setCommentAlert] = useState("");
-    const [rating, setRating] = useState(0);
-    const [selectedImage, setSelectedImage] = useState("");
-    const [isEnlarged, setIsEnlarged] = useState(false);
 
-    const { addToShoppingCart } = useShoppingCart();
-    const { isLoggedIn } = useAuth();
+    useEffect(() => {
+        fetchProductData(productId);
+    }, [productId]);
 
-    const maxCharacters = 300;
-
-    const handleCommentChange = (value) => {
-        const inputComment = value;
-        if (inputComment.length > maxCharacters) {
-            setCommentAlert(`You are over the limit of: ${maxCharacters} characters`);
-        } else {
-            setCommentAlert("");
-        }
-        setComment(inputComment);
+    const fetchProductData = (productId) => {
+        setLoading(true);
+        console.log(productId);
+        StoreService.getProduct(productId)
+            .then((data) => {
+                setProduct(data);
+            })
+            .catch((error) => {
+                console.log("Error fetching product data: ", error);
+                setMessage(
+                    error.response
+                        ? error.response.data.message
+                        : "An error has occurred."
+                );
+            })
+            .finally(
+                setLoading(false)
+            );
     };
 
     useEffect(() => {
-        fetchProductData();
-    }, []);
+        fetchProductData(productId);
+    }, [productId]);
 
-    const fetchProductData = async () => {
+
+    const addToShoppingCart = (productId) => {
         setLoading(true);
-        setMessage("");
-
-        try {
-            const fetchedProduct = await ProductService.getProduct(productId);
-            setProduct(fetchedProduct);
-            setSelectedImage(fetchedProduct.images[0]);
-        } catch (error) {
-            console.log("Fetch product error:", error);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-        } finally {
-            setLoading(false);
-        }
+        ShoppingCartService.addToCart(productId)
+            .then((data) => {
+                // TODO: show on success message
+                setMessage("Product added to cart successfully.")
+            })
+            .catch((error) => {
+                console.log("Error adding product to cart: ", error);
+                setMessage(error.response ? error.response.data.message : "An error has occurred.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
-    const handleReviewClick = () => {
-        setReviewExpanded(!reviewExpanded);
+    const handleLeaveReviewClick = () => {
+        setReviewExpanded(true);
     };
 
-    const handleSubmitReview = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        try {
-            await ProductService.submitReview(productId, comment, rating);
-            setComment("");
-            setRating(0);
-            window.location.reload();
-        } catch (error) {
-            console.log(error.message);
-            setMessage(error.response ? error.response.data.message : "An error has occurred.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const addToCart = () => {
-        addToShoppingCart(productId);
-    };
-
-
-    const toggleEnlargedView = () => {
-        setIsEnlarged(!isEnlarged);
-    };
-
-    const handleImageClick = (image) => {
-        setSelectedImage(image);
+    const handleCancelReviewClick = () => {
+        setReviewExpanded(false);
     };
 
 
     return (
         <div className={styles.productContainer}>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                    <h2 className={styles.productName}>{product.name}</h2>
-                    <ProductTag tags={product.status || []} />
-                    {selectedImage && (
-                        <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
-                            <img
-                                src={selectedImage}
-                                alt="Selected Product"
-                                className={isEnlarged ? styles.enlargedImageEnlarged : styles.enlargedImage}
-                            />
-                        </div>
-                    )}
+            <h2 className={styles.productName}>{product.name}</h2>
+            <p className={styles.productDescription}>{product.description}</p>
+            <p className={styles.productPrice}>Price: ${product.price}</p>
+            <p className={styles.productCategory}>
+                Category: {product.productCategory}
+            </p>
+            <p className={styles.productManufacturer}>
+                Manufacturer: {product.manufacturer}
+            </p>
+            <p className={styles.productRating}>
+                Rating: {product.rating} / 5
+            </p>
 
-                    <div className={styles.carousel}>
-                        {product.images.map((image, index) => (
-                            <div
-                                key={index}
-                                className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
-                                onClick={() => handleImageClick(image)}
+            <button
+                className={styles.button}
+                onClick={addToShoppingCart(product.id)}
+                disabled={loading}
+            >
+                {loading ? "Adding to Cart..." : "Add to Cart"}
+            </button>
+
+            <div className={styles.reviewsSection}>
+                <h3>Product Reviews</h3>
+                <ul className={styles.reviewList}>
+                    {product.reviews.map((review, index) => (
+                        <li key={index} className={styles.reviewItem}>
+                            <p className={styles.reviewUsername}>{review.username}</p>
+                            <p className={styles.reviewComment}>{review.comment}</p>
+                            <p className={styles.reviewRating}>Rating: {review.rating} / 5</p>
+                            <p className={styles.reviewDate}>Reviewed on: {review.reviewDate}</p>
+                        </li>
+                    ))}
+                </ul>
+                <button
+                    className={styles.button}
+                    onClick={handleLeaveReviewClick}
+                >
+                    Leave Review
+                </button>
+
+                {reviewExpanded && (
+                    <div className={styles.writeReviewSection}>
+                        <h3>Write a Review</h3>
+                        <form>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="username">Username:</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    className={styles.inputField}
+                                    // Add more attributes and event handlers as needed
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="rating">Rating:</label>
+                                <select
+                                    id="rating"
+                                    name="rating"
+                                    className={styles.inputField}
+                                    // Add more attributes and event handlers as needed
+                                >
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="comment">Comment:</label>
+                                <textarea
+                                    id="comment"
+                                    name="comment"
+                                    rows="4"
+                                    className={styles.inputField}
+                                    // Add more attributes and event handlers as needed
+                                ></textarea>
+                            </div>
+                            <button type="submit" className={styles.submitReviewButton}>
+                                Submit Review
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.button}
+                                onClick={handleCancelReviewClick}
                             >
-                                <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage} />
-                            </div>
-                        ))}
+                                Cancel
+                            </button>
+                        </form>
                     </div>
-                    <p className={styles.productDescription}>{product.description}</p>
-                    <p className={styles.productPrice}>Price: ${product.price}</p>
-                    <p className={styles.productCategory}>Category: {product.productCategory}</p>
-                    <p className={styles.manufacturer}>Manufacturer: {product.manufacturer}</p>
-                    <p className={styles.productRating}>Rating: {showRating(product.rating, product.usersRatingCount)}</p>
+                )}
 
-                    <button className={styles.button} onClick={addToCart} disabled={loading}>
-                        {loading ? "Adding to Cart..." : "Add to Cart"}
-                    </button>
-
-                    <div className={styles.reviewsSection}>
-                        <h3>Product Reviews</h3>
-                        {product.comments && product.comments.length > 0 ? (
-                            <ul className={styles.reviewList}>
-                                {product.comments.map((comment, index) => (
-                                    <li key={index} className={styles.reviewItem}>
-                                        <div className={styles.reviewHeader}>
-                                            <p className={styles.commentUsername}>{comment.username}</p>
-                                            <p className={styles.commentRating}>Rating: {comment.rating <= 0 ? "N/A" : showRating(comment.rating)}</p>
-                                        </div>
-                                        <p className={styles.commentText}>{comment.comment}</p>
-                                        <p className={styles.commentDate}>Review Date: {comment.reviewDate}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No reviews available.</p>
-                        )}
-
-
-                        <div>
-                            {isLoggedIn ? (
-                                <button className={styles.button} onClick={handleReviewClick}>
-                                    Leave Review
-                                </button>
-                            ) : (
-                                <p>You must be logged in to leave a review.</p>
-                            )}
-                        </div>
-
-                        {reviewExpanded && isLoggedIn && (
-                            <div className={styles.writeReviewSection}>
-                                <h3>Write a Review</h3>
-                                {commentAlert && <p className={styles.errorMessage}>{commentAlert}</p>}
-                                <Form onSubmit={handleSubmitReview}>
-                                    <div className={styles.formGroup}>
-                                        <label htmlFor="rating">Rating:</label>
-                                        {rateProduct(rating, setRating)}
-                                    </div>
-                                    <div className={styles.formGroup}>
-                                        <label htmlFor="comment">Comment:</label>
-                                        <textarea
-                                            id="comment"
-                                            name="comment"
-                                            rows="4"
-                                            className={styles.inputField}
-                                            onChange={(event) => handleCommentChange(event.target.value)}
-                                        ></textarea>
-                                    </div>
-                                    <button type="submit" className={styles.submitReviewButton}>
-                                        Submit Review
-                                    </button>
-                                    <button type="button" className={styles.button} onClick={handleReviewClick}>
-                                        Cancel
-                                    </button>
-                                </Form>
-                            </div>
-                        )}
-                    </div>
-                    {message && <p className={styles.errorMessage}>{message}</p>}
-                </>
-            )}
+            </div>
+            {message && <p className={styles.errorMessage}>{message}</p>}
         </div>
     );
 };
