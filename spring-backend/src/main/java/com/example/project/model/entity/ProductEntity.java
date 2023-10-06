@@ -1,19 +1,21 @@
 package com.example.project.model.entity;
 
-import com.example.project.model.embeddable.ProductDimensions;
-import com.example.project.model.enums.ProductCategoryEnum;
+import com.example.project.model.embeddable.ProductReview;
+import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
-
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "products")
 @Data
 public class ProductEntity extends BaseEntity {
@@ -22,35 +24,19 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     private String catalogNumber;
     @NotNull
-    @Field(targetType = DECIMAL128)
     private BigDecimal price;
-    private List<String> images = new ArrayList<>();
+//    @DBRef
+//    private List<GridFSFile> pictures;
     @NotNull
     private int quantity;
     private String description;
     private Set<ProductStatusEnum> status = new HashSet<>();
-    private ProductCategoryEnum productCategory;
+    private CategoryEnum productCategory;
     private String manufacturer;
-    private double rating;
-    private Map<String, Integer> usersRating = new HashMap<>();
+    private int rating;
     @NotNull
-    @Field(targetType = DECIMAL128)
     private BigDecimal weight;
-    private int sells;
-    private int views;
-    private ProductDimensions dimensions = new ProductDimensions();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ProductEntity that = (ProductEntity) o;
-        return Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getId());
-    }
+    private LocalDate expirationDate;
+    @DBRef
+    private Set<ProductReview> reviews = new HashSet<>();
 }

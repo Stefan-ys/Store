@@ -7,11 +7,11 @@ public class AddressResponse {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private String email;
+    private String orderEmail;
     private String country;
     private String state;
     private String town;
-    private String postcode;
+    private String postCode;
     private String street;
     private String number;
     private String floor;

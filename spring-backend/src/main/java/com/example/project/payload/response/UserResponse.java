@@ -7,14 +7,10 @@ import java.util.List;
 
 @Data
 public class UserResponse {
-    private String id;
+    private ObjectId id;
     private String username;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
     private String email;
-    private String roles;
-    private String createdDate;
-    private String lastActiveDate;
-    private int visits;
+    private List<String> roles;
+    private String createdAt;
+    private String lastActiveAt;
 }

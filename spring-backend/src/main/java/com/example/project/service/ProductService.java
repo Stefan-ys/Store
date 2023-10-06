@@ -1,40 +1,27 @@
 package com.example.project.service;
 
-import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
+import com.example.project.payload.response.ProductStoreResponse;
 import org.bson.types.ObjectId;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ProductService {
-
-    //Create
-
     void addProduct(ProductRequest productBindingModel);
 
-    //Retrieve
+    ProductStoreResponse getProduct(ObjectId productId);
 
-    ProductResponse getProduct(ObjectId productId);
+    List<ProductStoreResponse> getAllProducts(String sortBy);
 
-    List<ProductResponse> getAllProducts();
+    List<ProductStoreResponse> getProductsByCategory(String category, String sortBy);
 
-    List<ProductResponse> getHomePageProductsByStatus(ProductStatusEnum statusEnum, Pageable pageable);
-
-    //Update
+    List<ProductStoreResponse> getProductsByStatus(String status, String sortBy);
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
 
     void setProductStatus(ObjectId productId, String status);
 
-    void rateProduct(ObjectId productId, String username, int rating);
-
-    //Delete
-
-    void deleteProduct(ObjectId productId);
-
     void removeProductStatus(ObjectId productId, String status);
 
-
+    void deleteProduct(ObjectId productId);
 }

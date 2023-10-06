@@ -3,7 +3,7 @@ package com.example.project.data;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.RoleEntity;
 import com.example.project.model.entity.UserEntity;
-import com.example.project.model.enums.ProductCategoryEnum;
+import com.example.project.model.enums.CategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.model.enums.RoleEnum;
 import com.example.project.repository.ProductRepository;
@@ -37,19 +37,18 @@ public class InitializeData {
             addUser("user2", "user2@email.com", "user2user2", RoleEnum.USER);
             System.out.println("User entities initialized");
         }
-        if (productRepository.count() < 100)
-
-        {
+        if (productRepository.count() == 0) {
             for (int i = 1; i <= 100; i++) {
                 addProduct("item" + i,
                         BigDecimal.valueOf(Math.round(( 5 + Math.random() * 20) * Math.pow(10, 2)) / Math.pow(10, 2)),
                         10,
                         "Lorem ipsum bla bla bla.......",
-                        i % 2 == 0 ? ProductCategoryEnum.RECTANGLES : ProductCategoryEnum.SQUARES,
+                        i % 2 == 0 ? CategoryEnum.ITEM_TYPE_1 : CategoryEnum.ITEM_TYPE_2,
                         i % 3 == 0 ? ProductStatusEnum.NEW : ProductStatusEnum.PROMOTION,
                         BigDecimal.valueOf(Math.round((Math.random() * 20) * Math.pow(10, 3)) / Math.pow(10, 3))
                 );
             }
+
             System.out.println("Product entities initialized");
         }
 
@@ -84,7 +83,7 @@ public class InitializeData {
 
     }
 
-    private void addProduct(String name, BigDecimal price, int quantity, String description, ProductCategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
+    private void addProduct(String name, BigDecimal price, int quantity, String description, CategoryEnum category, ProductStatusEnum status, BigDecimal weight) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(name);
         productEntity.setPrice(price);
@@ -92,10 +91,6 @@ public class InitializeData {
         productEntity.setDescription(description);
         productEntity.setProductCategory(category);
         productEntity.getStatus().add(status);
-        productEntity.getImages().add("https://picsum.photos/200/300?random=1.jpeg");
-        productEntity.getImages().add("https://picsum.photos/200/300?random=2.jpeg");
-        productEntity.getImages().add("https://picsum.photos/200/300?random=1.jpeg");
-        productEntity.getImages().add("https://picsum.photos/200/300?random=2.jpeg");
         productEntity.setWeight(weight);
         productRepository.save(productEntity);
 

@@ -1,6 +1,7 @@
 package com.example.project.model.entity;
 
 import com.example.project.model.embeddable.Address;
+import com.example.project.model.embeddable.ShoppingCart;
 
 
 import jakarta.validation.constraints.Email;
@@ -10,7 +11,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,11 +35,11 @@ public class UserEntity extends BaseEntity {
     private String lastName;
     private String phoneNumber;
     private Set<RoleEntity> roles = new HashSet<>();
-    private LocalDateTime lastDateActive = LocalDateTime.now();
+    private LocalDate lastDateActive = LocalDate.now();
     private Address deliveryAddress = new Address();
     private Address paymentAddress = new Address();
+    private ShoppingCart shoppingCart = new ShoppingCart();
 
-    private int visits;
 
 }
 
