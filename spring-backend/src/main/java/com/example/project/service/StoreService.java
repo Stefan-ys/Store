@@ -15,4 +15,6 @@ public interface StoreService {
     Page<ProductResponse> getProductsByCategory(String category, Pageable paging);
 
     Page<ProductResponseAdminTable> getAllProductsAdminTable(Pageable paging);
+
+    Page<ProductResponse> getProducts(Pageable paging, String[] categories, String[] status);
 }

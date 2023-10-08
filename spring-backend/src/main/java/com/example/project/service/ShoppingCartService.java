@@ -3,16 +3,22 @@ package com.example.project.service;
 import com.example.project.payload.response.ShoppingCartResponse;
 import org.bson.types.ObjectId;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ShoppingCartService {
-    public ShoppingCartResponse getShoppingCart(String username);
 
-    public void addProductToCart(ObjectId productId, String username);
+    ShoppingCartResponse getShoppingCart(ObjectId userId);
 
-    public void removeProductFromCart(ObjectId productId, String username);
+    void addProductToCart(ObjectId productId, ObjectId userId);
 
-    public void removeAllProductsFromCart(String username);
+    void removeProductFromCart(ObjectId productId, ObjectId userId);
 
-    public void setProductQuantity(ObjectId productId, String username, int quantity);
+    void removeAllProductsFromCart(ObjectId userId);
 
-    public void transferProductsToCart(String username, ShoppingCartResponse products);
+    void setProductQuantity(ObjectId productId, ObjectId userId, int quantity);
+
+    ShoppingCartResponse getTempShoppingCart(Map<String, Integer> productsIds);
+
+    void transferProductsToCart(Map<String, Integer> products, ObjectId userId);
 }

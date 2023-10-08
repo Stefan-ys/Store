@@ -2,8 +2,8 @@ package com.example.project.service.impl;
 
 
 import com.example.project.model.embeddable.Address;
-import com.example.project.payload.request.AddressRequest;
-import com.example.project.payload.request.ProfileEditRequest;
+import com.example.project.payload.request.AddressWithNoValidationRequest;
+import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.AddressResponse;
 import com.example.project.payload.response.ProfileResponse;
@@ -14,15 +14,21 @@ import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.project.util.DateUtils.formatLocalDateTime;
+import static com.example.project.util.DateUtils.getTimeBetween;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
+
+    // Create
 
     @Override
     public void signUp(RegisterRequest signUpBindingModel) {
@@ -45,51 +53,55 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    // Retrieve
+
+    @Override
+    public Page<UserResponse> getAllUsers(Pageable paging) {
+        Page<UserEntity> users = userRepository.findAll(paging);
+        List<UserResponse> productResponses = users.getContent().stream()
+                .map(this::convertToUserResponse)
+                .collect(Collectors.toList());
+        return new PageImpl<>(productResponses, paging, users.getTotalElements());
+    }
+
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(this::convertToViewModel).toList();
+        return userRepository
+                .findAll()
+                .stream()
+                .map(this::convertToUserResponse)
+                .collect(Collectors.toList());
     }
 
 
     @Override
-    public UserResponse getUser(String username) {
-        UserEntity userEntity = getUserByUsername(username);
-        return convertToViewModel(userEntity);
-    }
-
-    @Override
-    public boolean containsUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
-    }
-
-    @Override
-    public boolean containsEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    @Override
-    public void updateUserActivity(String username) {
-        UserEntity userEntity = getUserByUsername(username);
-
-        userEntity.setLastDateActive(LocalDate.now());
-        userRepository.save(userEntity);
-    }
-
-    @Override
-    public ProfileResponse getProfile(String username) {
-        UserEntity userEntity = getUserByUsername(username);
+    public ProfileResponse getProfile(ObjectId userId) {
+        UserEntity userEntity = getUserById(userId);
         return modelMapper.map(userEntity, ProfileResponse.class);
 
     }
 
+    // Update
     @Override
-    public ProfileResponse editProfile(String username, ProfileEditRequest myProfileRequest) {
-        UserEntity userEntity = getUserByUsername(username);
+    public void updateUserActivity(ObjectId userId) {
+        UserEntity userEntity = getUserById(userId);
+        userEntity.setVisits(userEntity.getVisits() + 1);
+        userEntity.setLastDateActive(LocalDateTime.now());
+        userRepository.save(userEntity);
+    }
 
+    @Override
+    public ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest) {
+        UserEntity userEntity = getUserById(userid);
+        if (userRepository.existsByEmailIgnoreCase(myProfileRequest.getEmail())
+                && !userEntity.getEmail().equals(myProfileRequest.getEmail())) {
+            throw new IllegalArgumentException("Email address already taken!");
+        }
         userEntity.setEmail(myProfileRequest.getEmail());
         userEntity.setPhoneNumber(myProfileRequest.getPhoneNumber());
         userEntity.setFirstName(myProfileRequest.getFirstName());
         userEntity.setLastName(myProfileRequest.getLastName());
+
 
         UserEntity updatedUserEntity = userRepository.save(userEntity);
 
@@ -98,8 +110,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddressResponse getAddress(String address, String username) {
-        UserEntity userEntity = getUserByUsername(username);
+    public AddressResponse getAddress(String address, ObjectId userId) {
+        UserEntity userEntity = getUserById(userId);
         if (address.equals("payment")) {
             return modelMapper.map(userEntity.getPaymentAddress(), AddressResponse.class);
         }
@@ -110,8 +122,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddressResponse editAddress(String username, String address, AddressRequest addressRequest) {
-        UserEntity userEntity = getUserByUsername(username);
+    public AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest) {
+        UserEntity userEntity = getUserById(userId);
         if (address.equals("payment")) {
             userEntity.setPaymentAddress(modelMapper.map(addressRequest, Address.class));
             userRepository.save(userEntity);
@@ -125,28 +137,38 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public void updateUserAuthorities(String userId, List<String> authorities) {
 
-    private UserResponse convertToViewModel(UserEntity userEntity) {
-        UserResponse viewModel = modelMapper.map(userEntity, UserResponse.class);
-        viewModel.setRoles(userEntity
-                .getRoles()
-                .stream()
-                .map(role -> role.getRole().toString())
-                .collect(Collectors.toList()));
-        LocalDate currentDate = LocalDate.now();
-        LocalDate createdDate = userEntity.getCreatedDate();
-        LocalDate activeDate = userEntity.getLastDateActive();
-
-        viewModel.setCreatedAt(createdDate +
-                String.format("(%s days since)", ChronoUnit.DAYS.between(currentDate, currentDate)));
-        viewModel.setLastActiveAt(activeDate +
-                String.format("(%s days since)", ChronoUnit.DAYS.between(activeDate, currentDate)));
-
-        return viewModel;
     }
 
-    private UserEntity getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+    // Delete
+
+    @Override
+    public void deleteUserById(String userId) {
+
+    }
+
+    private UserResponse convertToUserResponse(UserEntity userEntity) {
+        UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
+        userResponse.setId(userEntity.getId().toString());
+        userResponse.setRoles(
+                userEntity.getRoles()
+                        .stream()
+                        .map(roleEntity -> roleEntity.getRole().toString())
+                        .collect(Collectors.joining(", "))
+        );
+
+        LocalDateTime currentDate = LocalDateTime.now();
+        userResponse.setCreatedDate(String.format("%s (%s ago)", formatLocalDateTime(userEntity.getCreatedDate()), getTimeBetween(userEntity.getCreatedDate(), currentDate)));
+        userResponse.setLastActiveDate(String.format("%s (%s ago)", formatLocalDateTime(userEntity.getLastDateActive()), getTimeBetween(userEntity.getLastDateActive(), currentDate)));
+
+        return userResponse;
+    }
+
+
+    private UserEntity getUserById(ObjectId userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id " + userId));
     }
 }

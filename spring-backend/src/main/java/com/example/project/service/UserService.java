@@ -1,32 +1,45 @@
 package com.example.project.service;
 
-import com.example.project.payload.request.AddressRequest;
-import com.example.project.payload.request.ProfileEditRequest;
+import com.example.project.payload.request.AddressWithNoValidationRequest;
+import com.example.project.payload.request.ProfileRequest;
 import com.example.project.payload.request.RegisterRequest;
 import com.example.project.payload.response.AddressResponse;
 import com.example.project.payload.response.ProfileResponse;
 import com.example.project.payload.response.UserResponse;
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface UserService {
+
+    // Create
+
+
+    // Retrieve
     void signUp(RegisterRequest signUpBindingModel);
 
+    Page<UserResponse> getAllUsers(Pageable pageable);
     List<UserResponse> getAllUsers();
 
-    UserResponse getUser(String username);
+    ProfileResponse getProfile(ObjectId userId);
 
-    boolean containsUsername(String username);
+    AddressResponse getAddress(String address, ObjectId userId);
 
-    boolean containsEmail(String email);
+    AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest);
 
-    void updateUserActivity(String username);
+    void updateUserAuthorities(String userId, List<String> authorities);
 
-    ProfileResponse getProfile(String username);
 
-    ProfileResponse editProfile(String username, ProfileEditRequest myProfileRequest);
+    // Update
 
-    AddressResponse getAddress(String address, String username);
+    void updateUserActivity(ObjectId userId);
 
-    AddressResponse editAddress(String username, String address, AddressRequest addressRequest);
+    ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest);
+
+    // Delete
+
+    void deleteUserById(String userId);
+
 }
