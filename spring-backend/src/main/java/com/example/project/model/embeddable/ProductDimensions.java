@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ProductDimensions {
-    private double length;
-    private double width;
-    private double height;
+    private int length;
+    private int width;
+    private int height;
 }
