@@ -26,33 +26,9 @@ public class AdminUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-users")
-    public ResponseEntity<Map<String, Object>> getUsersPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "date") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortOrder
-    ) {
+    public ResponseEntity<List<UserResponse>> getAllUsersPage() {
         try {
-            Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            String property = switch (sortBy) {
-                case "email" -> "email";
-                case "phoneNumber" -> "phoneNumber";
-                case "username" -> "username";
-                case "firstName" -> "firstName";
-                case "lastName" -> "lastName";
-                default -> "createdDate";
-            };
-
-            Pageable paging = PageRequest.of(page, size, direction, property);
-
-            Page<UserResponse> userPage = userService.getAllUsers(paging);
-
-            List<UserResponse> users = userPage.getContent();
-            Map<String, Object> response = new HashMap<>();
-            response.put("users", users);
-            response.put("currentPage", userPage.getNumber());
-            response.put("totalElements", userPage.getTotalElements());
-            response.put("totalPages", userPage.getTotalPages());
+            List<UserResponse> response = userService.getAllUsers();
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

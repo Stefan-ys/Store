@@ -49,12 +49,12 @@ public class AdminProductController {
     }
 
     // Retrieve
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-products")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+    public ResponseEntity<List<ProductResponseAdminTable>> getAllProducts() {
         try {
-            List<ProductResponse> products = productService.getAllProducts();
-            return new ResponseEntity<>(products, HttpStatus.OK);
+            List<ProductResponseAdminTable> response = productService.getAllProducts();
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

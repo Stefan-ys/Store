@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class StoreController {
     public ResponseEntity<Map<String, Object>> getProductsPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
-            @RequestParam(defaultValue = "all") String category,
+            @RequestParam() String[] categories,
+            @RequestParam() String[] status,
             @RequestParam(defaultValue = "createdDate") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder
     ) {
@@ -39,13 +41,9 @@ public class StoreController {
             };
 
             Pageable paging = PageRequest.of(page, size, direction, property);
-
             Page<ProductResponse> productsPage;
-            if (category == null || category.equalsIgnoreCase("all")) {
-                productsPage = storeService.getAllProducts(paging);
-            } else {
-                productsPage = storeService.getProductsByCategory(category, paging);
-            }
+
+            productsPage = storeService.getProducts(paging, categories, status);
 
             List<ProductResponse> products = productsPage.getContent();
             Map<String, Object> response = new HashMap<>();

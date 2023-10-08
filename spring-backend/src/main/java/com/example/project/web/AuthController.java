@@ -54,7 +54,7 @@ public class AuthController {
             jwtResponse.setId(userDetails.getId());
 
 
-            userService.updateUserActivity(userDetails.getUsername());
+            userService.updateUserActivity(userDetails.getId());
 
             return ResponseEntity.ok().body(jwtResponse);
         } catch (Exception ex) {
