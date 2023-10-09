@@ -1,7 +1,6 @@
 package com.example.project.web.admin;
 
 import com.example.project.payload.request.ProductRequest;
-import com.example.project.payload.response.ProductResponse;
 import com.example.project.payload.response.ProductResponseAdminTable;
 import com.example.project.service.ProductService;
 import com.example.project.service.StoreService;
@@ -9,18 +8,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -40,8 +33,6 @@ public class AdminProductController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (ValidationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        } catch (ProductServiceException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -49,6 +40,7 @@ public class AdminProductController {
     }
 
     // Retrieve
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-products")
     public ResponseEntity<List<ProductResponseAdminTable>> getAllProducts() {
@@ -63,7 +55,7 @@ public class AdminProductController {
     // Update
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/edit/{productId}")
+    @PutMapping("/edit{productId}")
     public ResponseEntity<Void> editProduct(@PathVariable ObjectId productId, @RequestBody @Valid ProductRequest productBindingModel) {
         productService.editProduct(productId, productBindingModel);
         return ResponseEntity.ok().build();
@@ -72,7 +64,7 @@ public class AdminProductController {
     // Delete
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{productId}")
+    @DeleteMapping("/delete{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable ObjectId productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();

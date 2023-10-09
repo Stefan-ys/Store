@@ -4,19 +4,12 @@ package com.example.project.web.admin;
 import com.example.project.payload.response.UserResponse;
 import com.example.project.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
@@ -37,7 +30,7 @@ public class AdminUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/update-user-authority/{userId}")
+    @PostMapping("/update-user-authority{userId}")
     public ResponseEntity<Void> updateUserAuthority(@PathVariable String userId, @RequestBody List<String> authorities) {
         try {
             userService.updateUserAuthorities(userId, authorities);
@@ -48,7 +41,7 @@ public class AdminUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete-user-account/{userId}")
+    @DeleteMapping("/delete-user-account{userId}")
     public ResponseEntity<Void> deleteUserAccount(@PathVariable String userId) {
         try {
             userService.deleteUserById(userId);

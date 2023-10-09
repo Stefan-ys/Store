@@ -26,7 +26,7 @@ public class ShoppingCartController {
     // Create
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/add-product/{productId}")
+    @PostMapping("/add-product{productId}")
     public ResponseEntity<String> addProductToCart(@PathVariable("productId") String productId) {
         try {
             ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
@@ -66,7 +66,7 @@ public class ShoppingCartController {
     // Update
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/change-quantity/{productId}")
+    @PutMapping("/change-quantity{productId}")
     public ResponseEntity<String> changeProductQuantity(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity) {
         try {
             ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
@@ -82,7 +82,7 @@ public class ShoppingCartController {
     // Delete
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/remove-product/{productId}")
+    @DeleteMapping("/remove-product{productId}")
     public ResponseEntity<String> removeProductFromCart(@PathVariable("productId") String productId) {
         try {
             ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();

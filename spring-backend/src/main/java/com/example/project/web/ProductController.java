@@ -1,5 +1,6 @@
 package com.example.project.web;
 
+import com.example.project.configuration.security.services.UserDetailsImpl;
 import com.example.project.payload.request.ReviewRequest;
 import com.example.project.payload.response.ProductResponse;
 import com.example.project.service.CommentService;
@@ -21,7 +22,7 @@ public class ProductController {
     private final ProductService productService;
     private final CommentService commentService;
 
-    @GetMapping("/get-product/{productId}")
+    @GetMapping("/get-product{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable("productId") String productId) {
         ProductResponse productResponse = productService.getProduct(new ObjectId(productId));
         if (productResponse == null) {
@@ -39,11 +40,12 @@ public class ProductController {
         String comment = reviewRequest.getComment();
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        ObjectId userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         if (rating > 0) {
             productService.rateProduct(productId, username, rating);
         }
         if (comment != null && comment.length() > 0) {
-            commentService.commentProduct(productId, username, rating ,comment);
+            commentService.commentProduct(productId, username, userId, rating, comment);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
