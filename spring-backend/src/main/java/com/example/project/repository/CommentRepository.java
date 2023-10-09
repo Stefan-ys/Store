@@ -13,4 +13,7 @@ public interface CommentRepository extends MongoRepository<CommentEntity, Object
     List<CommentEntity> findAllByProductIdOrderByCreatedDateAsc(ObjectId productId);
 
     List<CommentEntity> findAllByProductId(ObjectId productId);
+
+    List<CommentEntity> findAllByUserId(ObjectId userId);
+
 }
