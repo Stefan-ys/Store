@@ -16,26 +16,19 @@ public interface UserService {
 
     // Create
 
-
     // Retrieve
-    void signUp(RegisterRequest signUpBindingModel);
 
+    void signUp(RegisterRequest signUpBindingModel);
     Page<UserResponse> getAllUsers(Pageable pageable);
     List<UserResponse> getAllUsers();
-
     ProfileResponse getProfile(ObjectId userId);
-
     AddressResponse getAddress(String address, ObjectId userId);
-
-    AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest);
-
-    void updateUserAuthorities(String userId, List<String> authorities);
-
 
     // Update
 
+    AddressResponse editAddress(ObjectId userId, String address, AddressWithNoValidationRequest addressRequest);
+    void updateUserAuthorities(String userId, List<String> authorities);
     void updateUserActivity(ObjectId userId);
-
     ProfileResponse editProfile(ObjectId userid, ProfileRequest myProfileRequest);
 
     // Delete

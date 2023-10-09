@@ -8,17 +8,21 @@ import java.util.Map;
 
 public interface ShoppingCartService {
 
+    // Create
+
+    // Retrieve
+
     ShoppingCartResponse getShoppingCart(ObjectId userId);
-
-    void addProductToCart(ObjectId productId, ObjectId userId);
-
-    void removeProductFromCart(ObjectId productId, ObjectId userId);
-
-    void removeAllProductsFromCart(ObjectId userId);
-
-    void setProductQuantity(ObjectId productId, ObjectId userId, int quantity);
-
     ShoppingCartResponse getTempShoppingCart(Map<String, Integer> productsIds);
 
+    // Update
     void transferProductsToCart(Map<String, Integer> products, ObjectId userId);
+    void addProductToCart(ObjectId productId, ObjectId userId);
+    void setProductQuantity(ObjectId productId, ObjectId userId, int quantity);
+
+    // Delete
+
+    void removeProductFromCart(ObjectId productId, ObjectId userId);
+    void removeAllProductsFromCart(ObjectId userId);
+
 }

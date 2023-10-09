@@ -18,8 +18,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
 
+    // Create
     @Override
-    public void commentProduct(ObjectId productId, String username, int rating, String comment) {
+    public void commentProduct(ObjectId productId, String username, ObjectId userId, int rating, String comment) {
         comment = comment.trim();
         if (comment.length() == 0) {
             return;
@@ -33,9 +34,12 @@ public class CommentServiceImpl implements CommentService {
         commentEntity.setUsername(username);
         commentEntity.setRating(rating);
         commentEntity.setComment(comment);
+        commentEntity.setUserId(userId);
 
         commentRepository.save(commentEntity);
     }
+
+    // Retrieve
 
     @Override
     public List<CommentResponse> getAllComments() {
@@ -45,4 +49,38 @@ public class CommentServiceImpl implements CommentService {
                 .map(comment -> modelMapper.map(comment, CommentResponse.class))
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public List<CommentResponse> getUserComments(ObjectId userId) {
+        return commentRepository
+                .findAllByUserId(userId)
+                .stream()
+                .map(comment -> modelMapper.map(comment, CommentResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    // Update
+
+    @Override
+    public void editComment(ObjectId commentId, String comment) {
+        CommentEntity commentEntity = getCommentById(commentId);
+        commentEntity.setComment(comment);
+        commentRepository.save(commentEntity);
+    }
+
+    // Delete
+
+    @Override
+    public void deleteComment(ObjectId commentId) {
+        commentRepository.deleteById(commentId);
+    }
+
+
+    // Helpers
+
+    private CommentEntity getCommentById(ObjectId commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("No comment found with ID: " + commentId));
+    }
+
 }

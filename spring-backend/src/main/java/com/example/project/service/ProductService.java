@@ -11,31 +11,24 @@ import java.util.List;
 
 public interface ProductService {
 
-    //Create
+    // Create
 
     void addProduct(ProductRequest productBindingModel);
 
-    //Retrieve
+    // Retrieve
 
     ProductResponse getProduct(ObjectId productId);
-
     List<ProductResponseAdminTable> getAllProducts();
-
     List<ProductResponse> getHomePageProductsByStatus(ProductStatusEnum statusEnum, Pageable pageable);
 
-    //Update
+    // Update
 
     void editProduct(ObjectId productId, ProductRequest productBindingModel);
-
-    void setProductStatus(ObjectId productId, String status);
-
+    void changeProductStatus(ObjectId productId, List<String> statusList);
     void rateProduct(ObjectId productId, String username, int rating);
 
-    //Delete
+    // Delete
 
     void deleteProduct(ObjectId productId);
-
-    void removeProductStatus(ObjectId productId, String status);
-
 
 }

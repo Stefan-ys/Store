@@ -8,13 +8,17 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface StoreService {
+
+    // Create
+
+    // Retrieve
+    Page<ProductResponse> getProducts(Pageable paging, String[] categories, String[] status);
     Page<ProductResponse> getAllProducts(Pageable paging);
-
     Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging);
-
     Page<ProductResponse> getProductsByCategory(String category, Pageable paging);
 
-    Page<ProductResponseAdminTable> getAllProductsAdminTable(Pageable paging);
+    // Update
 
-    Page<ProductResponse> getProducts(Pageable paging, String[] categories, String[] status);
+    // Delete
+
 }

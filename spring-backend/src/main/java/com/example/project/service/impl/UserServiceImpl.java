@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,6 +147,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(String userId) {
 
     }
+
+    // Helpers
 
     private UserResponse convertToUserResponse(UserEntity userEntity) {
         UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);

@@ -7,7 +7,21 @@ import java.util.List;
 
 public interface CommentService {
 
-    void commentProduct(ObjectId productId, String username, int rating, String comment);
+    // Create
+
+    void commentProduct(ObjectId productId, String username, ObjectId userId, int rating, String comment);
+
+    // Retrieve
 
     List<CommentResponse> getAllComments();
+
+    // Update
+
+    void editComment(ObjectId commentId, String comment);
+
+    // Delete
+
+    void deleteComment(ObjectId commentId);
+
+    List<CommentResponse> getUserComments(ObjectId objectId);
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,19 +79,15 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
-    @Override
-    public void setProductStatus(ObjectId productId, String status) {
-        ProductEntity productEntity = getProductById(productId);
-        ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
-        productEntity.getStatus().add(productStatusEnum);
-        productRepository.save(productEntity);
-    }
 
     @Override
-    public void removeProductStatus(ObjectId productId, String status) {
+    public void changeProductStatus(ObjectId productId, List<String> statusList) {
         ProductEntity productEntity = getProductById(productId);
-        ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
-        productEntity.getStatus().remove(productStatusEnum);
+        productEntity.setStatus(new HashSet<>());
+        statusList.forEach(status -> {
+            ProductStatusEnum productStatusEnum = getProductStatusEnum(status);
+            productEntity.getStatus().add(productStatusEnum);
+        });
         productRepository.save(productEntity);
     }
 
@@ -174,7 +171,10 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setWeight(productEntity.getWeight());
         productResponse.setQuantity(productEntity.getQuantity());
         productResponse.setImages(productEntity.getImages().size());
-        productResponse.setDescription(productEntity.getDescription());
+        productResponse.setDescription
+                (productEntity.getDescription().length() <= 20 ?
+                        productEntity.getDescription() :
+                        productEntity.getDescription().substring(0, 20) + "...");
         productResponse.setStatus(productEntity.getStatus().toString());
         productResponse.setProductCategory(productEntity.getProductCategory().toString());
         productResponse.setManufacturer(productEntity.getManufacturer());

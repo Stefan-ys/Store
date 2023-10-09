@@ -22,6 +22,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
 
+    // Create
+
+    // Retrieve
+
     @Override
     public ShoppingCartResponse getShoppingCart(ObjectId userId) {
         ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
@@ -55,7 +59,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         return shoppingCartResponse;
     }
-
 
     @Override
     public ShoppingCartResponse getTempShoppingCart(Map<String, Integer> productsIds) {
@@ -98,6 +101,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
 
+    // Update
+
+    @Override
+    public void transferProductsToCart(Map<String, Integer> products, ObjectId userId) {
+        ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
+        for (String productId : products.keySet()) {
+            ProductEntity productEntity = getProductById(new ObjectId(productId));
+
+            for (int i = 0; i < products.get(productId); i++) {
+                shoppingCartEntity.addProduct(productEntity);
+            }
+        }
+
+        shoppingCartRepository.save(shoppingCartEntity);
+    }
+
     @Override
     public void addProductToCart(ObjectId productId, ObjectId userId) {
         ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
@@ -106,6 +125,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         shoppingCartRepository.save(shoppingCartEntity);
     }
+
+    @Override
+    public void setProductQuantity(ObjectId productId, ObjectId userId, int quantity) {
+        ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
+        ProductEntity productEntity = getProductById(productId);
+        shoppingCartEntity.setProductQuantity(productEntity, quantity);
+
+        shoppingCartRepository.save(shoppingCartEntity);
+    }
+
+    // Delete
 
     @Override
     public void removeProductFromCart(ObjectId productId, ObjectId userId) {
@@ -123,20 +153,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCartRepository.save(shoppingCartEntity);
     }
 
-    @Override
-    public void setProductQuantity(ObjectId productId, ObjectId userId, int quantity) {
-        ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
-        ProductEntity productEntity = getProductById(productId);
-        shoppingCartEntity.setProductQuantity(productEntity, quantity);
-
-        shoppingCartRepository.save(shoppingCartEntity);
-    }
-
-
-    private boolean checkProductAvailability(ObjectId productId, int quantity) {
-        ProductEntity productEntity = getProductById(productId);
-        return productEntity.getQuantity() >= quantity;
-    }
+    // Helpers
 
     private ProductEntity getProductById(ObjectId productId) {
         return productRepository.findById(productId)
@@ -153,17 +170,4 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartEntity;
     }
 
-    @Override
-    public void transferProductsToCart(Map<String, Integer> products, ObjectId userId) {
-        ShoppingCartEntity shoppingCartEntity = getShoppingCartByUserId(userId);
-        for (String productId : products.keySet()) {
-            ProductEntity productEntity = getProductById(new ObjectId(productId));
-
-            for (int i = 0; i < products.get(productId); i++) {
-                shoppingCartEntity.addProduct(productEntity);
-            }
-        }
-
-        shoppingCartRepository.save(shoppingCartEntity);
-    }
 }
