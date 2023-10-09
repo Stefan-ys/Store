@@ -37,7 +37,6 @@ public class UserEntity extends BaseEntity {
     private LocalDateTime lastDateActive = LocalDateTime.now();
     private Address deliveryAddress = new Address();
     private Address paymentAddress = new Address();
-
     private int visits;
 
 }

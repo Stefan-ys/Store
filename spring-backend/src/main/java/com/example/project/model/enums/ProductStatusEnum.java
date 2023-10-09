@@ -1,5 +1,5 @@
 package com.example.project.model.enums;
 
 public enum ProductStatusEnum {
-    COMING_SOON, NEW, PROMOTION, SALE, LIMITED_STOCK, OUT_OF_STOCK
+    COMING_SOON, LIMITED_STOCK, NEW, OUT_OF_STOCK, PROMOTION, SALE,
 }

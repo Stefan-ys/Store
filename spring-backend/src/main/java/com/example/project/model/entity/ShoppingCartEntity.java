@@ -1,6 +1,7 @@
 package com.example.project.model.entity;
 
 
+import com.example.project.model.embeddable.ProductSummary;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -78,20 +79,5 @@ public class ShoppingCartEntity extends BaseEntity {
         BigDecimal sumPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));
         BigDecimal sumWeight = product.getWeight().multiply(BigDecimal.valueOf(quantity));
         productSummaryMap.get(productId).setAll(quantity, sumPrice, sumWeight);
-    }
-
-
-    @Getter
-    private static class ProductSummary {
-        private int quantity = 0;
-        private BigDecimal sumPrice = BigDecimal.ZERO;
-        private BigDecimal sumWeight = BigDecimal.ZERO;
-
-
-        private void setAll(int quantity, BigDecimal sumPrice, BigDecimal sumWeight) {
-            this.quantity = quantity;
-            this.sumPrice = sumPrice;
-            this.sumWeight = sumWeight;
-        }
     }
 }
