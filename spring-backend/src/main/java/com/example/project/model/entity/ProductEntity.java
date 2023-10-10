@@ -5,6 +5,7 @@ import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -38,6 +39,7 @@ public class ProductEntity extends BaseEntity {
     private int sells;
     private int views;
     private ProductDimensions dimensions = new ProductDimensions();
+    private Set<ObjectId> subscribers;
 
     @Override
     public boolean equals(Object o) {

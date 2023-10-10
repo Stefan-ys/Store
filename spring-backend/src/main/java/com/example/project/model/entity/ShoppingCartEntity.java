@@ -2,6 +2,8 @@ package com.example.project.model.entity;
 
 
 import com.example.project.model.embeddable.ProductSummary;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -11,12 +13,13 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "shopping_carts")
-@Getter
-@Setter
+@Data
 public class ShoppingCartEntity extends BaseEntity {
     private ObjectId userId;
     private Map<ObjectId, ProductSummary> productSummaryMap = new HashMap<>();
+
     public BigDecimal[] getPriceAndWeightSummary() {
         BigDecimal[] sumPriceAndWeightArr = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
         for (ProductSummary product : productSummaryMap.values()) {

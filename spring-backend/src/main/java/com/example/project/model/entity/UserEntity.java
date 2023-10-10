@@ -7,17 +7,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "users")
 @Data
-@NoArgsConstructor
 public class UserEntity extends BaseEntity {
     @Indexed(unique = true, background = true)
     @NotBlank
@@ -37,6 +36,7 @@ public class UserEntity extends BaseEntity {
     private LocalDateTime lastDateActive = LocalDateTime.now();
     private Address deliveryAddress = new Address();
     private Address paymentAddress = new Address();
+    private Map<Boolean, List<ObjectId>> notifications = new HashMap<>();
     private int visits;
 
 }
