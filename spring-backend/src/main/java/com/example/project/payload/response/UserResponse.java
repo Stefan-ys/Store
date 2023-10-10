@@ -1,9 +1,6 @@
 package com.example.project.payload.response;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
-
-import java.util.List;
 
 @Data
 public class UserResponse {

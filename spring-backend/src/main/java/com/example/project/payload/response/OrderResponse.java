@@ -1,6 +1,5 @@
 package com.example.project.payload.response;
 
-import com.example.project.model.embeddable.Address;
 import com.example.project.model.enums.OrderStatusEnum;
 import lombok.Data;
 import org.bson.types.ObjectId;
