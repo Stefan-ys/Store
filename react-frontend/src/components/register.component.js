@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "../css/signup-signin.module.css";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 import { Link } from "react-router-dom";
 import isEmail from "validator/es/lib/isEmail";
@@ -37,7 +36,7 @@ const RegisterComponent = () => {
         validUsername: USER_REGEX.test(username),
         validEmail: isEmail(email),
         validPassword: PASSWORD_REGEX.test(password),
-        validMatch: password === confirmPassword && confirmPassword.length > 0,
+        validMatch: password === confirmPassword && password.length > 0,
     };
 
 
@@ -53,11 +52,17 @@ const RegisterComponent = () => {
         setFocusedField(null);
     };
 
+
+
+    const togglePasswordVisibility = () => {
+        setHidePassword(!hidePassword);
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         setMessage("");
-        
+
         const errorMessage = [];
 
         if (!validation.validUsername && username.length > 0) {
@@ -69,11 +74,11 @@ const RegisterComponent = () => {
         if (!validation.validPassword && password.length > 0) {
             errorMessage.push("Invalid password!");
         }
-        if (validation.validMatch && confirmPassword > 0) {
+        if (!validation.validMatch && password.length > 0) {
             errorMessage.push("Passwords do not march!");
         }
         form.validateAll();
-        const emptyFields = (username.length == 0 || email.length == 0 || password == 0 || confirmPassword == 0);
+        const emptyFields = (username.length === 0 || email.length === 0 || password === 0 || confirmPassword === 0);
         if (errorMessage.length > 0 || emptyFields) {
             setMessage(errorMessage.join("\n"));
             setSuccess(false);
@@ -98,7 +103,7 @@ const RegisterComponent = () => {
         <>
             {success ? (
                 <section className={styles.container}>
-                    <h1>Success!</h1>
+                    <h1 className={styles.heading}>Success!</h1>
                     <p>
                         <Link to="/login">Login</Link>
                     </p>
@@ -144,7 +149,7 @@ const RegisterComponent = () => {
                         {/* EMAIL */}
                         <label htmlFor="email" className={styles.label}>
                             Email address:
-                            {validation.validEmail ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validEmail === true ? <FaCheck className={styles.validIcon} /> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -166,7 +171,7 @@ const RegisterComponent = () => {
                         {/* PASSWORD */}
                         <label htmlFor="password" className={styles.label}>
                             Password:
-                            {validation.validPassword ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validPassword === true ? <FaCheck className={styles.validIcon} /> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -190,7 +195,7 @@ const RegisterComponent = () => {
                         {/* CONFIRM PASSWORD */}
                         <label htmlFor="confirmPassword" className={styles.label}>
                             Confirm Password:
-                            {validation.validMatch ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validMatch === true ? <FaCheck className={styles.validIcon} /> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -208,12 +213,8 @@ const RegisterComponent = () => {
                             <InfoButton text="Must match the first password input field." />
                         </div>
 
-                        <a
-                            href="#"
-                            className={hidePassword ? styles.toggleBtn : styles.active}
-                            onClick={() => {
-                                setHidePassword(!hidePassword);
-                            }}
+                        <a href="#" className={hidePassword ? styles.toggleBtn : styles.active}
+                            onClick={() => { togglePasswordVisibility() }}
                         >
                             <FaEye style={{ color: !hidePassword ? "#FF0054" : "#c3c3c3" }} />
                             {hidePassword ? "Show" : "Hide"} password
@@ -221,8 +222,7 @@ const RegisterComponent = () => {
 
                         <div className={styles.buttonGroup}>
                             <button className={styles.button}>
-                                <span>Register</span>
-                                {loading && (<span className={styles.spinner}></span>)}
+                                {loading ? (<span className={styles.spinner}></span>) : <span>Register</span>}
                             </button>
                         </div>
                     </Form>

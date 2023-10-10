@@ -31,6 +31,11 @@ const Login = (props) => {
         setFocusedField(null);
     };
 
+    const togglePasswordVisibility = () => {
+        setHidePassword(!hidePassword);
+    };
+    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setMessage("");
@@ -43,14 +48,14 @@ const Login = (props) => {
 
         try {
             const data = await AuthService.login(username, password);
-            setMessage("Welcome " + data.username + "!");
-
+            setMessage("Welcome " + data.username + "!"); 
             props.router.navigate("/home");
             window.location.reload();
-
         } catch (error) {
-            const responseMessage = error.response.data.errors || error.response?.data?.message || error.message || error.toString();
-            setMessage(responseMessage.join("\n"));
+            console.log(error);
+            // const responseMessage = error.response.data.errors != undefined  ? error.response.data.errors.join("\n") : 
+            //  error.response?.data?.message || error.message || error.toString();
+            setMessage(error.message);
 
         } finally {
             setLoading(false);
@@ -107,8 +112,8 @@ const Login = (props) => {
                     />
                     <a
                         href="#"
-                        className={`${styles.toggleBtn} ${hidePassword ? "" : styles.active}`}
-                        onClick={() => setHidePassword(!hidePassword)}
+                        className={hidePassword ? styles.toggleBtn : styles.active}
+                            onClick={() => { togglePasswordVisibility() }}
                     >
                         <FaEye style={{ color: hidePassword ? "#c3c3c3" : "#FF0054" }} />
                         {hidePassword ? "Show" : "Hide"} password

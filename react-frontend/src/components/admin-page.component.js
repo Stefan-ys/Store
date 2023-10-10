@@ -1,28 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/admin-page.module.css";
 import { withRouter } from "../common/with-router";
 import Menu from "../utils/menu.util.js";
 import DataTable from "../utils/data-table.util";
 import AdminUserService from "../services/admin-user.service";
 import AdminProductService from "../services/admin-product.service";
-// import Pagination from "../utils/pagination.util";
+import AdminOrderService from "../services/admin-order.service";
+import AdminCommentService from "../services/admin-comment.service";
 import AddProductComponent from "./add-product.component";
 
-
+let num = 0;
 const AdminPage = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-    const [currentFunction, setCurrentFunction] = useState("() => () => {}");
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10000);
-    const [totalPages, setTotalPages] = useState(0);
-    const [sortOption, setSortOption] = useState("date");
-    const [sortOrder, setSortOrder] = useState("asc");
 
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [showTableData, setShowTableData] = useState(false);
+
+
+    useEffect(() => {
+    }, [data]);
 
     const handleMenuClick = (action) => {
         if (action) {
@@ -36,42 +34,51 @@ const AdminPage = () => {
         }
     };
 
-    const handleItemsPerPageChange = (event) => {
-        setItemsPerPage(Number(event.target.value));
-        setCurrentPage(1);
-    };
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-        eval(currentFunction)();
-    };
-
     const getAllUsers = async () => {
         setLoading(true);
         setMessage("");
         setShowAddProduct(false);
         setShowTableData(true);
         try {
-            const users = await AdminUserService.getAllUsersService(currentPage, itemsPerPage, sortOption, sortOrder);
-            setCurrentFunction("getAllUsers");
-            setData(users.users);
-            setTotalPages(users.totalPages);
-
+            const users = await AdminUserService.getAllUsersService();
+            setData(users);
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
 
+    };
+
+    const getAdminUsers = async () => {
+        setLoading(true);
+        setShowAddProduct(false);
+        setShowTableData(true);
+        try {
+            const users = await AdminUserService.getAdminUsers();
+            setData(users);
+        } catch (error) {
+            console.log("Error fetching products data: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
         } finally {
             setLoading(false);
         }
     };
 
-    const getAdminUsers = () => {
-
-    };
-
-    const getModeratorUsers = () => {
-
+    const getModeratorUsers = async () => {
+        setLoading(true);
+        setShowAddProduct(false);
+        setShowTableData(true);
+        try {
+            const users = await AdminUserService.getModeratorUsers();
+            setData(users);
+        } catch (error) {
+            console.log("Error fetching products data: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const AddProduct = () => {
@@ -84,23 +91,31 @@ const AdminPage = () => {
         setShowAddProduct(false);
         setShowTableData(true);
         try {
-            const products = await AdminProductService.getAllProductsService(currentPage, itemsPerPage, sortOption, sortOrder);
-            setCurrentFunction("getAllProducts");
-            setData(products.products);
-            setTotalPages(products.totalPages);
-
+            const products = await AdminProductService.getAllProductsService();
+            console.log(products);
+            setData(products);
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
-
         } finally {
             setLoading(false);
         }
 
     };
 
-    const getAllOrders = () => {
-
+    const getAllOrders = async () => {
+        setLoading(true);
+        setShowAddProduct(false);
+        setShowTableData(true);
+        try {
+            const users = await AdminOrderService.getOrders();
+            setData(users);
+        } catch (error) {
+            console.log("Error fetching products data: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getActiveOrders = () => {
@@ -115,8 +130,19 @@ const AdminPage = () => {
 
     };
 
-    const getAllComments = () => {
-
+    const getAllComments = async () => {
+        setLoading(true);
+        setShowAddProduct(false);
+        setShowTableData(true);
+        try {
+            const comments = await AdminCommentService.getAllComments();
+            setData(comments);
+        } catch (error) {
+            console.log("Error fetching products data: ", error);
+            setMessage(error.response ? error.response.data.message : "An error has occurred.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const myNotifications = () => {
@@ -175,7 +201,7 @@ const AdminPage = () => {
     return (
         <section>
             <div className={styles['menu-page']}>
-                <Menu menuItems={menuItems}  />
+                <Menu menuItems={menuItems} />
             </div>
             {showAddProduct && (
                 <AddProductComponent />
@@ -183,11 +209,6 @@ const AdminPage = () => {
             {showTableData && (
                 <div>
                     <DataTable data={data} loading={loading} message={message} />
-                    {/* <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    /> */}
                 </div>
             )}
 
