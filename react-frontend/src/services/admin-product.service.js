@@ -1,17 +1,11 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_ADMIN_PRODUCTS_URL = "http://localhost:8080/api/admin/product";
+const API_ADMIN_PRODUCTS_URL = "http://localhost:8080/api/admin/products";
 
-const getAllProductsService = (currentPage, productsPerPage, sortOption, sortOrder) => {
-    const params = {
-        page: currentPage - 1,
-        size: productsPerPage,
-        sortBy: sortOption,
-        sortOrder: sortOrder
-    };
+const getAllProductsService = () => {
     return axios
-        .get(API_ADMIN_PRODUCTS_URL + "/all-products", { params: params, headers: authHeader() })
+        .get(API_ADMIN_PRODUCTS_URL + "/all-products", { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             throw error;
