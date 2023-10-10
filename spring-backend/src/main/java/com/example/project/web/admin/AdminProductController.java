@@ -18,7 +18,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/product")
+@RequestMapping("/api/admin/products")
 public class AdminProductController {
     private final ProductService productService;
     private final StoreService storeService;

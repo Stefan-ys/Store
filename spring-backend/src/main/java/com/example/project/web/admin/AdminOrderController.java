@@ -15,10 +15,9 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/order")
+@RequestMapping("/api/admin/orders")
 public class AdminOrderController {
     private final OrderService orderService;
-    private final OrderRepository orderRepository;
 
     // Create
 

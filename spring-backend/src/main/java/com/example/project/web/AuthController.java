@@ -28,7 +28,6 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
 
-
     @PostMapping("/login")
     public ResponseEntity<?> authenticationUser(@Valid @RequestBody LoginRequest loginBindingModel) {
         try {

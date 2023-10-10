@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/comment")
+@RequestMapping("/api/admin/comments")
 public class AdminCommentController {
     private final CommentService commentService;
 
