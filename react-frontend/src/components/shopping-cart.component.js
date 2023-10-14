@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import Menu from "../utils/menu.util";
 
-const ShoppingCart = () => {
+const ShoppingCart = (props) => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -26,7 +26,7 @@ const ShoppingCart = () => {
     };
 
     const handleCheckoutClick = () => {
-        // TODO: Implement checkout logic
+        props.router.navigate("/order");
     };
 
     const menuItems = (
