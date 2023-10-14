@@ -1,12 +1,9 @@
-/* my-profile.module.css */
-
 .section {
     display: flex;
     justify-content: space-between;
 }
 
 .container {
-    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -19,7 +16,6 @@
 }
 
 .profileContainer {
-    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -32,7 +28,6 @@
 }
 
 .paymentAddressContainer {
-    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -45,7 +40,6 @@
 }
 
 .deliveryAddressContainer {
-    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
@@ -92,31 +86,67 @@
     display: flex;
 }
 
-.editButton,
-.saveButton,
-.cancelButton {
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    display: block;
+.buttonGroup {
+    margin-top: 20px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    padding: 10px;
     font-size: 16px;
     color: #fff;
     background-color: #ccc;
-    transition: background-color 0.3s ease-in-out;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.editButton:hover {
+.button:hover {
     background-color: #333;
+    transform: scale(1.05);
+}
+
+.button:active {
+    transform: scale(0.95);
+}
+
+.buttonDisabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .saveButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
     background-color: #28a745;
     margin-left: 10px;
 }
 
 .cancelButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
     background-color: #dc3545;
     margin-right: 10px;
 }
@@ -131,10 +161,21 @@
 }
 
 .spinner {
+    display: inline-block;
     width: 16px;
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid #fff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

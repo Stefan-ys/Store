@@ -30,6 +30,7 @@
 }
 
 .menuItem {
+  width: 128px;
   position: relative;
   padding: 15px 20px; 
   cursor: pointer;
@@ -136,6 +137,24 @@
   display: inline-block;
   padding: 3px;
   transform: rotate(-45deg);
-
 }
 
+ .checkbox {
+  position: absolute;
+  right: 5px; 
+  /* top: 50%; */
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.checkbox::before {
+  /* content: '\u2713';  */
+  display: inline-block;
+  width: 14px; 
+  height: 14px; 
+  font-size: 14px; 
+  line-height: 14px; 
+  text-align: center;
+  border: 1px solid #000; 
+  background-color: #fff; 
+}

@@ -1,0 +1,109 @@
+.orderPresentationContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.totalSummaryContainer {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.totalSummaryContainer div {
+    margin-bottom: 5px;
+}
+
+
+.productListContainer {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.productListContainer table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.productListContainer th,
+.productListContainer td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.productListContainer th {
+    font-weight: bold;
+}
+
+.addressBox {
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.addressBox .row {
+    margin-bottom: 10px;
+}
+
+.addressBox .label {
+    font-weight: bold;
+}
+
+.addressBox .value {
+    display: block;
+    margin-top: 5px;
+}
+
+.addressBox .editInput {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.alert {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.placeOrderButton {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.placeOrderButton:hover {
+    background-color: #0056b3;
+}
+
+.addressFieldsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.addressField {
+    flex: 0 0 48%;
+}
+
+.buttonsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.prevNextButton {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.prevNextButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
