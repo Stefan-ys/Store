@@ -1,8 +1,22 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import ShoppingCartService from "../services/shopping-cart.service";
 
-
 import useAuth from "./auth.hook";
+
+const emptyCart = {
+    picture: "image",
+    products: [],
+    totalPrice: 0,
+    totalProducts: 0,
+    totalWeight: 0,
+}
+
+const emptyNotification = {
+    image: "",
+    productName: "",
+    quantity: 0,
+    price: 0,
+}
 
 const ShoppingCartContext = createContext();
 
@@ -11,21 +25,9 @@ export function useShoppingCart() {
 }
 
 export function ShoppingCartProvider({ children }) {
-    const [shoppingCart, setShoppingCart] = useState({
-        picture: "image",
-        products: [],
-        totalPrice: 0,
-        totalProducts: 0,
-        totalWeight: 0,
-    });
+    const [shoppingCart, setShoppingCart] = useState(emptyCart);
     const [showNotification, setShowNotification] = useState(false);
-    const [notificationContent, setNotificationContent] = useState({
-        image: "",
-        productName: "",
-        quantity: 0,
-        price: 0,
-
-    });
+    const [notificationContent, setNotificationContent] = useState(emptyNotification);
 
     const TEMP_CART_KEY = 'tempCart';
 

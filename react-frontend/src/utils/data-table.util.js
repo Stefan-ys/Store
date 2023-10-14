@@ -14,6 +14,7 @@ const DataTable = ({ data, loading, message }) => {
     }
   };
 
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -26,7 +27,6 @@ const DataTable = ({ data, loading, message }) => {
     return <div>No data available.</div>;
   }
 
-  // Sort data based on selected column and order
   const sortedData = data.sort((a, b) => {
     const aValue = a[sortColumn];
     const bValue = b[sortColumn];
@@ -42,6 +42,15 @@ const DataTable = ({ data, loading, message }) => {
     return 0;
   });
 
+  const camelCaseToNormal = (fieldName) => {
+    const words = fieldName
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .split(/[_\s]+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+    return words.join(" ");
+  };
+
   const columnHeaders = Object.keys(data[0]);
 
   return (
@@ -53,7 +62,7 @@ const DataTable = ({ data, loading, message }) => {
             <th>#</th>
             {columnHeaders.map((header) => (
               <th key={header} onClick={() => handleSort(header)}>
-                {header}
+                {camelCaseToNormal(header)}
                 {sortColumn === header && (
                   <span>{sortOrder === "asc" ? " ▲" : " ▼"}</span>
                 )}

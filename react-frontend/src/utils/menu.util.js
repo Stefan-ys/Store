@@ -9,7 +9,7 @@ const Menu = ({ menuItems }) => {
   const handleMenuClick = (action) => {
     if (action) {
       action();
-    } 
+    }
   };
 
   const handleMenuEnter = (menuName) => {
@@ -33,6 +33,11 @@ const Menu = ({ menuItems }) => {
     setActiveSubSubmenu(null);
   };
 
+  const isMenuItemSelected = (menuItem, options) => {
+    const item = options.find((item) => item.label === menuItem.label);
+    return item ? item.checked : false;
+  };
+
   return (
     <nav className={styles.navMenu}>
       <menu className={styles.mainMenu}>
@@ -40,18 +45,13 @@ const Menu = ({ menuItems }) => {
           menuItems.map((menuItem, index) => (
             <li
               key={index}
-              className={`${styles.menuItem} ${
-                activeMenu === menuItem.name ? styles.active : ""
-              }`}
+              className={`${styles.menuItem} ${activeMenu === menuItem.name ? styles.active : ""}`}
               onMouseEnter={() => handleMenuEnter(menuItem.name)}
               onMouseLeave={handleMenuLeave}
             >
               <span
-                onClick={
-                  menuItem.action
-                    ? () => handleMenuClick(menuItem.action)
-                    : () => handleMenuClick(null) 
-                }
+                onClick={() =>
+                  menuItem.action ? handleMenuClick(menuItem.action) : null}
               >
                 {menuItem.name}
               </span>
@@ -60,25 +60,24 @@ const Menu = ({ menuItems }) => {
                   {menuItem.items.map((submenuItem, subIndex) => (
                     <li
                       key={subIndex}
-                      className={`${styles.submenuItem} ${
-                        activeSubmenu === submenuItem.label
-                          ? styles.activeSubmenu
-                          : ""
-                      }`}
+                      className={`${styles.submenuItem} ${activeSubmenu === submenuItem.label
+                        ? styles.activeSubmenu : ""}`}
                       onMouseEnter={() => handleSubmenuEnter(submenuItem.label)}
                     >
                       <span
-                        onClick={
-                          submenuItem.action
-                            ? () => handleMenuClick(submenuItem.action)
-                            : () => handleMenuClick(null)
-                        }
+                        onClick={() =>
+                          submenuItem.action ? handleMenuClick(submenuItem.action) : null}
                       >
-                        {submenuItem.label}{" "}
-                        {submenuItem.items ? (
-                          <i className={styles.arrowRight}></i>
-                        ) : (
-                          ""
+                        {submenuItem.label}
+                        {menuItem.options && (
+                          <>
+                            <input
+                              type="checkbox"
+                              className={styles.checkbox}
+                              checked={isMenuItemSelected(submenuItem, menuItem.options)}
+                              onChange={() => { }}
+                            />
+                          </>
                         )}
                       </span>
                       {submenuItem.items && (
@@ -86,21 +85,19 @@ const Menu = ({ menuItems }) => {
                           {submenuItem.items.map((subSubmenuItem, subSubIndex) => (
                             <li
                               key={subSubIndex}
-                              className={`${styles.subSubmenuItem} ${
-                                activeSubSubmenu === subSubmenuItem.label
-                                  ? styles.activeSubSubmenu
-                                  : ""
-                              }`}
+                              className={`${styles.subSubmenuItem} ${activeSubSubmenu === subSubmenuItem.label
+                                ? styles.activeSubSubmenu
+                                : ""
+                                }`}
                               onMouseEnter={() =>
                                 handleSubSubmenuEnter(subSubmenuItem.label)
                               }
                             >
                               <span
-                                onClick={
+                                onClick={() =>
                                   subSubmenuItem.action
-                                    ? () =>
-                                        handleMenuClick(subSubmenuItem.action)
-                                    : () => handleMenuClick(null) 
+                                    ? handleMenuClick(subSubmenuItem.action)
+                                    : null
                                 }
                               >
                                 {subSubmenuItem.label}
@@ -121,3 +118,7 @@ const Menu = ({ menuItems }) => {
 };
 
 export default Menu;
+
+
+
+
