@@ -1,6 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
+
 const API_HOME_URL = "http://localhost:8080/api/home";
 
 const getProducts = () => {
@@ -15,6 +16,6 @@ const getProducts = () => {
         });
 };
 
-
 const HomeService = { getProducts };
+
 export default HomeService;

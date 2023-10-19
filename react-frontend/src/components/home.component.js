@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from "../common/with-router";
+import React, {useState, useEffect} from "react";
 import styles from "../css/home.module.css";
-import HomeService from "../services/home.service";
+import {withRouter} from "../common/with-router";
 import Slider from "../utils/slider-util";
-import { Link } from "react-router-dom";
+import HomeService from "../services/home.service";
+import {Link} from "react-router-dom";
 
 const Home = () => {
     const [message, setMessage] = useState("");
@@ -20,7 +20,7 @@ const Home = () => {
 
     const getProducts = async () => {
         setLoading(true);
-        setMessage(""); 
+        setMessage("");
         try {
             const fetchedProducts = await HomeService.getProducts();
             setProducts(fetchedProducts);
@@ -31,31 +31,32 @@ const Home = () => {
                 error.response ? error.response.data.message : "An error has occurred."
             );
         } finally {
-            setLoading(false);          }
+            setLoading(false);
+        }
     };
 
     return (
         <div className={styles.container}>
-            {!loading && (  
+            {!loading && (
                 <>
                     <div className={styles.carouselSection}>
                         <h2>New Products</h2>
-                        <Slider products={products.NEW} itemsPerSlide={4} />
-                        <Link to="/all-new-products" style={{ textDecoration: "none" }}>
+                        <Slider products={products.NEW} itemsPerSlide={4}/>
+                        <Link to="/all-new-products" style={{textDecoration: "none"}}>
                             <button className={styles.button}>Show All</button>
                         </Link>
                     </div>
                     <div className={styles.carouselSection}>
                         <h2>Promotions</h2>
-                        <Slider products={products.PROMOTION} itemsPerSlide={4} />
-                        <Link to="/all-promotions" style={{ textDecoration: "none" }}>
+                        <Slider products={products.PROMOTION} itemsPerSlide={4}/>
+                        <Link to="/all-promotions" style={{textDecoration: "none"}}>
                             <button className={styles.button}>Show All</button>
                         </Link>
                     </div>
                     <div className={styles.carouselSection}>
                         <h2>Coming Soon</h2>
-                        <Slider products={products.COMING_SOON} itemsPerSlide={4} />
-                        <Link to="/all-coming-soon" style={{ textDecoration: "none" }}>
+                        <Slider products={products.COMING_SOON} itemsPerSlide={4}/>
+                        <Link to="/all-coming-soon" style={{textDecoration: "none"}}>
                             <button className={styles.button}>Show All</button>
                         </Link>
                     </div>

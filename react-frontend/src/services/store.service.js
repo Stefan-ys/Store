@@ -28,6 +28,6 @@ const getAllProducts = (currentPage, productsPerPage, categoryOptions, statusOpt
         });
 };
 
-const StoreService = { getAllProducts };
+const StoreService = {getAllProducts};
 
 export default StoreService;

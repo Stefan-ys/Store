@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styles from "../css/image-carousel.module.css";
-import { motion, AnimatePresence } from "framer-motion";
+import {motion, AnimatePresence} from "framer-motion";
 
-const Carousel = ({ images }) => {
+
+const Carousel = ({images}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(null);
 
@@ -22,34 +23,20 @@ const Carousel = ({ images }) => {
                 duration: 1,
             },
         },
-        // exit: {
-        //     opacity: 0,
-        //     scale: 0.8,
-        //     transition: {
-        //         duration: 0.5,
-        //     },
-        // },
     };
-
 
     const slidersVariants = {
         hover: {
             scale: 1.2,
-            // backgroundColor: "#cfcfcf",
         },
     };
     const dotsVariants = {
         initial: {
             y: 0,
         },
-        // animate: {
-        //     y: -10,
-        //     scale: 1.2,
-        //     transition: { type: "spring", stiffness: 1000, damping: "10" },
-        // },
         hover: {
             scale: 1.1,
-            transition: { duration: 0.2 },
+            transition: {duration: 0.2},
         },
     };
 
@@ -59,12 +46,14 @@ const Carousel = ({ images }) => {
             prevIndex + 1 === images.length ? 0 : prevIndex + 1
         );
     };
+
     const handlePrevious = () => {
         setDirection("left");
         setCurrentIndex((prevIndex) =>
             prevIndex - 1 < 0 ? images.length - 1 : prevIndex - 1
         );
     };
+
     const handleDotClick = (index) => {
         setCurrentIndex(index);
     };
@@ -96,7 +85,7 @@ const Carousel = ({ images }) => {
                             viewBox="0 96 960 960"
                             width="20"
                         >
-                            <path d="M400 976 0 576l400-400 56 57-343 343 343 343-56 57Z" />
+                            <path d="M400 976 0 576l400-400 56 57-343 343 343 343-56 57Z"/>
                         </svg>
                     </motion.div>
                     <motion.div
@@ -111,7 +100,7 @@ const Carousel = ({ images }) => {
                             viewBox="0 96 960 960"
                             width="20"
                         >
-                            <path d="m304 974-56-57 343-343-343-343 56-57 400 400-400 400Z" />
+                            <path d="m304 974-56-57 343-343-343-343 56-57 400 400-400 400Z"/>
                         </svg>
                     </motion.div>
                 </div>
@@ -121,7 +110,7 @@ const Carousel = ({ images }) => {
                     <motion.div
                         key={index}
                         className={`${styles.dot} ${currentIndex === index ? styles.active : ""
-                            }`}
+                        }`}
                         onClick={() => handleDotClick(index)}
                         initial="initial"
                         animate={currentIndex === index ? "animate" : ""}
@@ -133,4 +122,5 @@ const Carousel = ({ images }) => {
         </div>
     );
 };
+
 export default Carousel;

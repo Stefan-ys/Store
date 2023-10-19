@@ -4,10 +4,9 @@ import authHeader from "./auth-header";
 
 const API_ADMIN_ORDERS_URL = "http://localhost:8080///api/admin/orders";
 
-
 const getOrders = (status) => {
     return axios
-        .get(API_ADMIN_ORDERS_URL + "/get-orders", status, { headers: authHeader() })
+        .get(API_ADMIN_ORDERS_URL + "/get-orders", status, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -17,7 +16,7 @@ const getOrders = (status) => {
 
 const getUserOrders = (userId) => {
     return axios
-        .get(API_ADMIN_ORDERS_URL + "/get-user-orders" + userId, { headers: authHeader() })
+        .get(API_ADMIN_ORDERS_URL + "/get-user-orders" + userId, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -27,7 +26,7 @@ const getUserOrders = (userId) => {
 
 const changeOrderStatus = (orderId, status) => {
     return axios
-        .put(API_ADMIN_ORDERS_URL + "/change-status" + orderId, status, { headers: authHeader() })
+        .put(API_ADMIN_ORDERS_URL + "/change-status" + orderId, status, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -37,7 +36,7 @@ const changeOrderStatus = (orderId, status) => {
 
 const deleteOrder = (orderId) => {
     return axios
-        .delete(API_ADMIN_ORDERS_URL + "/delete-order" + orderId, { headers: authHeader() })
+        .delete(API_ADMIN_ORDERS_URL + "/delete-order" + orderId, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -45,7 +44,6 @@ const deleteOrder = (orderId) => {
         });
 };
 
-const AdminOrderService = { getOrders, getUserOrders, changeOrderStatus, deleteOrder };
-
+const AdminOrderService = {getOrders, getUserOrders, changeOrderStatus, deleteOrder};
 
 export default AdminOrderService;

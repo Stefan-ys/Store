@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaShoppingCart, FaBell } from "react-icons/fa";
+import React, {useState} from "react";
+import {NavLink} from "react-router-dom";
+import {FaShoppingCart, FaBell} from "react-icons/fa";
 import styles from "../css/header.module.css";
 import AuthService from "../services/auth.service";
-import { withRouter } from "../common/with-router";
-import { useShoppingCart } from "../hooks/shopping-cart.hook";
+import {withRouter} from "../common/with-router";
+import {useShoppingCart} from "../hooks/shopping-cart.hook";
 import useAuth from "../hooks/auth.hook";
 
 
 const HeaderComponent = () => {
     const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
-    const { shoppingCart } = useShoppingCart();
-    const { isLoggedIn, getUsername, isAdmin, isModerator } = useAuth();
+    const {shoppingCart} = useShoppingCart();
+    const {isLoggedIn, getUsername, isAdmin, isModerator} = useAuth();
 
     const handleLogout = () => {
         try {
@@ -60,7 +60,7 @@ const HeaderComponent = () => {
                         </li>
                         <li>
                             <NavLink to="/shopping-cart" activeClassName={styles.active}
-                                className={styles.navLink}>
+                                     className={styles.navLink}>
                                 Shopping Cart
                             </NavLink>
                         </li>
@@ -75,7 +75,7 @@ const HeaderComponent = () => {
                                 )}
                                 <li>
                                     <NavLink to="/my-profile" activeClassName={styles.active}
-                                        className={styles.navLink}>
+                                             className={styles.navLink}>
                                         My Profile
                                     </NavLink>
                                 </li>
@@ -87,7 +87,7 @@ const HeaderComponent = () => {
                                         <div className={styles.buttonContainer}>
                                             <button className={styles.button} onClick={handleLogout}>Logout</button>
                                             <button className={styles.button}
-                                                onClick={() => setShowLogoutConfirmation(false)}>Cancel
+                                                    onClick={() => setShowLogoutConfirmation(false)}>Cancel
                                             </button>
                                         </div>
                                     </div>
@@ -119,12 +119,12 @@ const HeaderComponent = () => {
                 <div className={styles.icons}>
                     <div className={styles.iconContainer}>
                         <NavLink to="/shopping-cart">
-                            <FaShoppingCart />
+                            <FaShoppingCart/>
                         </NavLink>
                         <span className={styles.cartCount}>{shoppingCart.totalProducts}</span>
                     </div>
                     <div className={styles.iconContainer}>
-                        <FaBell />
+                        <FaBell/>
                         <span className={styles.notificationCount}>0</span>
                     </div>
                 </div>

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from '../css/order.module.css';
-import { useShoppingCart } from '../hooks/shopping-cart.hook';
-import { withRouter } from '../common/with-router';
+import {useShoppingCart} from '../hooks/shopping-cart.hook';
+import {withRouter} from '../common/with-router';
 import useAuth from "../hooks/auth.hook";
+import InfoButton from "../utils/info-button.util";
 import ShoppingCartService from '../services/shopping-cart.service';
 import UserService from '../services/user.service';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
-import InfoButton from "../utils/info-button.util";
-import { color } from 'framer-motion';
 
 
 const emptyAddress = {
@@ -23,36 +22,41 @@ const emptyOrder = {
 
 const fieldsArr = {
     addressField: true, deliveryField: false, paymentField: false,
-}
+};
 
 const Order = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-
     const [orderContent, setOrderContent] = useState(emptyOrder);
     const [deliveryAddressData, setDeliveryAddressData] = useState(emptyAddress);
     const [paymentAddressData, setPaymentAddressData] = useState(emptyAddress);
-    const [editMode, setEditMode] = useState(true);
-
     const [fields, setFields] = useState(fieldsArr);
 
-    const { shoppingCart } = useShoppingCart();
-    const { isLoggedIn } = useAuth();
-
+    const {shoppingCart} = useShoppingCart();
+    const {isLoggedIn} = useAuth();
 
     useEffect(() => {
         fetchOrderContent();
-        if (!isLoggedIn) {
-            fetchAddress();
-        }
-    }, []);
+        fetchAddress();
 
+    }, []);
 
     const fetchOrderContent = async () => {
         setLoading(true);
         setMessage("");
         try {
-            const orderContentData = await ShoppingCartService.getProducts();
+            let orderContentData;
+            if (isLoggedIn) {
+                orderContentData = await ShoppingCartService.getProducts();
+            } else {
+                const tempCart = JSON.parse(localStorage.getItem('tempCart')) || {products: {}};
+
+                const tempCartObject = tempCart.products.reduce((acc, product) => {
+                    acc[product.productId] = product.quantity;
+                    return acc;
+                }, {});
+                orderContentData = await ShoppingCartService.getTmpProducts(tempCartObject);
+            }
             setOrderContent(orderContentData);
         } catch (error) {
             console.log(error);
@@ -60,25 +64,33 @@ const Order = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
-    const handlePlaceOrder = () => { }
+    const handlePlaceOrder = () => {
+    };
 
     const fetchAddress = async () => {
         setLoading(true);
         setMessage("");
         try {
-            const paymentAddress = await UserService.getMyAddress("payment");
+            let paymentAddress, deliveryAddress;
+            if (isLoggedIn) {
+                paymentAddress = await UserService.getMyAddress("payment");
+                deliveryAddress = await UserService.getMyAddress("delivery");
+            } else {
+                paymentAddress = emptyAddress;
+                deliveryAddress = emptyAddress;
+            }
+
             setPaymentAddressData(paymentAddress);
-            const deliveryAddress = await UserService.getMyAddress("delivery");
             setDeliveryAddressData(deliveryAddress);
         } catch (error) {
             console.log(error)
             setMessage(error.message);
         } finally {
-            setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
+            setLoading((prevLoading) => ({...prevLoading, payment: false}));
         }
-    }
+    };
 
     const handleSaveClick = async (param, data) => {
         setLoading(true);
@@ -92,19 +104,19 @@ const Order = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleAddressChange = (type) => (event) => {
         event.preventDefault();
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         const addressData = type === "payment" ? paymentAddressData : deliveryAddressData;
-        const updatedAddress = { ...addressData, [name]: value };
+        const updatedAddress = {...addressData, [name]: value};
         if (type === "payment") {
             setPaymentAddressData(updatedAddress);
         } else if (type === "delivery") {
             setDeliveryAddressData(updatedAddress);
         }
-    }
+    };
 
     const camelCaseToNormal = (fieldName) => {
         const words = fieldName
@@ -113,7 +125,7 @@ const Order = () => {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 
         return words.join(" ");
-    }
+    };
 
     const renderAddressContainer = (param, addressData) => (
         <div className={param === "payment" ? styles.paymentAddressContainer : styles.deliveryAddressContainer}>
@@ -125,7 +137,7 @@ const Order = () => {
                         <div className={styles.row} key={fieldName}>
                             <span className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
                             {fieldName !== "floor" && fieldName !== "additionalInfo" &&
-                               <InfoButton text="obligatory field" style={{ color: 'red' }} /> }
+                                <InfoButton text="obligatory field" style={{color: 'red'}}/>}
                             <Input
                                 type="text"
                                 name={fieldName}
@@ -144,13 +156,10 @@ const Order = () => {
     const isAddressComplete = (address) => {
         const mandatoryFields = Object.keys(emptyAddress).slice(0, -2);
         return mandatoryFields.every(field => !!address[field]);
-    }
-
+    };
     const isPaymentAddressComplete = isAddressComplete(paymentAddressData);
     const isDeliveryAddressComplete = isAddressComplete(deliveryAddressData);
-
     const isNextButtonEnabled = fields.addressField && isPaymentAddressComplete && isDeliveryAddressComplete;
-
 
     const renderButtons = (param, addressData) => {
         return (
@@ -159,17 +168,15 @@ const Order = () => {
                 <button className={styles.prevNextButton} disabled={!isNextButtonEnabled}>Next</button>
             </div>
         );
-    }
-    const handlePrevClick = (fieldName) => {
+    };
 
-    }
+    const handlePrevClick = (fieldName) => {
+    };
 
     const handleNextClick = (fieldName) => {
-
-    }
+    };
 
     const renderFieldsContainer = () => {
-
         if (fields.addressField) {
             return (
                 <div className={styles.addressFieldsContainer}>
@@ -186,8 +193,7 @@ const Order = () => {
         } else if (fields.paymentField) {
 
         }
-    }
-
+    };
 
     const renderShortlist = () => {
         return (
@@ -202,28 +208,26 @@ const Order = () => {
                     <h2>Products</h2>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                            </tr>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {orderContent.products.map((product, index) => (
-                                <tr key={index}>
-                                    <td>{product.productName}</td>
-                                    <td>{product.quantity}</td>
-                                    <td>${product.price}</td>
-                                </tr>
-                            ))}
+                        {orderContent.products.map((product, index) => (
+                            <tr key={index}>
+                                <td>{product.productName}</td>
+                                <td>{product.quantity}</td>
+                                <td>${product.price}</td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
                 </div>
             </div>
         );
     };
-
-
 
     return (
         <div className={styles.orderContainer}>
@@ -244,6 +248,5 @@ const Order = () => {
         </div>
     );
 };
-
 
 export default withRouter(Order);

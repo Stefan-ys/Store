@@ -4,10 +4,9 @@ import authHeader from "./auth-header";
 
 const API_ADMIN_COMMENT_URL = "http://localhost:8080//api/admin/comments";
 
-
 const getAllComments = () => {
     return axios
-        .get(API_ADMIN_COMMENT_URL + "/all-comments", { headers: authHeader() })
+        .get(API_ADMIN_COMMENT_URL + "/all-comments", {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -17,7 +16,7 @@ const getAllComments = () => {
 
 const getCommentsByUser = (userId) => {
     return axios
-        .get(API_ADMIN_COMMENT_URL + "/comments-by-user" + userId, { headers: authHeader() })
+        .get(API_ADMIN_COMMENT_URL + "/comments-by-user" + userId, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -27,7 +26,7 @@ const getCommentsByUser = (userId) => {
 
 const deleteComment = (commentId) => {
     return axios
-        .get(API_ADMIN_COMMENT_URL + "/delete-comment" + commentId, { headers: authHeader() })
+        .get(API_ADMIN_COMMENT_URL + "/delete-comment" + commentId, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -35,7 +34,6 @@ const deleteComment = (commentId) => {
         });
 };
 
-
-const AdminCommentService = { getAllComments, getCommentsByUser, deleteComment };
+const AdminCommentService = {getAllComments, getCommentsByUser, deleteComment};
 
 export default AdminCommentService;

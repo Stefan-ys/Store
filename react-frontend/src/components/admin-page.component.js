@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styles from "../css/admin-page.module.css";
-import { withRouter } from "../common/with-router";
+import {withRouter} from "../common/with-router";
 import Menu from "../utils/menu.util.js";
 import DataTable from "../utils/data-table.util";
 import AdminUserService from "../services/admin-user.service";
@@ -9,15 +9,13 @@ import AdminOrderService from "../services/admin-order.service";
 import AdminCommentService from "../services/admin-comment.service";
 import AddProductComponent from "./add-product.component";
 
-let num = 0;
+
 const AdminPage = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [showTableData, setShowTableData] = useState(false);
-
 
     useEffect(() => {
     }, [data]);
@@ -48,7 +46,6 @@ const AdminPage = () => {
         } finally {
             setLoading(false);
         }
-
     };
 
     const getAdminUsers = async () => {
@@ -119,15 +116,12 @@ const AdminPage = () => {
     };
 
     const getActiveOrders = () => {
-
     };
 
     const getCompletedOrders = () => {
-
     };
 
     const getCanceledOrders = () => {
-
     };
 
     const getAllComments = async () => {
@@ -149,51 +143,48 @@ const AdminPage = () => {
     };
 
     const sendNotification = () => {
-
     };
 
     const getAllNotifications = () => {
-
     };
-
 
     const menuItems = [
         {
             name: "Users",
             items: [
-                { label: "All Users", action: getAllUsers },
-                { label: "Admin Users", action: getAdminUsers },
-                { label: "Moderator Users", action: getModeratorUsers },
+                {label: "All Users", action: getAllUsers},
+                {label: "Admin Users", action: getAdminUsers},
+                {label: "Moderator Users", action: getModeratorUsers},
             ],
         },
         {
             name: "Products",
             items: [
-                { label: "All Products", action: getAllProducts },
-                { label: "Add Product", action: AddProduct },
+                {label: "All Products", action: getAllProducts},
+                {label: "Add Product", action: AddProduct},
             ],
         },
         {
             name: "Orders",
             items: [
-                { label: "All Orders", action: getAllOrders },
-                { label: "Active Orders", action: getActiveOrders },
-                { label: "Completed Orders", action: getCompletedOrders },
-                { label: "Canceled Orders", action: getCanceledOrders },
+                {label: "All Orders", action: getAllOrders},
+                {label: "Active Orders", action: getActiveOrders},
+                {label: "Completed Orders", action: getCompletedOrders},
+                {label: "Canceled Orders", action: getCanceledOrders},
             ],
         },
         {
             name: "Comments",
             items: [
-                { label: "All Comments", action: getAllComments },
+                {label: "All Comments", action: getAllComments},
             ],
         },
         {
             name: "Notifications",
             items: [
-                { label: "My Notifications", action: myNotifications },
-                { label: "Send Notification", action: sendNotification },
-                { label: "All Notifications", action: getAllNotifications },
+                {label: "My Notifications", action: myNotifications},
+                {label: "Send Notification", action: sendNotification},
+                {label: "All Notifications", action: getAllNotifications},
             ],
         },
     ];
@@ -201,14 +192,14 @@ const AdminPage = () => {
     return (
         <section>
             <div className={styles['menu-page']}>
-                <Menu menuItems={menuItems} />
+                <Menu menuItems={menuItems}/>
             </div>
             {showAddProduct && (
-                <AddProductComponent />
+                <AddProductComponent/>
             )}
             {showTableData && (
                 <div>
-                    <DataTable data={data} loading={loading} message={message} />
+                    <DataTable data={data} loading={loading} message={message}/>
                 </div>
             )}
 

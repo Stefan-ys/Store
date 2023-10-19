@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ProductBox from "./product-box.util";
 import styles from "../css/home.module.css";
+import ProductBox from "./product-box.util";
+
 
 const Slider = ({ products, itemsPerSlide }) => {
   const [currentIndex, setCurrentIndex] = useState(0);

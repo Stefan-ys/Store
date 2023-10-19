@@ -1,25 +1,16 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styles from "../css/add-product.module.css";
 import AdminProductService from "../services/admin-product.service";
-import { withRouter } from "../common/with-router";
-import { showRating } from "../utils/rating.util";
+import {withRouter} from "../common/with-router";
+import {showRating} from "../utils/rating.util";
 import ProductTag from "../utils/product-tag,util";
 
+
 const emptyProduct = {
-    name: "",
-    catalogNumber: "",
-    price: "",
-    quantity: "",
-    description: "",
-    productCategory: "",
-    manufacturer: "",
-    weight: "",
-    expirationDate: "",
-    status: [],
-    images: [],
-    productLength: "",
-    productHeight: "",
-    productWidth: "",
+    name: "", catalogNumber: "", price: "", quantity: "",
+    description: "", productCategory: "", manufacturer: "",
+    weight: "", expirationDate: "", status: [], images: [],
+    productLength: "", productHeight: "", productWidth: "",
 };
 
 const AddProductComponent = () => {
@@ -41,7 +32,7 @@ const AddProductComponent = () => {
 
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setProduct({
             ...product,
             [name]: value,
@@ -49,7 +40,7 @@ const AddProductComponent = () => {
     };
 
     const handleStatusChange = (e) => {
-        const { name, checked } = e.target;
+        const {name, checked} = e.target;
         if (checked) {
             setProduct({
                 ...product,
@@ -297,7 +288,7 @@ const AddProductComponent = () => {
                         <div className={styles["uploaded-images"]}>
                             {uploadedImages.map((url, index) => (
                                 <div key={index} className={styles["image-container"]}>
-                                    <img src={url} alt={`Image ${index}`} />
+                                    <img src={url} alt={`Image ${index}`}/>
                                     <button
                                         type="button"
                                         onClick={() => handleRemovePicture(url)}
@@ -343,11 +334,10 @@ const AddProductComponent = () => {
                     {message && <div className="alert alert-info">{message}</div>}
                 </form>
             </div>
-            
-            
+
             <div className={styles.previewContainer}>
                 <h2 className={styles.productName}>{product.name}</h2>
-                <ProductTag tags={product.status || []} />
+                <ProductTag tags={product.status || []}/>
                 {selectedImage && (
                     <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
                         <img
@@ -365,7 +355,7 @@ const AddProductComponent = () => {
                             className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
                             onClick={() => handleImageClick(image)}
                         >
-                            <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage} />
+                            <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage}/>
                         </div>
                     ))}
                 </div>

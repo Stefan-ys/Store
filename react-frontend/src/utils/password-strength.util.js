@@ -1,5 +1,3 @@
-
-
 const HAS_UPPERCASE = /[A-Z]+/;
 const HAS_LOWERCASE = /[a-z]+/;
 const HAS_DIGIT = /[0-9]+/;
@@ -36,8 +34,8 @@ const handlePasswordStrength = (password) => {
     return {
         points,
         strength,
-        activeColor: getActiveColor(strength)
-    }
+        activeColor: getActiveColor(strength),
+    };
 };
 
 const getActiveColor = (strength) => {
@@ -49,7 +47,7 @@ const getActiveColor = (strength) => {
 
 const PasswordStrengthIndicator = ({password}) => {
 
-    let stats = handlePasswordStrength(password)
+    let stats = handlePasswordStrength(password);
 
     const element = (color) =>
         <hr
@@ -60,7 +58,7 @@ const PasswordStrengthIndicator = ({password}) => {
                 borderRadius: "2px",
                 margin: "0 5px",
                 marginTop: "8px",
-                color: color
+                color: color,
             }}
         />;
     const barElement = [];
@@ -78,10 +76,10 @@ const PasswordStrengthIndicator = ({password}) => {
                 {barElement}
 
             </div>
-            {password &&(
-            <p style={{color: stats.activeColor, fontSize: "smaller"}}>
-                Your password is {stats.strength.toLowerCase()}
-            </p>)}
+            {password && (
+                <p style={{color: stats.activeColor, fontSize: "smaller"}}>
+                    Your password is {stats.strength.toLowerCase()}
+                </p>)}
         </>
     );
 };

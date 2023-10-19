@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState} from "react";
 import styles from "../css/signup-signin.module.css";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import AuthService from "../services/auth.service";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import {withRouter} from "../common/with-router";
+import {FaCheck, FaEye} from "react-icons/fa";
+import {PasswordStrengthIndicator} from "../utils/password-strength.util";
 import isEmail from "validator/es/lib/isEmail";
-import { withRouter } from "../common/with-router";
-import { FaCheck, FaEye } from "react-icons/fa";
-import { PasswordStrengthIndicator } from "../utils/password-strength.util";
 import InfoButton from "../utils/info-button.util";
+
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const PASSWORD_REGEX = /^(.){5,30}$/;
@@ -18,6 +19,7 @@ const required = (value) => {
         return <div className={styles.danger}>This field is required!</div>;
     }
 };
+
 const RegisterComponent = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -30,15 +32,12 @@ const RegisterComponent = () => {
     const [hidePassword, setHidePassword] = useState(true);
     const [focusedField, setFocusedField] = useState(null);
 
-
-
     const validation = {
         validUsername: USER_REGEX.test(username),
         validEmail: isEmail(email),
         validPassword: PASSWORD_REGEX.test(password),
         validMatch: password === confirmPassword && password.length > 0,
     };
-
 
     const handleFieldChange = (valueSetter) => (e) => {
         valueSetter(e.target.value);
@@ -52,11 +51,9 @@ const RegisterComponent = () => {
         setFocusedField(null);
     };
 
-
-
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
-    }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -77,8 +74,12 @@ const RegisterComponent = () => {
         if (!validation.validMatch && password.length > 0) {
             errorMessage.push("Passwords do not march!");
         }
+
         form.validateAll();
-        const emptyFields = (username.length === 0 || email.length === 0 || password === 0 || confirmPassword === 0);
+
+        const emptyFields = (username.length === 0 || email.length === 0
+            || password.length === 0 || confirmPassword.length === 0);
+
         if (errorMessage.length > 0 || emptyFields) {
             setMessage(errorMessage.join("\n"));
             setSuccess(false);
@@ -125,7 +126,7 @@ const RegisterComponent = () => {
                         <div className={styles.inputGroup}>
                             <label htmlFor="username" className={styles.label}>
                                 Username:
-                                {validation.validUsername ? <FaCheck className={styles.validIcon} /> : null}
+                                {validation.validUsername ? <FaCheck className={styles.validIcon}/> : null}
                             </label>
                             <Input
                                 type="text"
@@ -149,7 +150,7 @@ const RegisterComponent = () => {
                         {/* EMAIL */}
                         <label htmlFor="email" className={styles.label}>
                             Email address:
-                            {validation.validEmail === true ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validEmail === true ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -165,13 +166,13 @@ const RegisterComponent = () => {
                                 onFocus={() => handleFocus("email")}
                                 onBlur={handleBlur}
                             />
-                            <InfoButton text="Must be a valid email address." />
+                            <InfoButton text="Must be a valid email address."/>
 
                         </div>
                         {/* PASSWORD */}
                         <label htmlFor="password" className={styles.label}>
                             Password:
-                            {validation.validPassword === true ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validPassword === true ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -186,7 +187,7 @@ const RegisterComponent = () => {
                                 onFocus={() => handleFocus("password")}
                                 onBlur={handleBlur}
                             />
-                            <PasswordStrengthIndicator password={password} />
+                            <PasswordStrengthIndicator password={password}/>
                             <InfoButton text="Password must be between 5 to 30 characters.
                                     Include uppercase and lowercase letters, numbers, and special characters
                                     to create a strong password."/>
@@ -195,7 +196,7 @@ const RegisterComponent = () => {
                         {/* CONFIRM PASSWORD */}
                         <label htmlFor="confirmPassword" className={styles.label}>
                             Confirm Password:
-                            {validation.validMatch === true ? <FaCheck className={styles.validIcon} /> : null}
+                            {validation.validMatch === true ? <FaCheck className={styles.validIcon}/> : null}
                         </label>
                         <div className={styles.inputGroup}>
                             <Input
@@ -210,13 +211,15 @@ const RegisterComponent = () => {
                                 onFocus={() => handleFocus("confirmPassword")}
                                 onBlur={handleBlur}
                             />
-                            <InfoButton text="Must match the first password input field." />
+                            <InfoButton text="Must match the first password input field."/>
                         </div>
 
                         <a href="#" className={hidePassword ? styles.toggleBtn : styles.active}
-                            onClick={() => { togglePasswordVisibility() }}
+                           onClick={() => {
+                               togglePasswordVisibility()
+                           }}
                         >
-                            <FaEye style={{ color: !hidePassword ? "#FF0054" : "#c3c3c3" }} />
+                            <FaEye style={{color: !hidePassword ? "#FF0054" : "#c3c3c3"}}/>
                             {hidePassword ? "Show" : "Hide"} password
                         </a>
 
@@ -228,7 +231,7 @@ const RegisterComponent = () => {
                     </Form>
                     <p>
                         Already registered?
-                        <br />
+                        <br/>
                         <span className={styles.line}>
                             <Link to="/login">Sign In</Link>
                         </span>

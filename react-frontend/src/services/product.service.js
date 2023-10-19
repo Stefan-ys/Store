@@ -6,7 +6,7 @@ const API_STORE_URL = "http://localhost:8080/api/product";
 
 const getProduct = (productId) => {
     return axios
-        .get(API_STORE_URL + "/get-product" + productId, { headers: authHeader() })
+        .get(API_STORE_URL + "/get-product" + productId, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -16,7 +16,7 @@ const getProduct = (productId) => {
 
 const submitReview = (productId, comment, rating) => {
     return axios
-        .post(API_STORE_URL + "/review", { productId, comment, rating }, { headers: authHeader() })
+        .post(API_STORE_URL + "/review", {productId, comment, rating}, {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -24,6 +24,6 @@ const submitReview = (productId, comment, rating) => {
         });
 };
 
-const StoreService = { getProduct, submitReview };
+const StoreService = {getProduct, submitReview};
 
 export default StoreService;

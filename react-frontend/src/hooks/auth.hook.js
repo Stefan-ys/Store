@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+
 
 const useAuth = () => {
     const [loggedIn, setLoggedIn] = useState(false);

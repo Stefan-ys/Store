@@ -1,30 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import styles from "../css/product-view.module.css";
 import Form from "react-validation/build/form";
-import { withRouter } from "../common/with-router";
 import ProductService from "../services/product.service";
-import { showRating, rateProduct } from "../utils/rating.util";
-import { useShoppingCart } from "../hooks/shopping-cart.hook";
 import ProductTag from "../utils/product-tag,util";
 import useAuth from "../hooks/auth.hook";
+import {useParams} from "react-router-dom";
+import {withRouter} from "../common/with-router";
+import {showRating, rateProduct} from "../utils/rating.util";
+import {useShoppingCart} from "../hooks/shopping-cart.hook";
+
 
 const emptyProduct = {
-    name: "",
-    description: "",
-    price: 0,
-    category: "",
-    manufacturer: "",
-    rating: 0,
-    usersRatingCount: 0,
-    images: [],
-    status: [],
-    catalogNumber: "",
-    comments: [],
+    name: "", description: "", price: 0, category: "",
+    manufacturer: "", rating: 0, usersRatingCount: 0, images: [],
+    status: [], catalogNumber: "", comments: [],
 };
 
 const ProductView = () => {
-    const { productId } = useParams();
+    const {productId} = useParams();
     const [product, setProduct] = useState(emptyProduct);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -35,8 +28,8 @@ const ProductView = () => {
     const [selectedImage, setSelectedImage] = useState("");
     const [isEnlarged, setIsEnlarged] = useState(false);
 
-    const { addToShoppingCart } = useShoppingCart();
-    const { isLoggedIn } = useAuth();
+    const {addToShoppingCart} = useShoppingCart();
+    const {isLoggedIn} = useAuth();
 
     const maxCharacters = 300;
 
@@ -94,7 +87,6 @@ const ProductView = () => {
         addToShoppingCart(productId);
     };
 
-
     const toggleEnlargedView = () => {
         setIsEnlarged(!isEnlarged);
     };
@@ -103,7 +95,6 @@ const ProductView = () => {
         setSelectedImage(image);
     };
 
-
     return (
         <div className={styles.productContainer}>
             {loading ? (
@@ -111,7 +102,7 @@ const ProductView = () => {
             ) : (
                 <>
                     <h2 className={styles.productName}>{product.name}</h2>
-                    <ProductTag tags={product.status || []} />
+                    <ProductTag tags={product.status || []}/>
                     {selectedImage && (
                         <div className={isEnlarged ? styles.enlargedImage : ''} onClick={toggleEnlargedView}>
                             <img
@@ -129,7 +120,7 @@ const ProductView = () => {
                                 className={`${styles.thumbnail} ${selectedImage === image ? styles.selectedThumbnail : ''}`}
                                 onClick={() => handleImageClick(image)}
                             >
-                                <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage} />
+                                <img src={image} alt={`Product ${index + 1}`} className={styles.thumbnailImage}/>
                             </div>
                         ))}
                     </div>
@@ -161,7 +152,6 @@ const ProductView = () => {
                         ) : (
                             <p>No reviews available.</p>
                         )}
-
 
                         <div>
                             {isLoggedIn ? (

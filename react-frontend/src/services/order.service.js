@@ -4,10 +4,9 @@ import authHeader from "./auth-header";
 
 const API_STORE_URL = "http://localhost:8080//api/orders";
 
-
 const getMyOrders = () => {
     return axios
-        .get(API_STORE_URL + "/get-my-orders" + productId, { headers: authHeader() })
+        .get(API_STORE_URL + "/get-my-orders", {headers: authHeader()})
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -15,7 +14,6 @@ const getMyOrders = () => {
         });
 };
 
+const OrderService = {getMyOrders};
 
-const OrderService = { getOrders };
-
-export default StoreService;
+export default OrderService;

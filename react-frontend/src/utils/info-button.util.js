@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useSpring, animated } from 'react-spring';
-import { FaInfoCircle } from 'react-icons/fa';
+import React, {useState, useRef, useEffect} from 'react';
 import styles from '../css/info-button.module.css';
+import {useSpring, animated} from 'react-spring';
+import {FaInfoCircle} from 'react-icons/fa';
 
-const InfoButton = ({ text }) => {
+
+const InfoButton = ({text}) => {
     const ref = useRef(null);
     const [toggle, setToggle] = useState(true);
-    const [style, animate] = useSpring(() => ({ height: "0px" }));
+    const [style, animate] = useSpring(() => ({height: "0px"}));
 
     useEffect(() => {
         animate({
@@ -17,7 +18,7 @@ const InfoButton = ({ text }) => {
     return (
         <div className={styles.infoButtonContainer}>
             <button type="button" className={styles.infoButton} onClick={() => setToggle(!toggle)}>
-                <FaInfoCircle className={styles.infoIcon} />
+                <FaInfoCircle className={styles.infoIcon}/>
             </button>
             {toggle && (
                 <animated.div className={styles.infoBox} style={style}>
@@ -26,6 +27,6 @@ const InfoButton = ({ text }) => {
             )}
         </div>
     );
-}
+};
 
 export default InfoButton;

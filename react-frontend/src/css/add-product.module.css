@@ -127,8 +127,6 @@ button[type="submit"]:disabled {
     cursor: pointer;
 }
 
-
-
 .productName {
     font-size: 24px;
     margin-bottom: 10px;

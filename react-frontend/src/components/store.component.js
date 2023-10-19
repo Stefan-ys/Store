@@ -27,7 +27,6 @@ const Store = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
   const [totalPages, setTotalPages] = useState();

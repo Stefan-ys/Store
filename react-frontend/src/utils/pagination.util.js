@@ -1,15 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styles from "../css/pagination.module.css";
+import PropTypes from "prop-types";
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+
+const Pagination = ({currentPage, totalPages, onPageChange}) => {
     const renderPageNumbers = () => {
         const pageNumbers = [];
         const pagesToShow = 5;
 
         let startPage = Math.max(currentPage - Math.floor(pagesToShow / 2), 1);
         let endPage = Math.min(startPage + pagesToShow - 1, totalPages);
-
 
         if (endPage === totalPages) {
             startPage = Math.max(endPage - pagesToShow + 1, 1);

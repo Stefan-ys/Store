@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { withRouter } from "../common/with-router";
 import { FaEye } from "react-icons/fa";
 
+
 const required = (value) => {
     if (!value) {
         return <div className={styles.danger}>This field is required!</div>;
@@ -34,7 +35,6 @@ const Login = (props) => {
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
     };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();

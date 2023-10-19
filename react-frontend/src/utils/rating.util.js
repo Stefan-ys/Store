@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import React from "react";
+import {FaStar, FaStarHalfAlt, FaRegStar} from "react-icons/fa";
+
 
 const maxRating = 5;
-
-
 
 const rateProduct = (rating, setRating) => {
     const stars = [];
@@ -13,7 +12,7 @@ const rateProduct = (rating, setRating) => {
             stars.push(
                 <FaStar
                     key={i}
-                    style={{ color: "black", cursor: "pointer" }}
+                    style={{color: "black", cursor: "pointer"}}
                     onClick={() => setRating(i)}
                 />
             );
@@ -21,14 +20,12 @@ const rateProduct = (rating, setRating) => {
             stars.push(
                 <FaRegStar
                     key={i}
-                    style={{ color: "black", cursor: "pointer" }}
+                    style={{color: "black", cursor: "pointer"}}
                     onClick={() => setRating(i)}
                 />
             );
         }
     }
-
-
     return stars;
 };
 
@@ -40,14 +37,14 @@ const showRating = (rating, usersCount) => {
             stars.push(
                 <FaStar
                     key={i}
-                    style={{ color: "black" }}
+                    style={{color: "black"}}
                 />
             );
         } else if (i - 0.5 <= rating) {
             stars.push(
                 <FaStarHalfAlt
                     key={i}
-                    style={{ color: "black" }}
+                    style={{color: "black"}}
                     FaStar s
                 />
             );
@@ -55,7 +52,7 @@ const showRating = (rating, usersCount) => {
             stars.push(
                 <FaRegStar
                     key={i}
-                    style={{ color: "black" }}
+                    style={{color: "black"}}
                 />
             );
         }
@@ -68,4 +65,4 @@ const showRating = (rating, usersCount) => {
 };
 
 
-export { showRating, rateProduct };
+export {showRating, rateProduct};
