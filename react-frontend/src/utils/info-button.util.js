@@ -10,18 +10,20 @@ const InfoButton = ({ text }) => {
 
     useEffect(() => {
         animate({
-            height: toggle ? `${ref.current.offsetHeight}px` : "0px",
+            height: `${ref.current.offsetHeight}px`,
         });
-    }, [animate, ref, toggle]);
+    }, [animate, ref]);
 
     return (
         <div className={styles.infoButtonContainer}>
-            <button className={styles.infoButton} onClick={() => setToggle(!toggle)}>
+            <button type="button" className={styles.infoButton} onClick={() => setToggle(!toggle)}>
                 <FaInfoCircle className={styles.infoIcon} />
             </button>
-            <animated.div className={styles.infoBox} style={style}>
-                {toggle && <p className={styles.infoText} ref={ref}>{text}</p>}
-            </animated.div>
+            {toggle && (
+                <animated.div className={styles.infoBox} style={style}>
+                    <p className={styles.infoText} ref={ref}>{text}</p>
+                </animated.div>
+            )}
         </div>
     );
 }

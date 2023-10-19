@@ -4,18 +4,13 @@ import ShoppingCartService from "../services/shopping-cart.service";
 import useAuth from "./auth.hook";
 
 const emptyCart = {
-    picture: "image",
-    products: [],
-    totalPrice: 0,
-    totalProducts: 0,
-    totalWeight: 0,
+    picture: "image",    products: [],    totalPrice: 0,
+    totalProducts: 0,    totalWeight: 0,
 }
 
 const emptyNotification = {
-    image: "",
-    productName: "",
-    quantity: 0,
-    price: 0,
+    image: "",    productName: "",
+    quantity: 0,    price: 0,
 }
 
 const ShoppingCartContext = createContext();
@@ -30,12 +25,12 @@ export function ShoppingCartProvider({ children }) {
     const [notificationContent, setNotificationContent] = useState(emptyNotification);
 
     const TEMP_CART_KEY = 'tempCart';
-
     const { isLoggedIn } = useAuth();
 
     useEffect(() => {
         getShoppingCart();
     }, [isLoggedIn]);
+
     useEffect(() => {
         if (showNotification) {
             const timeout = setTimeout(() => {
@@ -45,25 +40,26 @@ export function ShoppingCartProvider({ children }) {
         }
     }, [showNotification, shoppingCart]);
 
+
     const getShoppingCart = async () => {
+        console.log('Z')
         try {
             let cart;
             if (isLoggedIn) {
-                if (JSON.parse(localStorage.getItem(TEMP_CART_KEY)).products.length > 0) {
-                    const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: [] };
+                if (localStorage.getItem(TEMP_CART_KEY) && JSON.parse(localStorage.getItem(TEMP_CART_KEY)).products.length > 0) {
+                    const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY));
 
-                    const tempCartObject = tempCart.products.reduce((acc, product) => {
+                    const tempCartProductsMap = tempCart.products.reduce((acc, product) => {
                         acc[product.productId] = product.quantity;
                         return acc;
                     }, {});
                     try {
-                        await ShoppingCartService.transferProducts(tempCartObject);
+                        await ShoppingCartService.transferProducts(tempCartProductsMap);
                     } catch (error) {
                         console.log(error);
-                        localStorage.removeItem(TEMP_CART_KEY);
                     }
+                    localStorage.setItem(TEMP_CART_KEY, JSON.stringify({ products: [] }));
                 }
-                localStorage.setItem(TEMP_CART_KEY, JSON.stringify({ products: [] }));
                 cart = (await ShoppingCartService.getProducts());
             } else {
                 const tempCart = JSON.parse(localStorage.getItem(TEMP_CART_KEY)) || { products: {} };
@@ -81,6 +77,7 @@ export function ShoppingCartProvider({ children }) {
             console.log("Error fetching shopping cart data: ", error);
         }
     }
+
     const addToShoppingCart = async (productId) => {
         try {
             if (isLoggedIn) {
@@ -99,19 +96,15 @@ export function ShoppingCartProvider({ children }) {
                 }
                 localStorage.setItem(TEMP_CART_KEY, JSON.stringify(updatedCart));
             }
-            const cart = await getShoppingCart();
-
-            const productDetails = cart.products.find(product => product.productId === productId);
-
+            const updatedCart = await getShoppingCart();
+            const productDetails = updatedCart.products.find(product => product.productId === productId);
             setNotificationContent({
                 image: productDetails.image,
                 productName: productDetails.productName,
                 quantity: productDetails.quantity,
                 price: productDetails.price,
             });
-
             setShowNotification(true);
-
         } catch (error) {
             console.log(error);
         }
@@ -139,6 +132,7 @@ export function ShoppingCartProvider({ children }) {
             console.log(error);
         }
     }
+
 
     const changeProductQuantity = async (productId, newQuantity) => {
         try {
@@ -171,6 +165,7 @@ export function ShoppingCartProvider({ children }) {
         }
     }
 
+
     const clearShoppingCart = async () => {
         try {
             if (isLoggedIn) {
@@ -185,6 +180,7 @@ export function ShoppingCartProvider({ children }) {
         }
     }
 
+
     const value = {
         shoppingCart,
         getShoppingCart,
@@ -193,6 +189,7 @@ export function ShoppingCartProvider({ children }) {
         removeFromShoppingCart,
         clearShoppingCart,
     }
+
 
     return (
         <ShoppingCartContext.Provider value={value}>

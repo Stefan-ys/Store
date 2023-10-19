@@ -7,6 +7,8 @@ import ShoppingCartService from '../services/shopping-cart.service';
 import UserService from '../services/user.service';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
+import InfoButton from "../utils/info-button.util";
+import { color } from 'framer-motion';
 
 
 const emptyAddress = {
@@ -122,17 +124,16 @@ const Order = () => {
                     {Object.entries(addressData).map(([fieldName, fieldValue]) => (
                         <div className={styles.row} key={fieldName}>
                             <span className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
-                            {editMode ? (
-                                <Input
-                                    type="text"
-                                    name={fieldName}
-                                    value={fieldValue}
-                                    onChange={handleAddressChange(param)}
-                                    className={styles.editInput}
-                                />
-                            ) : (
-                                <span className={styles.value}>{fieldValue}</span>
-                            )}
+                            {fieldName !== "floor" && fieldName !== "additionalInfo" &&
+                               <InfoButton text="obligatory field" style={{ color: 'red' }} /> }
+                            <Input
+                                type="text"
+                                name={fieldName}
+                                value={fieldValue}
+                                onChange={handleAddressChange(param)}
+                                className={styles.editInput}
+                            />
+
                         </div>
                     ))}
                 </Form>
@@ -149,7 +150,6 @@ const Order = () => {
     const isDeliveryAddressComplete = isAddressComplete(deliveryAddressData);
 
     const isNextButtonEnabled = fields.addressField && isPaymentAddressComplete && isDeliveryAddressComplete;
-
 
 
     const renderButtons = (param, addressData) => {
