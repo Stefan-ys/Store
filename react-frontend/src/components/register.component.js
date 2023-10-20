@@ -120,9 +120,10 @@ const RegisterComponent = () => {
                         </div>
                     )}
 
-
                     <Form onSubmit={handleSubmit} ref={setForm}>
+
                         {/* USERNAME */}
+                        
                         <div className={styles.inputGroup}>
                             <label htmlFor="username" className={styles.label}>
                                 Username:
@@ -147,7 +148,9 @@ const RegisterComponent = () => {
                                         begin with a letter,
                                         consist of letters, numbers, underscores, or hyphens."/>
                         </div>
+
                         {/* EMAIL */}
+                        
                         <label htmlFor="email" className={styles.label}>
                             Email address:
                             {validation.validEmail === true ? <FaCheck className={styles.validIcon}/> : null}
@@ -169,7 +172,9 @@ const RegisterComponent = () => {
                             <InfoButton text="Must be a valid email address."/>
 
                         </div>
+                        
                         {/* PASSWORD */}
+                        
                         <label htmlFor="password" className={styles.label}>
                             Password:
                             {validation.validPassword === true ? <FaCheck className={styles.validIcon}/> : null}
@@ -194,6 +199,7 @@ const RegisterComponent = () => {
                         </div>
 
                         {/* CONFIRM PASSWORD */}
+                        
                         <label htmlFor="confirmPassword" className={styles.label}>
                             Confirm Password:
                             {validation.validMatch === true ? <FaCheck className={styles.validIcon}/> : null}

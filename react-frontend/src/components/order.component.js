@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../css/order.module.css';
-import {useShoppingCart} from '../hooks/shopping-cart.hook';
-import {withRouter} from '../common/with-router';
+import { useShoppingCart } from '../hooks/shopping-cart.hook';
+import { withRouter } from '../common/with-router';
 import useAuth from "../hooks/auth.hook";
 import InfoButton from "../utils/info-button.util";
 import ShoppingCartService from '../services/shopping-cart.service';
@@ -20,20 +20,17 @@ const emptyOrder = {
     totalPrice: 0, totalProducts: 0, totalWeight: 0,
 };
 
-const fieldsArr = {
-    addressField: true, deliveryField: false, paymentField: false,
-};
-
 const Order = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [orderContent, setOrderContent] = useState(emptyOrder);
     const [deliveryAddressData, setDeliveryAddressData] = useState(emptyAddress);
     const [paymentAddressData, setPaymentAddressData] = useState(emptyAddress);
-    const [fields, setFields] = useState(fieldsArr);
+    const [page, setPage] = useState(1);
+    const [deliveryMethod, setDeliveryMethod] = useState("pickup");
 
-    const {shoppingCart} = useShoppingCart();
-    const {isLoggedIn} = useAuth();
+    const { shoppingCart } = useShoppingCart();
+    const { isLoggedIn } = useAuth();
 
     useEffect(() => {
         fetchOrderContent();
@@ -49,7 +46,7 @@ const Order = () => {
             if (isLoggedIn) {
                 orderContentData = await ShoppingCartService.getProducts();
             } else {
-                const tempCart = JSON.parse(localStorage.getItem('tempCart')) || {products: {}};
+                const tempCart = JSON.parse(localStorage.getItem('tempCart')) || { products: {} };
 
                 const tempCartObject = tempCart.products.reduce((acc, product) => {
                     acc[product.productId] = product.quantity;
@@ -88,7 +85,7 @@ const Order = () => {
             console.log(error)
             setMessage(error.message);
         } finally {
-            setLoading((prevLoading) => ({...prevLoading, payment: false}));
+            setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
         }
     };
 
@@ -108,9 +105,9 @@ const Order = () => {
 
     const handleAddressChange = (type) => (event) => {
         event.preventDefault();
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         const addressData = type === "payment" ? paymentAddressData : deliveryAddressData;
-        const updatedAddress = {...addressData, [name]: value};
+        const updatedAddress = { ...addressData, [name]: value };
         if (type === "payment") {
             setPaymentAddressData(updatedAddress);
         } else if (type === "delivery") {
@@ -137,7 +134,7 @@ const Order = () => {
                         <div className={styles.row} key={fieldName}>
                             <span className={styles.label}>{camelCaseToNormal(fieldName)}:</span>
                             {fieldName !== "floor" && fieldName !== "additionalInfo" &&
-                                <InfoButton text="obligatory field" style={{color: 'red'}}/>}
+                                <InfoButton text="obligatory field" style={{ color: 'red' }} />}
                             <Input
                                 type="text"
                                 name={fieldName}
@@ -145,7 +142,6 @@ const Order = () => {
                                 onChange={handleAddressChange(param)}
                                 className={styles.editInput}
                             />
-
                         </div>
                     ))}
                 </Form>
@@ -153,45 +149,165 @@ const Order = () => {
         </div>
     );
 
-    const isAddressComplete = (address) => {
-        const mandatoryFields = Object.keys(emptyAddress).slice(0, -2);
-        return mandatoryFields.every(field => !!address[field]);
+    const isAddressCompleted = () => {
+        const addressCheck = (address) => {
+            const mandatoryFields = Object.keys(emptyAddress).slice(0, -2);
+            return mandatoryFields.every(field => !!address[field]);
+        };
+        return addressCheck(paymentAddressData) && addressCheck(deliveryAddressData);
     };
-    const isPaymentAddressComplete = isAddressComplete(paymentAddressData);
-    const isDeliveryAddressComplete = isAddressComplete(deliveryAddressData);
-    const isNextButtonEnabled = fields.addressField && isPaymentAddressComplete && isDeliveryAddressComplete;
 
-    const renderButtons = (param, addressData) => {
+    const renderDeliveryMethod = () => {
         return (
-            <div className={styles.buttonsContainer}>
-                <button className={styles.prevNextButton} disabled>Previous</button>
-                <button className={styles.prevNextButton} disabled={!isNextButtonEnabled}>Next</button>
-            </div>
+            <>
+                <div>
+                    <h3>Select Delivery Method</h3>
+
+                    <div className={styles.deliveryOption}>
+                        <div>
+                            <input
+                                type="radio"
+                                id="pickup"
+                                name="deliveryMethod"
+                                value="pickup"
+                                checked={deliveryMethod === "pickup"}
+                                onChange={() => handleDeliveryMethodChange("pickup")}
+                            />
+                        </div>
+                        <div>
+                            <img src="logo-image2.jpg" alt="Pick up from store" />
+                        </div>
+                        <div>
+                            <p>Delivery Price: $0</p>
+                            <p>Take order from one of our stores</p>
+                        </div>
+                    </div>
+
+                    <div className={styles.deliveryOption}>
+                        <div>
+                            <input
+                                type="radio"
+                                id="delivery1"
+                                name="deliveryMethod"
+                                value="delivery1"
+                                checked={deliveryMethod === "delivery1"}
+                                onChange={() => handleDeliveryMethodChange("delivery1")}
+                            />
+                        </div>
+                        <div>
+                            <img src="logo-image1.jpg" alt="Delivery Firm 1" />
+                        </div>
+                        <div>
+                            <p>Delivery Price: $10</p>
+                            <p>Free shipping from order above $50</p>
+                        </div>
+                    </div>
+
+                    <div className={styles.deliveryOption}>
+                        <div>
+                            <input
+                                type="radio"
+                                id="delivery2"
+                                name="deliveryMethod"
+                                value="delivery2"
+                                checked={deliveryMethod === "delivery2"}
+                                onChange={() => handleDeliveryMethodChange("delivery2")}
+                            />
+                        </div>
+                        <div>
+                            <img src="logo-image2.jpg" alt="Delivery Firm 2" />
+                        </div>
+                        <div>
+                            <p>Delivery Price: $15</p>
+                            <p>Free shipping from order above $70</p>
+                        </div>
+                    </div>
+                </div>
+            </>
         );
     };
 
-    const handlePrevClick = (fieldName) => {
+    const handleDeliveryMethodChange = (method) => {
+        setDeliveryMethod(method);
+        let cost = 0;
+        switch (method) {
+            case "pickup":
+                cost = 0;
+                break;
+            case "delivery1":
+                cost = 10;
+                break;
+            case "delivery2":
+                cost = 15;
+                break;
+        }
+
+        orderContent.deliveryPrice = cost;
     };
 
-    const handleNextClick = (fieldName) => {
-    };
-
-    const renderFieldsContainer = () => {
-        if (fields.addressField) {
-            return (
-                <div className={styles.addressFieldsContainer}>
-                    <div className={styles.addressField}>
-                        {renderAddressContainer("payment", paymentAddressData, "Payment")}
-                    </div>
-                    <div className={styles.addressField}>
-                        {renderAddressContainer("delivery", deliveryAddressData, "Delivery")}
-                    </div>
+    const renderPaymentMethod = () => {
+        return (<>
+            <div>
+                <h3>Select Payment Method</h3>
+                <div className={styles.paymentOption}>
+                    <input type="radio" id="paymentOnDelivery" name="paymentMethod" value="paymentOnDelivery" />
+                    <label htmlFor="paymentOnDelivery">Payment on Delivery</label>
                 </div>
+
+                <div className={styles.paymentOption}>
+                    <input type="radio" id="transferToBank" name="paymentMethod" value="transferToBank" />
+                    <label htmlFor="transferToBank">Transfer on Bank Account</label>
+                </div>
+            </div>
+        </>
+        );
+    };
+
+    const renderPage = () => {
+        console.log(page);
+        if (page === 1) {
+            return (
+                <>
+                    <div className={styles.addressFieldsContainer}>
+                        <div className={styles.addressField}>
+                            {renderAddressContainer("payment", paymentAddressData, "Payment")}
+                        </div>
+                        <div className={styles.addressField}>
+                            {renderAddressContainer("delivery", deliveryAddressData, "Delivery")}
+                        </div>
+                    </div>
+                    <div className={styles.buttonsContainer}>
+                        <button className={styles.nextButton} onClick={() => {
+                            if (isAddressCompleted()) {
+                                setPage(2);
+                            }
+                        }}
+                            disabled={!isAddressCompleted()}>Next</button>
+                    </div>
+                </>
             );
-        } else if (fields.deliveryField) {
-
-        } else if (fields.paymentField) {
-
+        } else if (page === 2) {
+            return (
+                <>
+                    <div className={styles.deliveryMethod}>
+                        {renderDeliveryMethod()}
+                    </div>
+                    <div className={styles.buttonsContainer}>
+                        <button className={styles.prevButton} onClick={() => setPage(1)}>Previous</button>
+                        <button className={styles.nextButton} onClick={() => setPage(3)}>Next</button>
+                    </div>
+                </>);
+        } else if (page === 3) {
+            return (
+                <>
+                    <div className={styles.paymentMethod}>
+                        {renderPaymentMethod()}
+                    </div>
+                    <div className={styles.buttonsContainer}>
+                        <button className={styles.prevButton} onClick={() => setPage(2)}>Previous</button>
+                    </div>
+                </>
+            );
         }
     };
 
@@ -208,20 +324,20 @@ const Order = () => {
                     <h2>Products</h2>
                     <table>
                         <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </tr>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {orderContent.products.map((product, index) => (
-                            <tr key={index}>
-                                <td>{product.productName}</td>
-                                <td>{product.quantity}</td>
-                                <td>${product.price}</td>
-                            </tr>
-                        ))}
+                            {orderContent.products.map((product, index) => (
+                                <tr key={index}>
+                                    <td>{product.productName}</td>
+                                    <td>{product.quantity}</td>
+                                    <td>${product.price}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
@@ -231,20 +347,20 @@ const Order = () => {
 
     return (
         <div className={styles.orderContainer}>
+            <div className={styles.fieldsContainer}>
+                <h2>Payment And Delivery</h2>
+                {renderPage()}
+            </div>
+
             <div className={styles.shortlist}>
                 <h2>Summary</h2>
                 {renderShortlist()}
+                <button className={styles.placeOrderButton} onClick={handlePlaceOrder}>
+                    Place Order
+                </button>
             </div>
 
-            <div className={styles.fieldsContainer}>
-                <h2>Payment And Delivery</h2>
-                {renderFieldsContainer()}
-                {renderButtons()}
-            </div>
 
-            <button className={styles.placeOrderButton} onClick={handlePlaceOrder}>
-                Place Order
-            </button>
         </div>
     );
 };
