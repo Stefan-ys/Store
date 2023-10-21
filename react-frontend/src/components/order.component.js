@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/order.module.css';
-import { useShoppingCart } from '../hooks/shopping-cart.hook';
 import { withRouter } from '../common/with-router';
 import useAuth from "../hooks/auth.hook";
 import InfoButton from "../utils/info-button.util";
@@ -8,6 +7,7 @@ import ShoppingCartService from '../services/shopping-cart.service';
 import UserService from '../services/user.service';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
+import OrderService from '../services/order.service';
 
 
 const emptyAddress = {
@@ -20,6 +20,12 @@ const emptyOrder = {
     totalPrice: 0, totalProducts: 0, totalWeight: 0,
 };
 
+const POSTEO_COST = 10;
+const POSTEO_FREE_DELIVERY = 70;
+
+const DELIVERO_COST = 15;
+const DELIVERO_FREE_DELIVERY = 50;
+
 const Order = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -29,14 +35,12 @@ const Order = () => {
     const [page, setPage] = useState(1);
     const [deliveryMethod, setDeliveryMethod] = useState("pickup");
 
-    const { shoppingCart } = useShoppingCart();
     const { isLoggedIn } = useAuth();
 
     useEffect(() => {
         fetchOrderContent();
         fetchAddress();
-
-    }, []);
+    }, [isLoggedIn]);
 
     const fetchOrderContent = async () => {
         setLoading(true);
@@ -64,6 +68,16 @@ const Order = () => {
     };
 
     const handlePlaceOrder = () => {
+        setLoading(true);
+        setMessage("");
+        try {
+            OrderService.placeOrder(orderContent);    
+        } catch (error) {
+            console.log(error);
+            setMessage(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const fetchAddress = async () => {
@@ -85,7 +99,7 @@ const Order = () => {
             console.log(error)
             setMessage(error.message);
         } finally {
-            setLoading((prevLoading) => ({ ...prevLoading, payment: false }));
+            setLoading(false);
         }
     };
 
@@ -146,6 +160,17 @@ const Order = () => {
                     ))}
                 </Form>
             </div>
+            {isLoggedIn && (
+                <div className={styles.button}>
+                    <button
+                        className={styles.placeOrderButton}
+                        onClick={() => handleSaveClick(param, addressData)}
+                        disabled={loading[param]}
+                    >
+                        Save Address Data To MyProfile
+                    </button>
+                </div>
+            )}
         </div>
     );
 
@@ -195,11 +220,11 @@ const Order = () => {
                             />
                         </div>
                         <div>
-                            <img src="logo-image1.jpg" alt="Delivery Firm 1" />
+                            <img src="logo-image1.jpg" alt="POSTEO" />
                         </div>
                         <div>
-                            <p>Delivery Price: $10</p>
-                            <p>Free shipping from order above $50</p>
+                            <p>Delivery Price: ${POSTEO_COST}</p>
+                            <p>Free shipping from order above ${POSTEO_FREE_DELIVERY}}</p>
                         </div>
                     </div>
 
@@ -215,11 +240,11 @@ const Order = () => {
                             />
                         </div>
                         <div>
-                            <img src="logo-image2.jpg" alt="Delivery Firm 2" />
+                            <img src="logo-image2.jpg" alt="DELIVERO" />
                         </div>
                         <div>
-                            <p>Delivery Price: $15</p>
-                            <p>Free shipping from order above $70</p>
+                            <p>Delivery Price: ${DELIVERO_COST}</p>
+                            <p>Free shipping from order above ${DELIVERO_FREE_DELIVERY}</p>
                         </div>
                     </div>
                 </div>
@@ -235,10 +260,14 @@ const Order = () => {
                 cost = 0;
                 break;
             case "delivery1":
-                cost = 10;
+                if (orderContent.totalPrice < POSTEO_FREE_DELIVERY) {
+                    cost = POSTEO_COST;
+                }
                 break;
             case "delivery2":
-                cost = 15;
+                if (orderContent.totalPrice < DELIVERO_FREE_DELIVERY) {
+                    cost = DELIVERO_COST;
+                }
                 break;
         }
 
@@ -264,16 +293,15 @@ const Order = () => {
     };
 
     const renderPage = () => {
-        console.log(page);
         if (page === 1) {
             return (
                 <>
                     <div className={styles.addressFieldsContainer}>
                         <div className={styles.addressField}>
-                            {renderAddressContainer("payment", paymentAddressData, "Payment")}
+                            {renderAddressContainer("payment", paymentAddressData)}
                         </div>
                         <div className={styles.addressField}>
-                            {renderAddressContainer("delivery", deliveryAddressData, "Delivery")}
+                            {renderAddressContainer("delivery", deliveryAddressData)}
                         </div>
                     </div>
                     <div className={styles.buttonsContainer}>

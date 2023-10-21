@@ -6,7 +6,7 @@ const API_STORE_URL = "http://localhost:8080//api/orders";
 
 const getMyOrders = () => {
     return axios
-        .get(API_STORE_URL + "/get-my-orders", {headers: authHeader()})
+        .get(API_STORE_URL + "/get-my-orders", { headers: authHeader() })
         .then((response) => response.data)
         .catch((error) => {
             console.log("Axios error: ", error);
@@ -14,6 +14,16 @@ const getMyOrders = () => {
         });
 };
 
-const OrderService = {getMyOrders};
+const placeOrder = (order) => {
+    return axios
+        .post(API_STORE_URL + "/place-order", { order }, { headers: authHeader() })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.log("Axios error: ", error);
+            throw error;
+        });
+};
+
+const OrderService = { getMyOrders, placeOrder };
 
 export default OrderService;
