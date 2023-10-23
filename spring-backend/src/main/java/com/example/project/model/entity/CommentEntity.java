@@ -4,7 +4,6 @@ import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "comments")
 @Data

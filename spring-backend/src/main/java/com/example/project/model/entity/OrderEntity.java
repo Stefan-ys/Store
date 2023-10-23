@@ -2,6 +2,7 @@ package com.example.project.model.entity;
 
 import com.example.project.model.embeddable.Address;
 import com.example.project.model.enums.OrderStatusEnum;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
@@ -23,10 +24,15 @@ public class OrderEntity extends BaseEntity {
     private LocalDateTime canceledDate;
     private Address deliveryAddress;
     private Address paymentAddress;
-    private Map<ObjectId, Integer> products = new HashMap<>();
+    private Map<ObjectId, Integer> products = new HashMap<>();  // key -> product id; value -> product count;
+    @NotNull
     private BigDecimal ProductsTotalWeight;
+    @NotNull
     private BigDecimal ProductsTotalPrice;
+    private String deliveryDetails;
+    @NotNull
     private BigDecimal deliveryPrice;
+    @NotNull
     private BigDecimal totalPrice;
 
 }

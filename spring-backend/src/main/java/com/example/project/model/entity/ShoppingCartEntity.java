@@ -4,8 +4,6 @@ package com.example.project.model.entity;
 import com.example.project.model.embeddable.ProductSummary;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,7 +16,7 @@ import java.util.Map;
 @Data
 public class ShoppingCartEntity extends BaseEntity {
     private ObjectId userId;
-    private Map<ObjectId, ProductSummary> productSummaryMap = new HashMap<>();
+    private Map<ObjectId, ProductSummary> productSummaryMap = new HashMap<>(); // key -> product id; value -> product quantity, total price, total weight;
 
     public BigDecimal[] getPriceAndWeightSummary() {
         BigDecimal[] sumPriceAndWeightArr = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};

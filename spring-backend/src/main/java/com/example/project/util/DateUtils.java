@@ -3,9 +3,9 @@ package com.example.project.util;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 @UtilityClass
@@ -17,22 +17,33 @@ public class DateUtils {
     }
 
     public static String getTimeBetween(LocalDateTime dateStart, LocalDateTime dateEnd) {
+        Duration duration = Duration.between(dateStart, dateEnd);
 
-        long days = ChronoUnit.DAYS.between(dateStart, dateEnd);
-        if (days < 1) {
-            long hours = ChronoUnit.HOURS.between(dateStart, dateEnd);
-            if (hours < 1) {
-                long minutes = ChronoUnit.MINUTES.between(dateStart, dateEnd);
-                return (minutes == 1) ? minutes + " minute" : minutes + " minutes";
-            } else {
-                return (hours == 1) ? hours + " hour" : hours + " hours";
-            }
-        } else if (days > 30) {
-            long years = ChronoUnit.YEARS.between(dateStart, dateEnd);
-            return (years == 1) ? years + " year" : years + " years";
-        } else {
-            return (days == 1) ? days + " day" : days + " days";
+        long years = duration.toDays() / 365;
+        long months = (duration.toDays() % 365) / 30;
+        long days = duration.toDays() % 30;
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+
+        StringBuilder result = new StringBuilder();
+
+        if (years > 0) {
+            result.append(years).append(" year").append(years > 1 ? "s" : "").append(" ");
         }
+        if (months > 0) {
+            result.append(months).append(" month").append(months > 1 ? "s" : "").append(" ");
+        }
+        if (days > 0) {
+            result.append(days).append(" day").append(days > 1 ? "s" : "").append(" ");
+        }
+        if (hours > 0) {
+            result.append(hours).append(" hour").append(hours > 1 ? "s" : "").append(" ");
+        }
+        if (minutes > 0) {
+            result.append(minutes).append(" minute").append(minutes > 1 ? "s" : "");
+        }
+
+        return result.toString().trim();
     }
 }
 
