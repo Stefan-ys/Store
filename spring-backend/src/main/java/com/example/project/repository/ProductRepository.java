@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 
 @Repository
@@ -21,13 +20,12 @@ public interface ProductRepository extends MongoRepository<ProductEntity, Object
 
     Page<ProductEntity> findAllByStatus(ProductStatusEnum statusEnum, Pageable pageable);
 
-    @Query("{ 'status' : ?0 }")
-    List<ProductEntity> findRandomByStatus(ProductStatusEnum statusEnum, Pageable pageable);
-
     Page<ProductEntity> findByProductCategoryIn(String[] categories, Pageable pageable);
 
     Page<ProductEntity> findByStatusIn(String[] status, Pageable pageable);
 
     Page<ProductEntity> findByProductCategoryInAndStatusIn(String[] categories, String[] status, Pageable pageable);
+
+    Page<ProductEntity> searchByNameIgnoreCaseContaining(String keyword, Pageable pageable);
 
 }

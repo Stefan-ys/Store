@@ -12,9 +12,10 @@ import java.util.Map;
 public class OrderRequest {
     private Address deliveryAddress;
     private Address paymentAddress;
-    private Map<ObjectId, Integer> products;
+    private Map<ObjectId, Integer> products; // key -> product id;  value -> product count;
     private BigDecimal ProductsTotalWeight;
     private BigDecimal ProductsTotalPrice;
+    private String deliveryDetails;
     private BigDecimal deliveryPrice;
     private BigDecimal totalPrice;
 }

@@ -175,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
                 (productEntity.getDescription().length() <= 20 ?
                         productEntity.getDescription() :
                         productEntity.getDescription().substring(0, 20) + "...");
-        productResponse.setStatus(productEntity.getStatus().toString());
+        productResponse.setStatus(productEntity.getStatus().toString().replaceAll("[\\[\\]]", "").replaceAll("_", " "));
         productResponse.setProductCategory(productEntity.getProductCategory().toString());
         productResponse.setManufacturer(productEntity.getManufacturer());
         productResponse.setRating(String.format("%.1f(%d)", productEntity.getRating(), productEntity.getUsersRating().size()));

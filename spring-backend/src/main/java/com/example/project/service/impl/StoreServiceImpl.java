@@ -4,7 +4,6 @@ import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.enums.ProductCategoryEnum;
 import com.example.project.model.enums.ProductStatusEnum;
 import com.example.project.payload.response.ProductResponse;
-import com.example.project.repository.CommentRepository;
 import com.example.project.repository.ProductRepository;
 import com.example.project.service.StoreService;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class StoreServiceImpl implements StoreService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
-    private final CommentRepository commentRepository;
 
     // Create
 
@@ -86,6 +84,7 @@ public class StoreServiceImpl implements StoreService {
     // Delete
 
     // Helpers
+
 
     private ProductResponse convertToProductResponse(ProductEntity product) {
         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
