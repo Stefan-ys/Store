@@ -22,7 +22,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/create-order")
+    @PostMapping("/place-order")
     public ResponseEntity<String> addProduct(@RequestBody OrderRequest orderRequest) {
         try {
             orderService.createOrder(orderRequest);
@@ -35,7 +35,7 @@ public class OrderController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/get-my-orders")
     public ResponseEntity<List<OrderResponse>> getMyOrders() {
         try {
