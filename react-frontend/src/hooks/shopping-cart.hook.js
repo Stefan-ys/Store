@@ -200,7 +200,6 @@ export function ShoppingCartProvider({children}) {
                 <button onClick={() => setShowNotification(false)}>Continue Shopping</button>
                 <button onClick={() => setShowNotification(false)}>Proceed to Check Out</button>
             </div>
-
         </ShoppingCartContext.Provider>
     );
 }

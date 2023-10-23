@@ -20,8 +20,8 @@ const emptyOrder = {
     totalPrice: 0, totalProducts: 0, totalWeight: 0,
 };
 
-const POSTEO_COST = 10;
-const POSTEO_FREE_DELIVERY = 70;
+const RAPIDO_COST = 10;
+const RAPIDO_FREE_DELIVERY = 70;
 
 const DELIVERO_COST = 15;
 const DELIVERO_FREE_DELIVERY = 50;
@@ -212,19 +212,19 @@ const Order = () => {
                         <div>
                             <input
                                 type="radio"
-                                id="delivery1"
+                                id="rapido"
                                 name="deliveryMethod"
-                                value="delivery1"
-                                checked={deliveryMethod === "delivery1"}
-                                onChange={() => handleDeliveryMethodChange("delivery1")}
+                                value="rapido"
+                                checked={deliveryMethod === "rapido"}
+                                onChange={() => handleDeliveryMethodChange("rapido")}
                             />
                         </div>
                         <div>
-                            <img src="logo-image1.jpg" alt="POSTEO" />
+                            <img src="logo-image1.jpg" alt="RAPIDO" />
                         </div>
                         <div>
-                            <p>Delivery Price: ${POSTEO_COST}</p>
-                            <p>Free shipping from order above ${POSTEO_FREE_DELIVERY}}</p>
+                            <p>Delivery Price: ${RAPIDO_COST}</p>
+                            <p>Free shipping from order above ${RAPIDO_FREE_DELIVERY}</p>
                         </div>
                     </div>
 
@@ -232,11 +232,11 @@ const Order = () => {
                         <div>
                             <input
                                 type="radio"
-                                id="delivery2"
+                                id="delivero"
                                 name="deliveryMethod"
-                                value="delivery2"
-                                checked={deliveryMethod === "delivery2"}
-                                onChange={() => handleDeliveryMethodChange("delivery2")}
+                                value="delivero"
+                                checked={deliveryMethod === "delivero"}
+                                onChange={() => handleDeliveryMethodChange("delivero")}
                             />
                         </div>
                         <div>
@@ -259,12 +259,12 @@ const Order = () => {
             case "pickup":
                 cost = 0;
                 break;
-            case "delivery1":
-                if (orderContent.totalPrice < POSTEO_FREE_DELIVERY) {
-                    cost = POSTEO_COST;
+            case "rapido":
+                if (orderContent.totalPrice < RAPIDO_FREE_DELIVERY) {
+                    cost = RAPIDO_COST;
                 }
                 break;
-            case "delivery2":
+            case "delivero":
                 if (orderContent.totalPrice < DELIVERO_FREE_DELIVERY) {
                     cost = DELIVERO_COST;
                 }
