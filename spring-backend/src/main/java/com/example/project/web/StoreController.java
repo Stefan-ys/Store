@@ -44,16 +44,49 @@ public class StoreController {
 
             productsPage = storeService.getProducts(paging, categories, status);
 
-            List<ProductResponse> products = productsPage.getContent();
-            Map<String, Object> response = new HashMap<>();
-            response.put("products", products);
-            response.put("currentPage", productsPage.getNumber());
-            response.put("totalElements", productsPage.getTotalElements());
-            response.put("totalPages", productsPage.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return getMapResponseEntity(productsPage);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/search-product{keyWord}")
+    public ResponseEntity<Map<String, Object>> searchForProduct(
+            @PathVariable("keyWord") String keyWord,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+    ) {
+        try {
+            Sort.Direction direction = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            String property = switch (sortBy) {
+                case "price" -> "price";
+                case "name" -> "name";
+                default -> "createdDate";
+            };
+
+            Pageable paging = PageRequest.of(page, size, direction, property);
+            Page<ProductResponse> productsPage;
+
+            productsPage = storeService.searchForProduct(paging, keyWord);
+
+            return getMapResponseEntity(productsPage);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    // Helpers
+    private ResponseEntity<Map<String, Object>> getMapResponseEntity(Page<ProductResponse> productsPage) {
+        List<ProductResponse> products = productsPage.getContent();
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", products);
+        response.put("currentPage", productsPage.getNumber());
+        response.put("totalElements", productsPage.getTotalElements());
+        response.put("totalPages", productsPage.getTotalPages());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

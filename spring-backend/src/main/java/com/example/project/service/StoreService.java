@@ -14,6 +14,9 @@ public interface StoreService {
     // Retrieve
     Page<ProductResponse> getProducts(Pageable paging, String[] categories, String[] status);
     Page<ProductResponse> getAllProducts(Pageable paging);
+
+    Page<ProductResponse> searchForProduct(Pageable pageable, String keyWord);
+
     Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging);
     Page<ProductResponse> getProductsByCategory(String category, Pageable paging);
 

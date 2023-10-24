@@ -38,6 +38,17 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public Page<ProductResponse> searchForProduct(Pageable pageable, String keyWord) {
+        Page<ProductEntity> products = productRepository.searchByNameIgnoreCaseContaining(keyWord, pageable);
+
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(productResponses, pageable, products.getTotalElements());
+    }
+
+    @Override
     public Page<ProductResponse> getAllProductsByStatus(String status, Pageable paging) {
         ProductStatusEnum statusEnum = ProductStatusEnum.valueOf(convertStringToEnumString(status));
         Page<ProductEntity> products = productRepository.findAllByStatus(statusEnum, paging);

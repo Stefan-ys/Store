@@ -22,7 +22,7 @@ public class AdminCommentController {
 
     // Retrieve
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/all-comments")
     public ResponseEntity<List<CommentResponse>> getAllComments() {
         try {
