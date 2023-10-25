@@ -41,7 +41,7 @@ const HeaderComponent = () => {
             <div className={styles.searchBar}>
                 <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="Search for product..."
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                 />

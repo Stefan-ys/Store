@@ -5,7 +5,6 @@ import { withRouter } from "../common/with-router";
 import { FaTimes } from "react-icons/fa";
 import Pagination from "../utils/pagination.util";
 import StoreService from "../services/store.service";
-import SearchService from "../services/search-bar.service";
 import Menu from "../utils/menu.util";
 import ProductBox from "../utils/product-box.util";
 
@@ -74,7 +73,7 @@ const Store = (props) => {
     setLoading(true);
     setMessage("");
     try {
-      const data = await SearchService.searchForProducts(keyWord, currentPage, productsPerPage, sortOrder[0], sortOrder[1]);
+      const data = await StoreService.searchForProducts(keyWord, currentPage, productsPerPage, sortOrder[0], sortOrder[1]);
       setProducts(data.products);
       setTotalPages(data.totalPages);
     } catch (error) {

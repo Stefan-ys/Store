@@ -9,50 +9,65 @@ import AdminOrderService from "../services/admin-order.service";
 import AdminCommentService from "../services/admin-comment.service";
 import AddProductComponent from "./add-product.component";
 
-const userRoles = [
-    { label: "Show All", checked: true },
-    { labe: "User Role", checked: false },
-    { label: "Admin Role", checked: false },
-    { label: "Moderator Role", checked: false },
-];
+const userRoles = {
+    "Show All": true,
+    "User": false,
+    "Admin": false,
+    "Moderator": false,
+};
 
-const productStatus = [
-    { label: "Show All", checked: true },
-    { label: "New", checked: false },
-    { label: "Promotion", checked: false },
-    { label: "Coming soon", checked: false },
-    { label: "Out of stock", checked: false },
-];
+const productStatus = {
+    "Show All": true,
+    "New": false,
+    "Promotion": false,
+    "Coming soon": false,
+    "Out Of Stock": false,
+};
 
-const productCategories = [
-    { label: "Show All", checked: true },
-    { label: "Circles", checked: false },
-    { label: "Triangles", checked: false },
-    { label: "Squares", checked: false },
-    { label: "Rectangles", checked: false },
-];
+const productCategories = {
+    "Show All": true,
+    "Circles": false,
+    "Triangles": false,
+    "Squares": false,
+    "Rectangles": false,
+};
 
-const orderStatus = [
-    { label: "Show All", checked: true },
-    { label: "Active", checked: false },
-    { label: "Completed", checked: false },
-    { label: "Cancelled", checked: false },
-];
-
+const orderStatus = {
+    "Show All": true,
+    "Active": false,
+    "Completed": false,
+    "Cancelled": false,
+};
 
 const AdminPage = () => {
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [showTableData, setShowTableData] = useState(false);
-    const [userRoleOptions, setUserRoleOptions] = useState(userRoles);
-    const [productCategoryOptions, setProductCategoryOptions] = useState(productCategories);
-    const [productStatusOptions, setProductStatusOptions] = useState(productStatus);
-    const [orderOptions, setOrderOptions] = useState(orderStatus);
+    const [tableName, setTableName] = useState("None");
+    const [userRoleFilter, setUserRoleFilter] = useState(userRoles);
+    const [productStatusFilter, setProductStatusFilter] = useState(productStatus);
+    const [productCategoryFilter, setProductCategoryFilter] = useState(productCategories);
+    const [orderStatusFilter, setOrderStatusFilter] = useState(orderStatus);
 
     useEffect(() => {
     }, [data]);
+
+    useEffect(() => {
+        switch (tableName) {
+            case "Users":
+                filterData([[userRoleFilter, "roles"]]);
+                break;
+            case "Products":
+                filterData([[productCategoryFilter, "productCategory"], [productStatusFilter, "status"]]);
+                break;
+            case "Orders":
+                filterData([[orderStatusFilter, "status"]]);
+                break;
+        };
+    }, [userRoleFilter, productStatusFilter, productCategoryFilter, orderStatusFilter]);
 
     const handleMenuClick = (action) => {
         if (action) {
@@ -66,7 +81,7 @@ const AdminPage = () => {
         }
     };
 
-    const getUsers = async () => {
+    const getAllUsers = async () => {
         setLoading(true);
         setMessage("");
         setShowAddProduct(false);
@@ -74,6 +89,8 @@ const AdminPage = () => {
         try {
             const users = await AdminUserService.getAllUsersService();
             setData(users);
+            setFilteredData(users);
+            setTableName("Users");
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
@@ -82,36 +99,36 @@ const AdminPage = () => {
         }
     };
 
-
-    const AddProduct = () => {
-        handleMenuClick(AddProduct);
-    };
-
-    const getProducts = async () => {
+    const getAllProducts = async () => {
         setLoading(true);
         setMessage("");
         setShowAddProduct(false);
         setShowTableData(true);
         try {
             const products = await AdminProductService.getAllProductsService();
-            console.log(products);
             setData(products);
+            setTableName("Products");
+            setFilteredData(products);
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
         } finally {
             setLoading(false);
         }
-
     };
 
-    const getOrders = async () => {
+    const AddProduct = () => {
+        handleMenuClick(AddProduct);
+    };
+
+    const getAllOrders = async () => {
         setLoading(true);
         setShowAddProduct(false);
         setShowTableData(true);
         try {
             const users = await AdminOrderService.getOrders();
             setData(users);
+            setTableName("Orders");
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
@@ -120,20 +137,23 @@ const AdminPage = () => {
         }
     };
 
-
-    const getComments = async () => {
+    const getAllComments = async () => {
         setLoading(true);
         setShowAddProduct(false);
         setShowTableData(true);
         try {
             const comments = await AdminCommentService.getAllComments();
             setData(comments);
+            setTableName("Comments");
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(error.response ? error.response.data.message : "An error has occurred.");
         } finally {
             setLoading(false);
         }
+    };
+
+    const getAllNotifications = () => {
     };
 
     const myNotifications = () => {
@@ -142,64 +162,121 @@ const AdminPage = () => {
     const sendNotification = () => {
     };
 
-    const getAllNotifications = () => {
-    };
-
-    const updateOption = (label, options, setOptions) => {
-        const updatedOptions = options.map((option) => {
-          if (option.label === "Show All" && label !== "Show All") {
-            return { ...option, checked: false };
-          } else if (option.label !== "Show All" && label === "Show All") {
-            return { ...option, checked: false };
-          } else if (option.label === label) {
-            return { ...option, checked: !option.checked };
-          }
-          return option;
-        });
-        setOptions(updatedOptions);
-      };
-
     const menuItems = [
-
         {
             name: "Users",
-            options: userRoleOptions,
-            items: userRoleOptions.map((option) => ({
-                label: option.label,
-                action: () => updateOption(option.label, userRoleOptions, setUserRoleOptions),
-            })),
+            items: [
+                { label: "Show Users", action: getAllUsers },
+            ],
         },
         {
             name: "Products",
             items: [
-                // { label: "All Products", action: getAllProducts },
+                { label: "Show Products", action: getAllProducts },
                 { label: "Add Product", action: AddProduct },
             ],
         },
         {
             name: "Orders",
             items: [
-                // { label: "All Orders", action: getAllOrders },
-                // { label: "Active Orders", action: getActiveOrders },
-                // { label: "Completed Orders", action: getCompletedOrders },
-                // { label: "Canceled Orders", action: getCanceledOrders },
+                { label: "Show Orders", action: getAllOrders },
             ],
         },
         {
             name: "Comments",
             items: [
-                // { label: "All Comments", action: getAllComments },
+                { label: "Show Comments", action: getAllComments },
             ],
         },
         {
             name: "Notifications",
             items: [
+                { label: "Show Notifications", action: getAllNotifications },
                 { label: "My Notifications", action: myNotifications },
                 { label: "Send Notification", action: sendNotification },
-                { label: "All Notifications", action: getAllNotifications },
             ],
         },
     ];
+
+    const renderFilterBox = () => {
+        switch (tableName) {
+            case "Users":
+                return (
+                    <div className={styles.filterBox}>
+                        {renderBox(userRoleFilter, setUserRoleFilter)}
+                    </div>
+                );
+            case "Products":
+                return (
+                    <div className={styles.filterBoxRow}>
+                        <div className={styles.filterBox}>
+                            {renderBox(productStatusFilter, setProductStatusFilter)}
+                        </div>
+                        <div className={styles.filterBox}>
+                            {renderBox(productCategoryFilter, setProductCategoryFilter)}
+                        </div>
+                    </div>
+                );
+            case "Orders":
+                return (
+                    <div className={styles.filterBox}>
+                        {renderBox(orderStatusFilter, setOrderStatusFilter)}
+                    </div>
+                );
+            case "Comments":
+                return null;
+        }
+    };
+
+    const renderBox = (filter, setFilter, getData) => {
+        return (
+            <div className={styles.box}>
+                {Object.keys(filter).map((label) => (
+                    <label key={label} className={styles.label}>
+                        <input
+                            type="checkbox"
+                            value={label}
+                            checked={filter[label]}
+                            onChange={() => toggleFilter(label, filter, setFilter, getData)}
+                        />
+                        {label}
+                    </label>
+                ))}
+            </div>
+        );
+    };
+
+
+    const toggleFilter = (label, filter, setFilter, getData) => {
+        const updatedFilter = { ...filter };
+        if (label === "Show All") {
+            for (const key in filter) {
+                updatedFilter[key] = false;
+            }
+        } else {
+            updatedFilter["Show All"] = false;
+        }
+        updatedFilter[label] = !updatedFilter[label];
+        setFilter(updatedFilter);
+    };
+
+    const filterData = (filterArray) => {
+        let updatedData = [...data];
+
+        filterArray.forEach(([filter, subject]) => {
+            console.log(filter);
+            console.log(subject);
+            if (!filter["Show All"]) {
+                updatedData = updatedData.filter((item) => {
+                    return Object
+                        .keys(filter)
+                        .some((sub) =>
+                            item[subject].includes(sub.toUpperCase()) && filter[sub]);
+                });
+            }
+        });
+        setFilteredData(updatedData);
+    };
 
     return (
         <section>
@@ -210,11 +287,13 @@ const AdminPage = () => {
                 <AddProductComponent />
             )}
             {showTableData && (
-                <div>
-                    <DataTable data={data} loading={loading} message={message} />
-                </div>
+                <>
+                    {renderFilterBox()}
+                    <div>
+                        <DataTable data={filteredData} loading={loading} message={message} />
+                    </div>
+                </>
             )}
-
         </section>
     );
 };

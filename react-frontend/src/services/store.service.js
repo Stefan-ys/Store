@@ -28,6 +28,25 @@ const getAllProducts = (currentPage, productsPerPage, categoryOptions, statusOpt
         });
 };
 
-const StoreService = {getAllProducts};
+const searchForProducts = (keyWord, currentPage, productsPerPage, sortOption, sortOrder) => {
+    const params = {
+        page: currentPage - 1,
+        size: productsPerPage,
+        sortBy: sortOption,
+        sortOrder: sortOrder
+    };
+
+    return axios
+        .get(API_STORE_URL + "/search-product" + keyWord, {
+            params: params, headers: authHeader()
+        })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error("Axios error: ", error);
+            throw error;
+        });
+};
+
+const StoreService = {getAllProducts, searchForProducts};
 
 export default StoreService;

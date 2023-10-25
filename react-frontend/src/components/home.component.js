@@ -24,7 +24,6 @@ const Home = () => {
         try {
             const fetchedProducts = await HomeService.getProducts();
             setProducts(fetchedProducts);
-            console.log(products);
         } catch (error) {
             console.log("Error fetching products data: ", error);
             setMessage(
