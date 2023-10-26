@@ -9,7 +9,7 @@ import Store from "./components/store.component";
 import ProductView from "./components/product-view.component";
 import Order from "./components/order.component";
 import ShoppingCart from "./components/shopping-cart.component";
-import AdminPage from "./components/admin-page.component";
+import AdminPage from "./components/admin/admin-page.component";
 import './App.css';
 import {ShoppingCartProvider} from "./hooks/shopping-cart.hook";
 import useAuth from "./hooks/auth.hook";

@@ -85,3 +85,21 @@ table tbody tr:hover {
   font-weight: normal;
   color: #333;
 }
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.searchIcon {
+  margin-right: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  font-size: 14px;
+  width: 100%;
+}
